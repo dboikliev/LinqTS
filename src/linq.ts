@@ -1,43 +1,20 @@
-abstract class Linq<T> implements Iterable<T> {
-    protected _elements: Iterable<any>;
+abstract class Linqable<TSource> implements Iterable<TSource> {
+    abstract [Symbol.iterator](): Iterator<TSource>;
 
-    constructor(elements: Iterable<any>) {
-        this._elements = elements;
-    }
-
-    any(predicate?: (element: T) => boolean): boolean {
+    any(predicate?: (element: TSource) => boolean): boolean {
         if (predicate) {
-            for (let value of this._elements) {
+            for (let value of this) {
                 if (predicate(value)) {
                     return true;
                 }
             }
         }
         else {
-            let iter = this._elements[Symbol.iterator]();
+            let iter = this[Symbol.iterator]();
             return !iter.next().done;
         }
 
         return false;
-    }
-
-
-    abstract [Symbol.iterator](): Iterator<T>
-}
-
-class Linqable<TSource> extends Linq<TSource> {
-    [Symbol.iterator](): Iterator<TSource> {
-        let iter = this._elements[Symbol.iterator]();
-        return {
-            next: (): IteratorResult<TSource> => { 
-                let iteration = iter.next();
-                let result: IteratorResult<TSource> = {
-                    value: iteration.value,
-                    done: iteration.done
-                };
-                return result;
-            }
-        }
     }
 
     where(predicate: (element: TSource) => boolean): Linqable<TSource> {
@@ -51,20 +28,51 @@ class Linqable<TSource> extends Linq<TSource> {
     zip<TRight, TResult>(right: Iterable<TRight>, selector: (left: TSource, right: TRight) => TResult): Linqable<TResult> {
         return new ZipLinq<TSource, TRight, TResult>(this, right, selector);
     }
+
+    first(): TSource {
+        let iter = this[Symbol.iterator]();
+        return iter.next().value;
+    }
 }
+
+class LinqableList<TSource> extends Linqable<TSource> {
+    private _elements: Iterable<any>;
+
+    constructor(elements: Iterable<any>) {
+        super();
+        this._elements = elements;
+    }
+
+    [Symbol.iterator](): Iterator<TSource> {
+        let iter = this._elements[Symbol.iterator]();
+        return {
+            next: (): IteratorResult<TSource> => {
+                let iteration = iter.next();
+                let result: IteratorResult<TSource> = {
+                    value: iteration.value,
+                    done: iteration.done
+                };
+                return result;
+            }
+        }
+    }
+}
+
 
 class ZipLinq<TLeft, TRight, TResult> extends Linqable<TResult> {
     private _selector: (left: TLeft, right: TRight) => TResult;
+    private _left: Iterable<TLeft>;
     private _right: Iterable<TRight>;
 
     constructor(left: Iterable<TLeft>, right: Iterable<TRight>, selector: (left: TLeft, right: TRight) => TResult) {
-        super(left);
+        super();
+        this._left = left;
         this._right = right;
         this._selector = selector;
     }
 
     [Symbol.iterator](): Iterator<TResult> {
-        let iterLeft = this._elements[Symbol.iterator]();
+        let iterLeft = this._left[Symbol.iterator]();
         let iterRight = this._right[Symbol.iterator]();
 
         return {
@@ -89,25 +97,27 @@ class ZipLinq<TLeft, TRight, TResult> extends Linqable<TResult> {
     }
 }
 
-class WhereLinq<T> extends Linqable<T> {
-    private _predicate: (element: T) => boolean;
+class WhereLinq<TSource> extends Linqable<TSource> {
+    private _elements: Iterable<TSource>;
+    private _predicate: (element: TSource) => boolean;
 
-    constructor(elements: Iterable<T>, predicate: (element: T) => boolean) {
-        super(elements);
+    constructor(elements: Iterable<TSource>, predicate: (element: TSource) => boolean) {
+        super();
+        this._elements = elements;
         this._predicate = predicate;
     }
 
-    [Symbol.iterator](): Iterator<T> {
+    [Symbol.iterator](): Iterator<TSource> {
         let iter = this._elements[Symbol.iterator]();
 
         return {
-            next: (): IteratorResult<T> => {
+            next: (): IteratorResult<TSource> => {
                 let iteration = iter.next();
                 while (iteration.value && !this._predicate(iteration.value)) {
                     iteration = iter.next();
                 }
 
-                let result: IteratorResult<T> = {
+                let result: IteratorResult<TSource> = {
                     value: iteration.value,
                     done: iteration.done
                 };
@@ -118,22 +128,24 @@ class WhereLinq<T> extends Linqable<T> {
     }
 }
 
-class SelectLinq<T, K> extends Linqable<K> {
-    private _selector: (element: T) => any;
+class SelectLinq<TSource, TDestination> extends Linqable<TDestination> {
+    private _elements: Iterable<TSource>;
+    private _selector: (element: TSource) => any;
 
-    constructor(elements: Iterable<T>, selector: (element: T) => K) {
-        super(elements);
+    constructor(elements: Iterable<TSource>, selector: (element: TSource) => TDestination) {
+        super();
+        this._elements = elements;
         this._selector = selector;
     }
 
-    [Symbol.iterator](): Iterator<K> {
+    [Symbol.iterator](): Iterator<TDestination> {
         let iter = this._elements[Symbol.iterator]();
 
         return {
-            next: (): IteratorResult<K> => {
+            next: (): IteratorResult<TDestination> => {
                 let iteration = iter.next();
 
-                let result: IteratorResult<K> = {
+                let result: IteratorResult<TDestination> = {
                     value: iteration.value ? this._selector(iteration.value) : undefined,
                     done: iteration.done
                 };
@@ -150,7 +162,7 @@ interface IPerson {
 }
 
 function linq<T>(iterable: Iterable<T>) {
-    return new Linqable<T>(iterable);
+    return new LinqableList<T>(iterable);
 }
 
 let people: IPerson[] = [{ name: "Ivan", age: 24 }, { name: "Deyan", age: 25 }];
@@ -158,8 +170,4 @@ let people: IPerson[] = [{ name: "Ivan", age: 24 }, { name: "Deyan", age: 25 }];
 let olderThan24 = linq(people)
     .where(p => p.age >= 24)
     .select(p => p.name)
-    .zip([1, 2], (a, b) => `${ b }: ${ a }`);
-
-for (let key of olderThan24) {
-    console.log(key);
-}
+    .select(n => n.length * 100);
