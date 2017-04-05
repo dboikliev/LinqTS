@@ -2,6 +2,12 @@
 
 An api for querying iterables, implemented in TypeScript and inspired by .NET's IEnumerable<T> extension methods.
 
+## Supported operations:
+1. where
+2. select
+3. any
+4. first
+
 ## Example
 
 #### Building and executing a query:
