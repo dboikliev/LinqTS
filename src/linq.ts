@@ -1,4 +1,4 @@
-abstract class Linqable<TSource> implements Iterable<TSource> {
+export abstract class Linqable<TSource> implements Iterable<TSource> {
     abstract [Symbol.iterator](): Iterator<TSource>;
 
     any(predicate?: (element: TSource) => boolean): boolean {
@@ -156,18 +156,6 @@ class SelectLinq<TSource, TDestination> extends Linqable<TDestination> {
     }
 }
 
-interface IPerson {
-    name: string;
-    age: number;
-}
-
-function linq<T>(iterable: Iterable<T>) {
+export function linq<T>(iterable: Iterable<T>) {
     return new LinqableList<T>(iterable);
 }
-
-let people: IPerson[] = [{ name: "Ivan", age: 24 }, { name: "Deyan", age: 25 }];
-
-let olderThan24 = linq(people)
-    .where(p => p.age >= 24)
-    .select(p => p.name)
-    .select(n => n.length * 100);
