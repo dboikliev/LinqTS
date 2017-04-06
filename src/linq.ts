@@ -228,10 +228,10 @@ export function linq<T>(iterable: Iterable<T>) {
     return new List<T>(iterable);
 }
 
-export function* range(start: number = 0, step: number = 1, end?: number): IterableIterator<number> {
+export function* range(start: number = 0, step: number = 1, end: number = Infinity): IterableIterator<number> {
     let i = start;
 
-    while (!end || i <= end) {
+    while (end == Infinity || i <= end) {
         yield i;
         i += step;
     }

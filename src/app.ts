@@ -21,7 +21,7 @@ let gen = function* () {
     }
 }
 
-let evenNums = linq(range(0, 1, 10))
+let evenNums = linq(range(0, 100))
     .where(i => i % 2 === 0 && i >= 0)
     .select(i => i * 100)
     // .zip(gen(), (left, right) => [left, right])
@@ -33,7 +33,4 @@ let i = 0;
 for (let key of evenNums) {
     console.log(key);
     i++;
-    if (i >= 10) {
-        break;
-    }
 }
