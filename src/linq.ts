@@ -211,8 +211,10 @@ class Select<TSource, TDestination> extends Linqable<TDestination> {
             next: (): IteratorResult<TDestination> => {
                 let iteration = iter.next();
 
+                let value = iteration.done ? undefined : this._selector(iteration.value);
+
                 let result: IteratorResult<TDestination> = {
-                    value: iteration.value ? this._selector(iteration.value) : undefined,
+                    value: value,
                     done: iteration.done
                 };
 
@@ -224,4 +226,13 @@ class Select<TSource, TDestination> extends Linqable<TDestination> {
 
 export function linq<T>(iterable: Iterable<T>) {
     return new List<T>(iterable);
+}
+
+export function* range(start: number = 0, step: number = 1, end?: number): IterableIterator<number> {
+    let i = start;
+
+    while (!end || i <= end) {
+        yield i;
+        i += step;
+    }
 }

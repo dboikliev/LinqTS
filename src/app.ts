@@ -1,4 +1,4 @@
-import { linq } from "./linq";
+import { linq, range } from "./linq";
 
 interface IPerson {
     name: string;
@@ -21,8 +21,12 @@ let gen = function* () {
     }
 }
 
-let evenNums = linq(gen())
-    .where(i => i % 2 === 0 && i > 10);
+let evenNums = linq(range(0, 1, 10))
+    .where(i => i % 2 === 0 && i >= 0)
+    .select(i => i * 100)
+    // .zip(gen(), (left, right) => [left, right])
+    // .where(([_, right]) => right >= 1000)
+    // .select(([left]) => left);
 
 let i = 0;
 
