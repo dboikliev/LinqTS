@@ -5,8 +5,10 @@ An api for querying iterables, implemented in TypeScript and inspired by .NET's 
 ## Supported operations:
 1. where
 2. select
+3. distinct
 3. any
 4. first
+5. firstOrDefault
 
 ## Example
 
