@@ -4,12 +4,13 @@ An api for querying iterables, implemented in TypeScript and inspired by .NET's 
 
 ## Supported operations:
 1. where
-2. select
-3. distinct
-4. zip
-5. any
-6. first
-7. firstOrDefault
+1. select
+1. distinct
+1. zip
+1. groupBy
+1. any
+1. first
+1. firstOrDefault
 
 ## Example
 
