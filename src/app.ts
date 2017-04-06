@@ -7,10 +7,13 @@ interface IPerson {
 
 let people: IPerson[] = [{ name: "Ivan", age: 24 }, { name: "Deyan", age: 25 }];
 
-let namesOfPeopleOlderThan22 = linq(people)
-    .where(p => p.age > 22)
-    .select(p => p.name);
+let person = linq(people)
+    .firstOrDefault(p => p.name === "John",() => ("NOBODY FOUND!"));
 
-for (let length of namesOfPeopleOlderThan22) {
-    console.log(length);
+let type = typeof person;
+if (type === "string") {
+    console.log(person);
+}
+else {
+    console.log((person as IPerson).name);
 }

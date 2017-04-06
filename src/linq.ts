@@ -33,6 +33,29 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
         let iter = this[Symbol.iterator]();
         return iter.next().value;
     }
+
+    firstOrDefault<TDefault>(predicate?: (element: TSource) => boolean, defaultInitializer?: () => TDefault): TSource | TDefault {
+        if (predicate) {
+            for (let value of this) {
+                if (predicate(value)) {
+                    return value;
+                }
+            }
+
+            return defaultInitializer();
+        }
+        else {
+            let iter = this[Symbol.iterator]();
+            let descriptor = iter.next();
+            
+            if (descriptor.done && !descriptor.value) {
+                return defaultInitializer();
+            }
+            else {
+                return descriptor.value;
+            }
+        }
+    }
 }
 
 class List<TSource> extends Linqable<TSource> {
