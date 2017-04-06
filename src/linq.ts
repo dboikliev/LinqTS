@@ -18,15 +18,15 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
     }
 
     where(predicate: (element: TSource) => boolean): Linqable<TSource> {
-        return new WhereLinq<TSource>(this, predicate);
+        return new Where<TSource>(this, predicate);
     }
 
     select<TResult>(predicate: (element: TSource) => TResult): Linqable<TResult> {
-        return new SelectLinq<TSource, TResult>(this, predicate);
+        return new Select<TSource, TResult>(this, predicate);
     }
 
     zip<TRight, TResult>(right: Iterable<TRight>, selector: (left: TSource, right: TRight) => TResult): Linqable<TResult> {
-        return new ZipLinq<TSource, TRight, TResult>(this, right, selector);
+        return new Zip<TSource, TRight, TResult>(this, right, selector);
     }
 
     first(): TSource {
@@ -35,7 +35,7 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
     }
 }
 
-class LinqableList<TSource> extends Linqable<TSource> {
+class List<TSource> extends Linqable<TSource> {
     private _elements: Iterable<any>;
 
     constructor(elements: Iterable<any>) {
@@ -59,7 +59,7 @@ class LinqableList<TSource> extends Linqable<TSource> {
 }
 
 
-class ZipLinq<TLeft, TRight, TResult> extends Linqable<TResult> {
+class Zip<TLeft, TRight, TResult> extends Linqable<TResult> {
     private _selector: (left: TLeft, right: TRight) => TResult;
     private _left: Iterable<TLeft>;
     private _right: Iterable<TRight>;
@@ -97,7 +97,7 @@ class ZipLinq<TLeft, TRight, TResult> extends Linqable<TResult> {
     }
 }
 
-class WhereLinq<TSource> extends Linqable<TSource> {
+class Where<TSource> extends Linqable<TSource> {
     private _elements: Iterable<TSource>;
     private _predicate: (element: TSource) => boolean;
 
@@ -128,7 +128,7 @@ class WhereLinq<TSource> extends Linqable<TSource> {
     }
 }
 
-class SelectLinq<TSource, TDestination> extends Linqable<TDestination> {
+class Select<TSource, TDestination> extends Linqable<TDestination> {
     private _elements: Iterable<TSource>;
     private _selector: (element: TSource) => any;
 
@@ -157,5 +157,5 @@ class SelectLinq<TSource, TDestination> extends Linqable<TDestination> {
 }
 
 export function linq<T>(iterable: Iterable<T>) {
-    return new LinqableList<T>(iterable);
+    return new List<T>(iterable);
 }
