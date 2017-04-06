@@ -33,6 +33,10 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
         return new Distinct<TSource>(this, selector);
     }
 
+    groupBy<TKey>(selector: (element: TSource) => TKey) {
+        return new Group<TKey, TSource>(this, selector);
+    }
+
     first(): TSource {
         let iter = this[Symbol.iterator]();
         return iter.next().value;
@@ -92,7 +96,7 @@ class Distinct<TSource> extends Linqable<TSource> {
             next: (): IteratorResult<TSource> => {
                 let mapIteratorResult = mapIterator.next();
                 let result: IteratorResult<TSource> = {
-                    value: mapIteratorResult.value ? mapIteratorResult.value[1] : undefined,
+                    value: mapIteratorResult.done ? undefined : mapIteratorResult.value[1],
                     done: mapIteratorResult.done
                 };
                 return result;
@@ -215,6 +219,44 @@ class Select<TSource, TDestination> extends Linqable<TDestination> {
 
                 let result: IteratorResult<TDestination> = {
                     value: value,
+                    done: iteration.done
+                };
+
+                return result;
+            }
+        };
+    }
+}
+
+class Group<TKey, TValue> extends Linqable<[TKey, TValue[]]> {
+    private _elements: Iterable<TValue>;
+    private _selector: (element: TValue) => any;
+
+    constructor(elements: Iterable<TValue>, selector: (element: TValue) => TKey) {
+        super();
+        this._elements = elements;
+        this._selector = selector;
+    }
+
+    [Symbol.iterator](): Iterator<[TKey, TValue[]]> {
+        let groups = new Map<TKey, TValue[]>();
+        
+        for (let element of this._elements) {
+            let key = this._selector(element);
+            console.log(element);
+            let group = groups.get(key) || [];
+            group.push(element);
+            groups.set(key, group);
+        }
+
+        let groupsIterator = groups[Symbol.iterator]();
+
+        return {
+            next: (): IteratorResult<[TKey, TValue[]]> => {
+                let iteration = groupsIterator.next();;
+
+                let result: IteratorResult<[TKey, TValue[]]> = {
+                    value: iteration.value,
                     done: iteration.done
                 };
 

@@ -14,23 +14,37 @@ let people: IPerson[] = [
     { name: "Pesho", age: 27 }
 ];
 
-let gen = function* () { 
-    let i = 0;
-    while (true) {
-        yield i++;
+// let gen = function* () { 
+//     let i = 0;
+//     while (true) {
+//         yield i++;
+//     }
+// }
+
+
+
+
+let evenNums = linq(range(1, 1, 100))
+    .groupBy(i => i % 2)
+    .select(([key, values]) => {
+        // console.log(key);
+        return `${key}:${values}`;
+    });
+let cnt = 0;
+for (let e of evenNums) {
+    console.log(e);
+    cnt++;
+    if (cnt >= 10) {
+        break;
     }
 }
-
-let evenNums = linq(range(0, 100))
-    .where(i => i % 2 === 0 && i >= 0)
-    .select(i => i * 100)
     // .zip(gen(), (left, right) => [left, right])
     // .where(([_, right]) => right >= 1000)
     // .select(([left]) => left);
 
-let i = 0;
+// let i = 0;
 
-for (let key of evenNums) {
-    console.log(key);
-    i++;
-}
+// for (let key of evenNums) {
+//     console.log(key);
+//     i++;
+// }
