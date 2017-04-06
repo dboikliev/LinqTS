@@ -34,7 +34,7 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
         return iter.next().value;
     }
 
-    firstOrDefault<TDefault>(predicate?: (element: TSource) => boolean, defaultInitializer?: () => TDefault): TSource | TDefault {
+    firstOrDefault<TDefault>(predicate?: (element: TSource) => boolean, defaultInitializer: () => TDefault = () => undefined): TSource | TDefault {
         if (predicate) {
             for (let value of this) {
                 if (predicate(value)) {
