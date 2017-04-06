@@ -29,6 +29,10 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
         return new Zip<TSource, TRight, TResult>(this, right, selector);
     }
 
+    distinct(selector: (element: TSource) => any = (element: TSource) => element): Linqable<TSource> {
+        return new Distinct<TSource>(this, selector);
+    }
+
     first(): TSource {
         let iter = this[Symbol.iterator]();
         return iter.next().value;
@@ -53,6 +57,45 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
             }
             else {
                 return descriptor.value;
+            }
+        }
+    }
+}
+
+class Distinct<TSource> extends Linqable<TSource> {
+    private _elements: Iterable<TSource>;
+    private _selector: (element: TSource) => any;
+
+    constructor(elements: Iterable<TSource>, selector?: (element: TSource) => any) {
+        super();
+        this._elements = elements
+        this._selector = selector;
+    }
+
+    [Symbol.iterator](): Iterator<TSource> {
+        let map = new Map();
+        let iterator = this._elements[Symbol.iterator]();
+        let iteratorResult = iterator.next();
+        while (!iteratorResult.done) {
+            let key = this._selector(iteratorResult.value);
+
+            if (map.has(key)) {
+                iteratorResult = iterator.next();
+            }
+            else {
+                map.set(key, iteratorResult.value);
+            }
+        }
+
+        let mapIterator = map[Symbol.iterator]();
+        return {
+            next: (): IteratorResult<TSource> => {
+                let mapIteratorResult = mapIterator.next();
+                let result: IteratorResult<TSource> = {
+                    value: mapIteratorResult.value ? mapIteratorResult.value[1] : undefined,
+                    done: mapIteratorResult.done
+                };
+                return result;
             }
         }
     }
@@ -136,7 +179,7 @@ class Where<TSource> extends Linqable<TSource> {
         return {
             next: (): IteratorResult<TSource> => {
                 let iteration = iter.next();
-                while (iteration.value && !this._predicate(iteration.value)) {
+                while (!iteration.done && iteration.value != undefined && !this._predicate(iteration.value)) {
                     iteration = iter.next();
                 }
 

@@ -5,15 +5,31 @@ interface IPerson {
     age: number;
 }
 
-let people: IPerson[] = [{ name: "Ivan", age: 24 }, { name: "Deyan", age: 25 }];
+let people: IPerson[] = [
+    { name: "Ivan", age: 24 }, 
+    { name: "Deyan", age: 25 },
+    { name: "Pesho", age: 26 },  
+    { name: "Pesho", age: 36 }, 
+    { name: "Deyan", age: 25 }, 
+    { name: "Pesho", age: 27 }
+];
 
-let person = linq(people)
-    .firstOrDefault(p => p.name === "John");
-
-let type = typeof person;
-if (type === "string") {
-    console.log(person);
+let gen = function* () { 
+    let i = 0;
+    while (true) {
+        yield i++;
+    }
 }
-else if (person) {
-    console.log((person as IPerson).name);
+
+let evenNums = linq(gen())
+    .where(i => i % 2 === 0 && i > 10);
+
+let i = 0;
+
+for (let key of evenNums) {
+    console.log(key);
+    i++;
+    if (i >= 10) {
+        break;
+    }
 }
