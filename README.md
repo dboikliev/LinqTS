@@ -6,9 +6,10 @@ An api for querying iterables, implemented in TypeScript and inspired by .NET's 
 1. where
 2. select
 3. distinct
-3. any
-4. first
-5. firstOrDefault
+4. zip
+5. any
+6. first
+7. firstOrDefault
 
 ## Example
 
