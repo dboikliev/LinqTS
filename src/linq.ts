@@ -54,7 +54,7 @@ class List<TSource> extends Linqable<TSource> {
                 };
                 return result;
             }
-        }
+        };
     }
 }
 
@@ -83,7 +83,7 @@ class Zip<TLeft, TRight, TResult> extends Linqable<TResult> {
                 let isDone = iterationLeft.done || iterationRight.done;
                 let zip;
                 if (!isDone) {
-                    zip = this._selector(iterationLeft.value, iterationRight.value)
+                    zip = this._selector(iterationLeft.value, iterationRight.value);
                 }
 
                 let result: IteratorResult<TResult> = {
@@ -124,7 +124,7 @@ class Where<TSource> extends Linqable<TSource> {
 
                 return result;
             }
-        }
+        };
     }
 }
 
@@ -152,7 +152,7 @@ class Select<TSource, TDestination> extends Linqable<TDestination> {
 
                 return result;
             }
-        }
+        };
     }
 }
 
