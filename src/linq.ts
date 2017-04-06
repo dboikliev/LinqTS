@@ -37,6 +37,16 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
         return new Group<TKey, TSource>(this, selector);
     }
 
+    aggregate<TResult>(seed: TResult, accumulator: (accumulated: TResult, element: TSource) => TResult) {
+         let accumulated = seed;
+
+         for (let element of this) {
+            accumulated = accumulator(accumulated, element);
+         }
+
+         return accumulated;
+    }
+
     first(): TSource {
         let iter = this[Symbol.iterator]();
         return iter.next().value;
@@ -243,7 +253,6 @@ class Group<TKey, TValue> extends Linqable<[TKey, TValue[]]> {
         
         for (let element of this._elements) {
             let key = this._selector(element);
-            console.log(element);
             let group = groups.get(key) || [];
             group.push(element);
             groups.set(key, group);

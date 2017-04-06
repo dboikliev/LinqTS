@@ -24,12 +24,13 @@ let people: IPerson[] = [
 
 
 
-let evenNums = linq(range(1, 1, 100))
-    .groupBy(i => i % 2)
+let evenNums = linq(people)
+    .groupBy(p => p.name)
     .select(([key, values]) => {
-        // console.log(key);
-        return `${key}:${values}`;
+        let str = linq(values).aggregate('', (accumulated, value) => accumulated + JSON.stringify(value));
+        return `${key}:${str}`;
     });
+
 let cnt = 0;
 for (let e of evenNums) {
     console.log(e);
@@ -38,13 +39,3 @@ for (let e of evenNums) {
         break;
     }
 }
-    // .zip(gen(), (left, right) => [left, right])
-    // .where(([_, right]) => right >= 1000)
-    // .select(([left]) => left);
-
-// let i = 0;
-
-// for (let key of evenNums) {
-//     console.log(key);
-//     i++;
-// }
