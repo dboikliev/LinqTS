@@ -74,7 +74,7 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
             let iter = this[Symbol.iterator]();
             let descriptor = iter.next();
             
-            if (descriptor.done && !descriptor.value) {
+            if (descriptor.done && descriptor.value === undefined) {
                 return defaultInitializer();
             }
             else {
@@ -96,10 +96,9 @@ class Skip<TSource> extends Linqable<TSource> {
 
     [Symbol.iterator](): Iterator<TSource> {
         let iterator = this._elements[Symbol.iterator]();
-        let iteratorResult = iterator.next();
         
         for (let i = 0; i < this._count; i++) {
-            iteratorResult = iterator.next();
+            iterator.next();
         }
 
         return {
@@ -127,17 +126,17 @@ class Take<TSource> extends Linqable<TSource> {
 
     [Symbol.iterator](): Iterator<TSource> {
         let iterator = this._elements[Symbol.iterator]();
-        let currentIndex = 0;
+        let currentIndex = -1;
         
         return {
             next: (): IteratorResult<TSource> => {
                 let iteratorResult = iterator.next();
+                currentIndex++;
                 let hasReachedEnd = currentIndex >= this._count;
                 let result: IteratorResult<TSource> = {
                     value: hasReachedEnd ? undefined : iteratorResult.value,
                     done: hasReachedEnd
                 };
-                currentIndex++;
                 return result;
             }
         }

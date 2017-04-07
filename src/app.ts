@@ -21,17 +21,16 @@ let gen = function* () {
     }
 }
 
+
 let evenNums = linq(range(0, 1))
     .skip(10)
     .take(10)
-    .groupBy(i => i % 2);
-    // .zip(gen(), (left, right) => [left, right])
-    // .where(([_, right]) => right >= 1000)
-    // .select(([left]) => left);
+    .skip(5)
+    .zip(gen(), (left, right) => [left, right])
+    .select(([left]) => left);
 
 let i = 0;
 
-for (let [key, values] of evenNums) {
-    console.log(key + ':' + values);
-    i++;
+for (let element of evenNums) {
+    console.log(element);
 }
