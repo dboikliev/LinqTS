@@ -33,8 +33,8 @@ let namesOfPeopleOlderThan22 = linq(people)
     .where(p => p.age > 22)
     .select(p => p.name)
 
-for (let length of namesOfPeopleOlderThan22) {
-    console.log(length);
+for (let name of namesOfPeopleOlderThan22) {
+    console.log(name);
 }
 ```
 
