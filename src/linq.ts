@@ -17,6 +17,14 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
         return false;
     }
 
+    skip(count: number): Linqable<TSource> {
+        return new Skip<TSource>(this, count);
+    }
+
+    take(count: number): Linqable<TSource> {
+        return new Take<TSource>(this, count);
+    }
+
     where(predicate: (element: TSource) => boolean): Linqable<TSource> {
         return new Where<TSource>(this, predicate);
     }
@@ -71,6 +79,66 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
             }
             else {
                 return descriptor.value;
+            }
+        }
+    }
+}
+
+class Skip<TSource> extends Linqable<TSource> {
+    private _elements: Iterable<TSource>;
+    private _count: number;
+
+    constructor(elements: Iterable<TSource>, count: number) {
+        super();
+        this._elements = elements
+        this._count = count;
+    }
+
+    [Symbol.iterator](): Iterator<TSource> {
+        let iterator = this._elements[Symbol.iterator]();
+        let iteratorResult = iterator.next();
+        
+        for (let i = 0; i < this._count; i++) {
+            iteratorResult = iterator.next();
+        }
+
+        return {
+            next: (): IteratorResult<TSource> => {
+                let iteratorResult = iterator.next();
+                let result: IteratorResult<TSource> = {
+                    value: iteratorResult.value,
+                    done: iteratorResult.done
+                };
+                return result;
+            }
+        }
+    }
+}
+
+class Take<TSource> extends Linqable<TSource> {
+    private _elements: Iterable<TSource>;
+    private _count: number;
+
+    constructor(elements: Iterable<TSource>, count: number) {
+        super();
+        this._elements = elements
+        this._count = count;
+    }
+
+    [Symbol.iterator](): Iterator<TSource> {
+        let iterator = this._elements[Symbol.iterator]();
+        let currentIndex = 0;
+        
+        return {
+            next: (): IteratorResult<TSource> => {
+                let iteratorResult = iterator.next();
+                let hasReachedEnd = currentIndex >= this._count;
+                let result: IteratorResult<TSource> = {
+                    value: hasReachedEnd ? undefined : iteratorResult.value,
+                    done: hasReachedEnd
+                };
+                currentIndex++;
+                return result;
             }
         }
     }
