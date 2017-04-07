@@ -41,7 +41,7 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
         return new Distinct<TSource>(this, selector);
     }
 
-    groupBy<TKey>(selector: (element: TSource) => TKey) {
+    groupBy<TKey>(selector: (element: TSource) => TKey): Linqable<[TKey, TSource[]]> {
         return new Group<TKey, TSource>(this, selector);
     }
 

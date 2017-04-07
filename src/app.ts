@@ -21,13 +21,10 @@ let gen = function* () {
     }
 }
 
-
 let evenNums = linq(range(0, 1))
-    .skip(10)
-    .take(10)
-    .skip(5)
-    .zip(gen(), (left, right) => [left, right])
-    .select(([left]) => left);
+    .skip(1000)
+    .take(2000)
+    .groupBy(i => i % 2);
 
 let i = 0;
 
