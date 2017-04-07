@@ -131,13 +131,12 @@ class Take<TSource> extends Linqable<TSource> {
         return {
             next: (): IteratorResult<TSource> => {
                 let iteratorResult = iterator.next();
-                currentIndex++;
-                let hasReachedEnd = currentIndex >= this._count;
-                let result: IteratorResult<TSource> = {
+                let hasReachedEnd = ++currentIndex >= this._count;
+                
+                return {
                     value: hasReachedEnd ? undefined : iteratorResult.value,
                     done: hasReachedEnd
                 };
-                return result;
             }
         }
     }
