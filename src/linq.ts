@@ -86,6 +86,38 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
             }
         }
     }
+
+    max(): TSource {
+        let iterator = this[Symbol.iterator]();
+        let iteratorResult = iterator.next();
+        let currentMax = iteratorResult.value;
+
+        while (!iteratorResult.done) {
+            let value = iteratorResult.value;
+            if (currentMax < value) {
+                currentMax = value;
+            }
+            iteratorResult = iterator.next();
+        }
+
+        return currentMax;
+    }
+
+    min(): TSource {
+        let iterator = this[Symbol.iterator]();
+        let iteratorResult = iterator.next();
+        let currentMax = iteratorResult.value;
+
+        while (!iteratorResult.done) {
+            let value = iteratorResult.value;
+            if (currentMax > value) {
+                currentMax = iteratorResult.value;
+            }
+            iteratorResult = iterator.next();
+        }
+
+        return currentMax;
+    }
 }
 
 class Skip<TSource> extends Linqable<TSource> {

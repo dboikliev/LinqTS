@@ -21,11 +21,8 @@ let gen = function* () {
     }
 }
 
-let evenNums = linq(range(0, 1))
-    .take(100)
-    .orderBy((a, b) => a - b);
-let i = 0;
+let num = linq(range(500, -1))
+    .take(20000)
+    .min();
 
-for (let element of evenNums) {
-    console.log(element);
-}
+console.log(num);
