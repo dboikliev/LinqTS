@@ -131,6 +131,14 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
         let avg = sum / count;
         return avg;
     }
+
+    forEach(action: (element: TSource, index: number) => void): void {
+        let index = 0;
+        for (let element of this) {
+            action(element, index);
+            index++;
+        }
+    }
 }
 
 class Skip<TSource> extends Linqable<TSource> {
@@ -308,7 +316,7 @@ class Where<TSource> extends Linqable<TSource> {
         return {
             next: (): IteratorResult<TSource> => {
                 let iteration = iter.next();
-                while (!iteration.done && iteration.value != undefined && !this._predicate(iteration.value)) {
+                while (!iteration.done && !this._predicate(iteration.value)) {
                     iteration = iter.next();
                 }
 

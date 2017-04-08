@@ -21,6 +21,6 @@ let gen = function* () {
     }
 }
 
-let num = linq(["Ivan", "Dragan", "Petkan", "Gosho"]).average(n => n.length);
-
-console.log(num);
+let num = linq(["Ivan", "Dragan", "Petkan", "Gosho"])
+    .where(n => n.length > 4)
+    .forEach((el, i) => console.log(i, el));
