@@ -8,6 +8,7 @@ An api for querying iterables, implemented in TypeScript and inspired by .NET's 
 1. distinct
 1. zip
 1. groupBy
+1. orderBy
 1. skip
 1. take
 1. aggregate
