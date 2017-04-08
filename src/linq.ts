@@ -118,6 +118,19 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
 
         return currentMax;
     }
+
+    average(transform: (element: TSource) => number): number {
+        let sum = 0;
+        let count = 0;
+
+        for (let element of this) {
+            sum += transform(element);
+            count++;
+        }
+
+        let avg = sum / count;
+        return avg;
+    }
 }
 
 class Skip<TSource> extends Linqable<TSource> {

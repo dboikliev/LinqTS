@@ -21,8 +21,6 @@ let gen = function* () {
     }
 }
 
-let num = linq(range(500, -1))
-    .take(20000)
-    .min();
+let num = linq(["Ivan", "Dragan", "Petkan", "Gosho"]).average(n => n.length);
 
 console.log(num);
