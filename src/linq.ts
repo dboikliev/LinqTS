@@ -45,6 +45,10 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
         return new Group<TKey, TSource>(this, selector);
     }
 
+    orderBy(comparer: (first: TSource, second: TSource) => number): Ordered<TSource> {
+        return new Ordered<TSource>(this, comparer);
+    }
+
     aggregate<TResult>(seed: TResult, accumulator: (accumulated: TResult, element: TSource) => TResult) {
          let accumulated = seed;
 
@@ -331,6 +335,42 @@ class Group<TKey, TValue> extends Linqable<[TKey, TValue[]]> {
                 let iteration = groupsIterator.next();;
 
                 let result: IteratorResult<[TKey, TValue[]]> = {
+                    value: iteration.value,
+                    done: iteration.done
+                };
+
+                return result;
+            }
+        };
+    }
+}
+
+class Ordered<TSource> extends Linqable<TSource> {
+    private _elements: Iterable<TSource>;
+    private _comparer: (first: TSource, second: TSource) => number;
+
+    constructor(elements: Iterable<TSource>, comparer: (first: TSource, second: TSource) => number) {
+        super();
+        this._elements = elements;
+        this._comparer = comparer;
+    }
+
+    [Symbol.iterator](): Iterator<TSource> {
+        let elements = [];
+
+        for (let element of this._elements) {
+            elements.push(element);
+        }
+
+        elements.sort(this._comparer);
+
+        let iterator = elements[Symbol.iterator]();
+
+        return {
+            next: (): IteratorResult<TSource> => {
+                let iteration = iterator.next();;
+
+                let result: IteratorResult<TSource> = {
                     value: iteration.value,
                     done: iteration.done
                 };

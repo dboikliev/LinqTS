@@ -22,10 +22,8 @@ let gen = function* () {
 }
 
 let evenNums = linq(range(0, 1))
-    .skip(1000)
-    .take(2000)
-    .groupBy(i => i % 2);
-
+    .take(100)
+    .orderBy((a, b) => a - b);
 let i = 0;
 
 for (let element of evenNums) {
