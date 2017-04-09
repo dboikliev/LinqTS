@@ -21,6 +21,6 @@ let gen = function* () {
     }
 }
 
-let num = linq(["Ivan", "Dragan", "Petkan", "Gosho"])
-    .where(n => n.length > 4)
+let num = linq(["Ivanko", "Didkos", "Dragan", "Petkan", "Gogogo"])
+    .takeWhile(el => el.length === 6)
     .forEach((el, i) => console.log(i, el));

@@ -21,8 +21,16 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
         return new Skip<TSource>(this, count);
     }
 
+    skipWhile(predicate: (element: TSource) => boolean): Linqable<TSource> {
+        return new SkipWhile<TSource>(this, predicate);
+    }
+
     take(count: number): Linqable<TSource> {
         return new Take<TSource>(this, count);
+    }
+
+    takeWhile(predicate: (element: TSource) => boolean): Linqable<TSource> {
+        return new TakeWhile<TSource>(this, predicate);
     }
 
     where(predicate: (element: TSource) => boolean): Linqable<TSource> {
@@ -171,6 +179,43 @@ class Skip<TSource> extends Linqable<TSource> {
     }
 }
 
+class SkipWhile<TSource> extends Linqable<TSource> {
+    private _elements: Iterable<TSource>;
+    private _predicate: (element: TSource) => boolean;
+
+    constructor(elements: Iterable<TSource>, predicate: (element: TSource) => boolean) {
+        super();
+        this._elements = elements
+        this._predicate = predicate;
+    }
+
+    [Symbol.iterator](): Iterator<TSource> {
+        let iterator = this._elements[Symbol.iterator]();
+
+        let lastResult;
+        do {
+            lastResult = iterator.next();
+        } while(this._predicate(lastResult.value));
+
+        return {
+            next: (): IteratorResult<TSource> => {
+                if (lastResult) {
+                    let copy = lastResult;
+                    lastResult = undefined;
+                    return copy;
+                }
+
+                let iteratorResult = iterator.next();
+                let result: IteratorResult<TSource> = {
+                    value: iteratorResult.value,
+                    done: iteratorResult.done
+                };
+                return result;
+            }
+        }
+    }
+}
+
 class Take<TSource> extends Linqable<TSource> {
     private _elements: Iterable<TSource>;
     private _count: number;
@@ -194,6 +239,35 @@ class Take<TSource> extends Linqable<TSource> {
                     value: hasReachedEnd ? undefined : iteratorResult.value,
                     done: hasReachedEnd
                 };
+            }
+        }
+    }
+}
+
+class TakeWhile<TSource> extends Linqable<TSource> {
+    private _elements: Iterable<TSource>;
+    private _predicate: (element: TSource) => boolean;
+
+    constructor(elements: Iterable<TSource>, predicate: (element: TSource) => boolean) {
+        super();
+        this._elements = elements
+        this._predicate = predicate;
+    }
+
+    [Symbol.iterator](): Iterator<TSource> {
+        let iterator = this._elements[Symbol.iterator]();
+        return {
+            next: (): IteratorResult<TSource> => {
+                let iteratorResult = iterator.next();
+
+                let value = !iteratorResult.done && this._predicate(iteratorResult.value) ? iteratorResult.value : undefined; 
+                let isDone = iteratorResult.done || value == undefined;
+
+                let result: IteratorResult<TSource> = {
+                    value: value,
+                    done: isDone
+                };
+                return result;
             }
         }
     }
