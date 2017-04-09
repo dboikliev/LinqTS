@@ -10,7 +10,9 @@ An api for querying iterables, implemented in TypeScript and inspired by .NET's 
 1. groupBy
 1. orderBy
 1. skip
+1. skipWhile
 1. take
+1. takeWhile
 1. aggregate
 1. any
 1. min
