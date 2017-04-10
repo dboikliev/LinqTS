@@ -18,9 +18,11 @@ An api for querying iterables, implemented in TypeScript and inspired by .NET's 
 1. min
 1. max
 1. average
+1. elementAt
 1. first
 1. firstOrDefault
 1. forEach
+1. toArray
 
 ## Example
 
