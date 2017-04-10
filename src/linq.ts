@@ -148,6 +148,10 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
         }
     }
 
+    elementAt(index: number): TSource {
+        return this.skip(index).take(1).first();
+    }
+
     toArray(): TSource[] {
         let array = [];
 

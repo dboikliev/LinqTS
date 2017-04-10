@@ -1,4 +1,4 @@
-import { linq, sequence } from "./linq";
+import { linq, range } from "./linq";
 
 interface IPerson {
     name: string;
@@ -14,14 +14,8 @@ let people: IPerson[] = [
     { name: "Pesho", age: 27 }
 ];
 
-let gen = function* () { 
-    let i = 0;
-    while (true) {
-        yield i++;
-    }
-}
 let x = linq(["Ivanko", "Didkos", "Dragan", "Petkan", "Gogogo"])
     .takeWhile(el => el.length === 6)
-    .toArray();
+    .elementAt(50);
 
 console.log(x);
