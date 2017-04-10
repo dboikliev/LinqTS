@@ -521,11 +521,12 @@ export function linq<T>(iterable: Iterable<T>) {
     return new List<T>(iterable);
 }
 
-export function* range(start: number = 0, step: number = 1, end: number = Infinity): IterableIterator<number> {
-    let i = start;
+export function range(start: number = 0, step: number = 1, end: number = Infinity): Linqable<number> {
+    return linq((function* () {let i = start;
 
-    while (end == Infinity || i <= end) {
-        yield i;
-        i += step;
-    }
+        while (end == Infinity || i <= end) {
+            yield i;
+            i += step;
+        }
+    })());
 }

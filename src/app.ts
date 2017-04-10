@@ -1,4 +1,4 @@
-import { linq, seq } from "./linq";
+import { linq, range } from "./linq";
 
 interface IPerson {
     name: string;
@@ -14,8 +14,7 @@ let people: IPerson[] = [
     { name: "Pesho", age: 27 }
 ];
 
-let arr = ["Ivanko", "Didkos", "Dragan", "Petkan", "AA"];
-let x = linq(arr)
-    .firstOrDefault(n => n == "A", () => "too bad!");
-
-console.log(x);
+range(1, 1)
+    .take(100)
+    .zip(range(1, 1), (left, right) => left + " " + right)
+    .forEach((el, _) => console.log(el));
