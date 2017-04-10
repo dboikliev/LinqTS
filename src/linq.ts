@@ -147,6 +147,16 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
             index++;
         }
     }
+
+    toArray(): TSource[] {
+        let array = [];
+
+        for (let element of this) {
+            array.push(element);
+        }
+
+        return array;
+    }
 }
 
 class Skip<TSource> extends Linqable<TSource> {
