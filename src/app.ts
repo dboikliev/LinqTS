@@ -1,4 +1,4 @@
-import { linq, range } from "./linq";
+import { linq, seq } from "./linq";
 
 interface IPerson {
     name: string;
@@ -14,8 +14,8 @@ let people: IPerson[] = [
     { name: "Pesho", age: 27 }
 ];
 
-let x = linq(["Ivanko", "Didkos", "Dragan", "Petkan", "Gogogo"])
-    .takeWhile(el => el.length === 6)
-    .elementAt(50);
+let arr = ["Ivanko", "Didkos", "Dragan", "Petkan", "AA"];
+let x = linq(arr)
+    .firstOrDefault(n => n == "A", () => "too bad!");
 
 console.log(x);

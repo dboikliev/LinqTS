@@ -86,12 +86,7 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
             let iter = this[Symbol.iterator]();
             let descriptor = iter.next();
             
-            if (descriptor.done && descriptor.value === undefined) {
-                return defaultInitializer();
-            }
-            else {
-                return descriptor.value;
-            }
+            return descriptor.done ? defaultInitializer() : descriptor.value;
         }
     }
 
@@ -274,8 +269,8 @@ class TakeWhile<TSource> extends Linqable<TSource> {
             next: (): IteratorResult<TSource> => {
                 let iteratorResult = iterator.next();
 
-                let value = !iteratorResult.done && this._predicate(iteratorResult.value) ? iteratorResult.value : undefined; 
-                let isDone = iteratorResult.done || value == undefined;
+                let isDone = iteratorResult.done || !this._predicate(iteratorResult.value);
+                let value = isDone ? undefined : iteratorResult.value; 
 
                 let result: IteratorResult<TSource> = {
                     value: value,
