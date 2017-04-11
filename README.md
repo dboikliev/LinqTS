@@ -15,8 +15,8 @@ An api for querying iterables, implemented in TypeScript and inspired by .NET's 
 1. takeWhile
 1. aggregate
 1. any
-1. min
-1. max
+1. minBy
+1. maxBy
 1. average
 1. elementAt
 1. first
