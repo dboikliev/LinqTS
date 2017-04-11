@@ -128,7 +128,7 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
         return bestMin;
     }
 
-    average(transform: (element: TSource) => number): number {
+    averageBy(transform: (element: TSource) => number): number {
         let sum = 0;
         let count = 0;
 
