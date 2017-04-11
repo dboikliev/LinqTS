@@ -90,36 +90,42 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
         }
     }
 
-    max(): TSource {
+    maxBy(transform: (element: TSource) => number | string): TSource {
         let iterator = this[Symbol.iterator]();
         let iteratorResult = iterator.next();
-        let currentMax = iteratorResult.value;
+        let bestMax = iteratorResult.value;
+        let bestMaxPrimivie = transform(bestMax);
 
         while (!iteratorResult.done) {
             let value = iteratorResult.value;
-            if (currentMax < value) {
-                currentMax = value;
+            let currentPrimivie = transform(value);
+            if (bestMaxPrimivie < currentPrimivie) {
+                bestMax = value;
+                bestMaxPrimivie = currentPrimivie;
             }
             iteratorResult = iterator.next();
         }
 
-        return currentMax;
+        return bestMax;
     }
 
-    min(): TSource {
+    minBy(transform: (element: TSource) => number | string): TSource {
         let iterator = this[Symbol.iterator]();
         let iteratorResult = iterator.next();
-        let currentMax = iteratorResult.value;
+        let bestMin = iteratorResult.value;
+        let bestMinPrimivie = transform(bestMin);
 
         while (!iteratorResult.done) {
             let value = iteratorResult.value;
-            if (currentMax > value) {
-                currentMax = iteratorResult.value;
+            let currentPrimivie = transform(value);
+            if (bestMinPrimivie > currentPrimivie) {
+                bestMin = value;
+                bestMinPrimivie = currentPrimivie;
             }
             iteratorResult = iterator.next();
         }
 
-        return currentMax;
+        return bestMin;
     }
 
     average(transform: (element: TSource) => number): number {
