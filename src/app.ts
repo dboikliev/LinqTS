@@ -6,7 +6,7 @@ interface IPerson {
 }
 
 range(1, 1, 9)
-    .skip(8)
+    .take(1)
     .forEach(console.log)
     
 

@@ -262,20 +262,14 @@ class Take<TSource> extends Linqable<TSource> {
         this._count = count;
     }
 
-    [Symbol.iterator](): Iterator<TSource> {
-        let iterator = this._elements[Symbol.iterator]();
-        let currentIndex = -1;
-        
-        return {
-            next: (): IteratorResult<TSource> => {
-                let iteratorResult = iterator.next();
-                let hasReachedEnd = ++currentIndex >= this._count;
-                
-                return {
-                    value: hasReachedEnd ? undefined : iteratorResult.value,
-                    done: hasReachedEnd
-                };
+    *[Symbol.iterator](): Iterator<TSource> {
+        let current = 0;
+        for (let element of this._elements) {
+            if (current >= this._count) {
+                break;
             }
+            yield element;
+            current++;
         }
     }
 }
