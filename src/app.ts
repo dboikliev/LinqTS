@@ -5,19 +5,25 @@ interface IPerson {
     age: number;
 }
 
-let people = range(1, 1, 10)
-    .select(i => ({ name: i, friends: range(1, 1, 10).select(n => ({ name: "Inner" + n })) }));
+range(1, 1, 9)
+    .skip(8)
+    .forEach(console.log)
+    
 
-people.selectMany(p => p.friends)
-    .orderBy((left, right) => {
-        if (left.name > right.name) {
-            return 1;
-        }
+// let people = range(1, 1, 10)
+//     .select(i => ({ name: i, friends: range(1, 1, 10).select(n => ({ name: "Inner" + n })) }));
+
+// people.selectMany(p => p.friends)
+//     .orderBy((left, right) => {
+//         if (left.name > right.name) {
+//             return 1;
+//         }
         
-        if (left.name == right.name) {
-            return 0;
-        }
+//         if (left.name == right.name) {
+//             return 0;
+//         }
 
-        return -1;
-    })
-    .forEach(console.log);
+//         return -1;
+//     })
+//     .groupBy(p => p.name)
+//     .forEach(console.log);

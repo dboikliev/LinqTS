@@ -201,22 +201,16 @@ class Skip<TSource> extends Linqable<TSource> {
         this._count = count;
     }
 
-    [Symbol.iterator](): Iterator<TSource> {
+    *[Symbol.iterator](): Iterator<TSource> {
         let iterator = this._elements[Symbol.iterator]();
-        
-        for (let i = 0; i < this._count; i++) {
-            iterator.next();
+        let iteratorResult: IteratorResult<TSource> = iterator.next();
+        for (let i = 0; i < this._count && !iteratorResult.done; i++) {
+            iteratorResult = iterator.next();
         }
 
-        return {
-            next: (): IteratorResult<TSource> => {
-                let iteratorResult = iterator.next();
-                let result: IteratorResult<TSource> = {
-                    value: iteratorResult.value,
-                    done: iteratorResult.done
-                };
-                return result;
-            }
+        while (!iteratorResult.done) {
+            yield iteratorResult.value;
+            iteratorResult = iterator.next();
         }
     }
 }
@@ -495,7 +489,7 @@ class Group<TKey, TValue> extends Linqable<[TKey, TValue[]]> {
         this._selector = selector;
     }
 
-    [Symbol.iterator](): Iterator<[TKey, TValue[]]> {
+    *[Symbol.iterator](): Iterator<[TKey, TValue[]]> {
         let groups = new Map<TKey, TValue[]>();
         
         for (let element of this._elements) {
@@ -505,20 +499,9 @@ class Group<TKey, TValue> extends Linqable<[TKey, TValue[]]> {
             groups.set(key, group);
         }
 
-        let groupsIterator = groups[Symbol.iterator]();
-
-        return {
-            next: (): IteratorResult<[TKey, TValue[]]> => {
-                let iteration = groupsIterator.next();;
-
-                let result: IteratorResult<[TKey, TValue[]]> = {
-                    value: iteration.value,
-                    done: iteration.done
-                };
-
-                return result;
-            }
-        };
+        for (let group of groups) {
+            yield group;
+        }
     }
 }
 
