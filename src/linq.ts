@@ -17,6 +17,18 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
         return false;
     }
 
+    join<TRight, TResult>(right: Iterable<TRight>, 
+        leftSelector: (element: TSource) => any, 
+        rightSelector: (element: TRight) => any,
+        resultSelector: (left: TSource, right: TRight) => TResult): Linqable<TResult> {
+            return new Join<TSource, TRight, TResult>(this,
+                right,
+                leftSelector,
+                rightSelector,
+                resultSelector
+            );
+    }
+
     skip(count: number): Linqable<TSource> {
         return new Skip<TSource>(this, count);
     }
@@ -154,11 +166,12 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
     }
 
     toArray(): TSource[] {
-        let array = [];
+        let array: TSource[] = [];
 
-        for (let element of this) {
-            array.push(element);
-        }
+        this.aggregate(array, (acc, el) => {
+            acc.push(el);
+            return acc;
+        });
 
         return array;
     }
@@ -487,6 +500,68 @@ class Group<TKey, TValue> extends Linqable<[TKey, TValue[]]> {
     }
 }
 
+class Join<TLeft, TRight, TResult> extends Linqable<TResult> {
+    private _leftElements: Iterable<TLeft>;
+    private _rightElements: Iterable<TRight>;
+    private _leftSelector: (element: TLeft) => any;
+    private _rightSelector: (element: TRight) => any;
+    private _resultSelector: (left: TLeft, right: TRight) => TResult;
+
+    constructor(leftElements: Iterable<TLeft>, 
+        rightElements: Iterable<TRight>,
+        leftSelector: (element: TLeft) => any, 
+        rightSelector: (element: TRight) => any, 
+        resultSelector: (left: TLeft, right: TRight) => TResult) {
+        super();
+        this._leftElements = leftElements;
+        this._rightElements = rightElements;
+        this._leftSelector = leftSelector;
+        this._rightSelector = rightSelector;
+        this._resultSelector = resultSelector;
+    }
+
+    *[Symbol.iterator](): Iterator<TResult> {
+        let groups = new Map<any, TRight[]>();
+        
+        for (let element of this._rightElements) {
+            let key = this._rightSelector(element);
+            let group = groups.get(key) || [];
+            group.push(element);
+            groups.set(key, group);
+        }
+
+        for (let left of this._leftElements) {
+            let leftKey = this._leftSelector(left);
+            let group = groups.get(leftKey) || [];
+            
+            for (let match of group) {
+                yield this._resultSelector(left, match);
+            }
+        }
+
+        // let leftIterator = this._leftElements[Symbol.iterator]();
+
+        // let iteration = leftIterator.next();
+
+        // let key = this._leftSelector(iteration.value);
+
+        // while ()
+        
+
+        // return {
+        //     next: (): IteratorResult<TResult> => {
+        //         yield 1;
+        //         let result: IteratorResult<TResult> = {
+        //             value: iteration.value,
+        //             done: iteration.done
+        //         };
+
+        //         return result;
+        //     }
+        // };
+    }
+}
+
 class Ordered<TSource> extends Linqable<TSource> {
     private _elements: Iterable<TSource>;
     private _comparer: (first: TSource, second: TSource) => number;
@@ -528,11 +603,33 @@ export function linq<T>(iterable: Iterable<T>) {
 }
 
 export function range(start: number = 0, step: number = 1, end: number = Infinity): Linqable<number> {
-    return linq((function* () {let i = start;
+    return new Range(start, step, end);
+    // return linq((function* () {
+    //     let i = start;
+    //     console.log(i);
+    //     while (end == Infinity || i <= end) {
+    //         yield i;
+    //         i += step;
+    //     }
+    //     i = start;
+    // })());
+}
 
-        while (end == Infinity || i <= end) {
+class Range extends Linqable<number> {
+    private _start: number; 
+    private _step: number; 
+    private _end: number; 
+
+    constructor(start: number = 0, step: number = 1, end: number = Infinity) {
+        super();
+        this._start = start;
+        this._step = step;
+        this._end = end;
+    }
+
+    *[Symbol.iterator]() {
+        for (let i = this._start; this._end == Infinity || i <= this._end; i += this._step) {
             yield i;
-            i += step;
         }
-    })());
+    }
 }

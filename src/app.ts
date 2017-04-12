@@ -5,15 +5,13 @@ interface IPerson {
     age: number;
 }
 
-let people: IPerson[] = [
-    { name: "Ivan", age: 24 }, 
-    { name: "Deyan", age: 25 },
-    { name: "Pesho", age: 26 },  
-    { name: "Pesho", age: 36 }, 
-    { name: "Deyan", age: 11 }, 
-    { name: "Pesho", age: 27 }
-];
+let people = range(1, 1, 10)
+    // .select(i => ({ name: i, age: 10 }))
 
-console.log(linq(people)
-    .minBy(p => p.age));
-    
+console.log(people.toArray().length);
+console.log(people.toArray().length);
+
+let res = linq(people)
+
+    // .join(people, p => p.age, r => r.age, (left, right) => ({ left, right }))
+    // .forEach(p => console.log(p))
