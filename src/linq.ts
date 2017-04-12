@@ -414,24 +414,12 @@ class Where<TSource> extends Linqable<TSource> {
         this._predicate = predicate;
     }
 
-    [Symbol.iterator](): Iterator<TSource> {
-        let iter = this._elements[Symbol.iterator]();
-
-        return {
-            next: (): IteratorResult<TSource> => {
-                let iteration = iter.next();
-                while (!iteration.done && !this._predicate(iteration.value)) {
-                    iteration = iter.next();
-                }
-
-                let result: IteratorResult<TSource> = {
-                    value: iteration.value,
-                    done: iteration.done
-                };
-
-                return result;
+    *[Symbol.iterator](): Iterator<TSource> {
+        for (let element of this._elements) {
+            if (this._predicate(element)) {
+                yield element;
             }
-        };
+        }
     }
 }
 
