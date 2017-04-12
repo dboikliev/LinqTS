@@ -603,33 +603,11 @@ export function linq<T>(iterable: Iterable<T>) {
 }
 
 export function range(start: number = 0, step: number = 1, end: number = Infinity): Linqable<number> {
-    return new Range(start, step, end);
-    // return linq((function* () {
-    //     let i = start;
-    //     console.log(i);
-    //     while (end == Infinity || i <= end) {
-    //         yield i;
-    //         i += step;
-    //     }
-    //     i = start;
-    // })());
-}
-
-class Range extends Linqable<number> {
-    private _start: number; 
-    private _step: number; 
-    private _end: number; 
-
-    constructor(start: number = 0, step: number = 1, end: number = Infinity) {
-        super();
-        this._start = start;
-        this._step = step;
-        this._end = end;
-    }
-
-    *[Symbol.iterator]() {
-        for (let i = this._start; this._end == Infinity || i <= this._end; i += this._step) {
-            yield i;
+    return linq({
+        *[Symbol.iterator]() {
+            for (let i = start; end == Infinity || i <= end; i += step) {
+                yield i;
+            }
         }
-    }
+    });
 }
