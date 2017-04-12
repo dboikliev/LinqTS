@@ -6,15 +6,7 @@ interface IPerson {
 }
 
 let people = range(1, 1, 10)
-    .select(i => ({ name: i, age: 10 }))
+    .select(i => ({ name: i, friends: range(1, 1, 10).select(n => ({ name: "Inner" + n })) }));
 
-console.log(people.count());
-
-let res = linq(people)
-    .join(people, p => p.age, r => r.age, (left, right) => ({ left, right }))
-    
-
-console.log(people.count())
-console.log(people.count())
-
-console.log(res.count());
+people.selectMany(p => p.friends)
+    .forEach(console.log);

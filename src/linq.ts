@@ -49,8 +49,12 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
         return new Where<TSource>(this, predicate);
     }
 
-    select<TResult>(predicate: (element: TSource) => TResult): Linqable<TResult> {
-        return new Select<TSource, TResult>(this, predicate);
+    select<TResult>(selector: (element: TSource) => TResult): Linqable<TResult> {
+        return new Select<TSource, TResult>(this, selector);
+    }
+
+    selectMany<TResult>(selector: (element: TSource) => Iterable<TResult>): Linqable<TResult> {
+        return new SelectMany<TSource, TResult>(this, selector);
     }
 
     zip<TRight, TResult>(right: Iterable<TRight>, selector: (left: TSource, right: TRight) => TResult): Linqable<TResult> {
@@ -443,33 +447,41 @@ class Where<TSource> extends Linqable<TSource> {
     }
 }
 
-class Select<TSource, TDestination> extends Linqable<TDestination> {
+class Select<TSource, TResult> extends Linqable<TResult> {
     private _elements: Iterable<TSource>;
-    private _selector: (element: TSource) => any;
+    private _selector: (element: TSource) => TResult;
 
-    constructor(elements: Iterable<TSource>, selector: (element: TSource) => TDestination) {
+    constructor(elements: Iterable<TSource>, selector: (element: TSource) => TResult) {
         super();
         this._elements = elements;
         this._selector = selector;
     }
 
-    [Symbol.iterator](): Iterator<TDestination> {
-        let iter = this._elements[Symbol.iterator]();
+    *[Symbol.iterator](): Iterator<TResult> {
+        for (let element of this._elements) {
+            yield this._selector(element);
+        }
+    }
+}
 
-        return {
-            next: (): IteratorResult<TDestination> => {
-                let iteration = iter.next();
 
-                let value = iteration.done ? undefined : this._selector(iteration.value);
+class SelectMany<TSource, TResult> extends Linqable<TResult> {
+    private _elements: Iterable<TSource>;
+    private _selector: (element: TSource) => Iterable<TResult>;
 
-                let result: IteratorResult<TDestination> = {
-                    value: value,
-                    done: iteration.done
-                };
+    constructor(elements: Iterable<TSource>, selector: (element: TSource) => Iterable<TResult>) {
+        super();
+        this._elements = elements;
+        this._selector = selector;
+    }
 
-                return result;
+    *[Symbol.iterator](): Iterator<TResult> {
+        for (let element of this._elements) {
+            let innerElements = this._selector(element)
+            for (let innerElement of innerElements) {
+                yield innerElement;
             }
-        };
+        }
     }
 }
 
