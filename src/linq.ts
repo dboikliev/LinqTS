@@ -560,27 +560,6 @@ class Join<TLeft, TRight, TResult> extends Linqable<TResult> {
                 yield this._resultSelector(left, match);
             }
         }
-
-        // let leftIterator = this._leftElements[Symbol.iterator]();
-
-        // let iteration = leftIterator.next();
-
-        // let key = this._leftSelector(iteration.value);
-
-        // while ()
-        
-
-        // return {
-        //     next: (): IteratorResult<TResult> => {
-        //         yield 1;
-        //         let result: IteratorResult<TResult> = {
-        //             value: iteration.value,
-        //             done: iteration.done
-        //         };
-
-        //         return result;
-        //     }
-        // };
     }
 }
 
