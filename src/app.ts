@@ -7,6 +7,9 @@ interface IPerson {
 
 range(1, 1, 9)
     .where(i => i > 5)
+    .where(i => i % 2 == 0)
+    .skip(1)
+    .take(1)
     .forEach(console.log)
     
 

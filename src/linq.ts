@@ -350,18 +350,10 @@ class List<TSource> extends Linqable<TSource> {
         this._elements = elements;
     }
 
-    [Symbol.iterator](): Iterator<TSource> {
-        let iter = this._elements[Symbol.iterator]();
-        return {
-            next: (): IteratorResult<TSource> => {
-                let iteration = iter.next();
-                let result: IteratorResult<TSource> = {
-                    value: iteration.value,
-                    done: iteration.done
-                };
-                return result;
-            }
-        };
+    *[Symbol.iterator](): Iterator<TSource> {
+        for (let element of this._elements) {
+            yield element;
+        }
     }
 }
 
