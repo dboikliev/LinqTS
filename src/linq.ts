@@ -542,8 +542,6 @@ class Ordered<TSource> extends Linqable<TSource> {
         for (let element of elements) {
             yield element;
         }
-
-        let iterator = elements[Symbol.iterator]();
     }
 }
 
