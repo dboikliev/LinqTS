@@ -5,6 +5,7 @@ An api for querying iterables, implemented in TypeScript and inspired by .NET's 
 ## Supported operations:
 1. where
 1. select
+1. selectMany
 1. distinct
 1. zip
 1. groupBy
