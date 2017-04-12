@@ -8,6 +8,7 @@ An api for querying iterables, implemented in TypeScript and inspired by .NET's 
 1. distinct
 1. zip
 1. groupBy
+1. join
 1. orderBy
 1. skip
 1. skipWhile
@@ -23,6 +24,7 @@ An api for querying iterables, implemented in TypeScript and inspired by .NET's 
 1. firstOrDefault
 1. forEach
 1. toArray
+1. count
 
 ## Example
 
