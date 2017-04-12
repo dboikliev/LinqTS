@@ -573,7 +573,7 @@ class Ordered<TSource> extends Linqable<TSource> {
         this._comparer = comparer;
     }
 
-    [Symbol.iterator](): Iterator<TSource> {
+    *[Symbol.iterator](): Iterator<TSource> {
         let elements = [];
 
         for (let element of this._elements) {
@@ -582,20 +582,11 @@ class Ordered<TSource> extends Linqable<TSource> {
 
         elements.sort(this._comparer);
 
+        for (let element of elements) {
+            yield element;
+        }
+
         let iterator = elements[Symbol.iterator]();
-
-        return {
-            next: (): IteratorResult<TSource> => {
-                let iteration = iterator.next();;
-
-                let result: IteratorResult<TSource> = {
-                    value: iteration.value,
-                    done: iteration.done
-                };
-
-                return result;
-            }
-        };
     }
 }
 
