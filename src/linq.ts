@@ -175,6 +175,16 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
 
         return array;
     }
+
+    count(): number {
+        let current = 0;
+
+        for (let element of this) {
+            current++;
+        }
+
+        return current;
+    }
 }
 
 class Skip<TSource> extends Linqable<TSource> {
