@@ -332,9 +332,7 @@ class List<TSource> extends Linqable<TSource> {
     }
 
     *[Symbol.iterator](): Iterator<TSource> {
-        for (let element of this._elements) {
-            yield element;
-        }
+        yield* this._elements;
     }
 }
 
