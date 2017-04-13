@@ -1,6 +1,11 @@
 export abstract class Linqable<TSource> implements Iterable<TSource> {
     abstract [Symbol.iterator](): Iterator<TSource>;
 
+    /**
+     * Checks if any of the elements match the provided predicate.
+     * @param {function} predicate A predicate which the elements will be checked against.
+     * @return {boolean} Whether an element matching the predicate is found or not.
+     */
     any(predicate?: (element: TSource) => boolean): boolean {
         if (predicate) {
             for (let value of this) {
@@ -16,7 +21,16 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
 
         return false;
     }
-
+    
+    /**
+     * Performs a join on object matching property values according to the provided leftSelector and rightSelector.
+     * The matching objects are merged into another value by resultSelector.
+     * @param  {Iterable<TRight>} right The collection being to which the join is performed
+     * @param  {function} leftSelector A property selector for objects from the left collection
+     * @param  {function} rightSelector A property selector for objects from the right collection
+     * @param  {function} resultSelector A function merging the matching objects into a result
+     * @returns {Linqable} An iterable of values produced by resultSelector
+     */
     join<TRight, TResult>(right: Iterable<TRight>, 
         leftSelector: (element: TSource) => any, 
         rightSelector: (element: TRight) => any,
