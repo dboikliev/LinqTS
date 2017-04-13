@@ -284,21 +284,12 @@ class TakeWhile<TSource> extends Linqable<TSource> {
         this._predicate = predicate;
     }
 
-    [Symbol.iterator](): Iterator<TSource> {
-        let iterator = this._elements[Symbol.iterator]();
-        return {
-            next: (): IteratorResult<TSource> => {
-                let iteratorResult = iterator.next();
-
-                let isDone = iteratorResult.done || !this._predicate(iteratorResult.value);
-                let value = isDone ? undefined : iteratorResult.value; 
-
-                let result: IteratorResult<TSource> = {
-                    value: value,
-                    done: isDone
-                };
-                return result;
+    *[Symbol.iterator](): Iterator<TSource> {
+        for (let element of this._elements) {
+            if (!this._predicate(element)) {
+                break;
             }
+            yield element;
         }
     }
 }
