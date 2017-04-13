@@ -5,9 +5,11 @@ An api for querying iterables, implemented in TypeScript and inspired by .NET's 
 ## Supported operations:
 1. where
 1. select
+1. selectMany
 1. distinct
 1. zip
 1. groupBy
+1. join
 1. orderBy
 1. skip
 1. skipWhile
@@ -15,14 +17,15 @@ An api for querying iterables, implemented in TypeScript and inspired by .NET's 
 1. takeWhile
 1. aggregate
 1. any
-1. min
-1. max
-1. average
+1. minBy
+1. maxBy
+1. averageBy
 1. elementAt
 1. first
 1. firstOrDefault
 1. forEach
 1. toArray
+1. count
 
 ## Example
 

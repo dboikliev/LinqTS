@@ -17,6 +17,18 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
         return false;
     }
 
+    join<TRight, TResult>(right: Iterable<TRight>, 
+        leftSelector: (element: TSource) => any, 
+        rightSelector: (element: TRight) => any,
+        resultSelector: (left: TSource, right: TRight) => TResult): Linqable<TResult> {
+            return new Join<TSource, TRight, TResult>(this,
+                right,
+                leftSelector,
+                rightSelector,
+                resultSelector
+            );
+    }
+
     skip(count: number): Linqable<TSource> {
         return new Skip<TSource>(this, count);
     }
@@ -37,8 +49,12 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
         return new Where<TSource>(this, predicate);
     }
 
-    select<TResult>(predicate: (element: TSource) => TResult): Linqable<TResult> {
-        return new Select<TSource, TResult>(this, predicate);
+    select<TResult>(selector: (element: TSource) => TResult): Linqable<TResult> {
+        return new Select<TSource, TResult>(this, selector);
+    }
+
+    selectMany<TResult>(selector: (element: TSource) => Iterable<TResult>): Linqable<TResult> {
+        return new SelectMany<TSource, TResult>(this, selector);
     }
 
     zip<TRight, TResult>(right: Iterable<TRight>, selector: (left: TSource, right: TRight) => TResult): Linqable<TResult> {
@@ -154,13 +170,24 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
     }
 
     toArray(): TSource[] {
-        let array = [];
+        let array: TSource[] = [];
 
-        for (let element of this) {
-            array.push(element);
-        }
+        this.aggregate(array, (acc, el) => {
+            acc.push(el);
+            return acc;
+        });
 
         return array;
+    }
+
+    count(): number {
+        let current = 0;
+
+        for (let element of this) {
+            current++;
+        }
+
+        return current;
     }
 }
 
@@ -174,22 +201,16 @@ class Skip<TSource> extends Linqable<TSource> {
         this._count = count;
     }
 
-    [Symbol.iterator](): Iterator<TSource> {
+    *[Symbol.iterator](): Iterator<TSource> {
         let iterator = this._elements[Symbol.iterator]();
-        
-        for (let i = 0; i < this._count; i++) {
-            iterator.next();
+        let iteratorResult: IteratorResult<TSource> = iterator.next();
+        for (let i = 0; i < this._count && !iteratorResult.done; i++) {
+            iteratorResult = iterator.next();
         }
 
-        return {
-            next: (): IteratorResult<TSource> => {
-                let iteratorResult = iterator.next();
-                let result: IteratorResult<TSource> = {
-                    value: iteratorResult.value,
-                    done: iteratorResult.done
-                };
-                return result;
-            }
+        while (!iteratorResult.done) {
+            yield iteratorResult.value;
+            iteratorResult = iterator.next();
         }
     }
 }
@@ -241,20 +262,14 @@ class Take<TSource> extends Linqable<TSource> {
         this._count = count;
     }
 
-    [Symbol.iterator](): Iterator<TSource> {
-        let iterator = this._elements[Symbol.iterator]();
-        let currentIndex = -1;
-        
-        return {
-            next: (): IteratorResult<TSource> => {
-                let iteratorResult = iterator.next();
-                let hasReachedEnd = ++currentIndex >= this._count;
-                
-                return {
-                    value: hasReachedEnd ? undefined : iteratorResult.value,
-                    done: hasReachedEnd
-                };
+    *[Symbol.iterator](): Iterator<TSource> {
+        let current = 0;
+        for (let element of this._elements) {
+            if (current >= this._count) {
+                break;
             }
+            yield element;
+            current++;
         }
     }
 }
@@ -335,18 +350,10 @@ class List<TSource> extends Linqable<TSource> {
         this._elements = elements;
     }
 
-    [Symbol.iterator](): Iterator<TSource> {
-        let iter = this._elements[Symbol.iterator]();
-        return {
-            next: (): IteratorResult<TSource> => {
-                let iteration = iter.next();
-                let result: IteratorResult<TSource> = {
-                    value: iteration.value,
-                    done: iteration.done
-                };
-                return result;
-            }
-        };
+    *[Symbol.iterator](): Iterator<TSource> {
+        for (let element of this._elements) {
+            yield element;
+        }
     }
 }
 
@@ -399,54 +406,50 @@ class Where<TSource> extends Linqable<TSource> {
         this._predicate = predicate;
     }
 
-    [Symbol.iterator](): Iterator<TSource> {
-        let iter = this._elements[Symbol.iterator]();
-
-        return {
-            next: (): IteratorResult<TSource> => {
-                let iteration = iter.next();
-                while (!iteration.done && !this._predicate(iteration.value)) {
-                    iteration = iter.next();
-                }
-
-                let result: IteratorResult<TSource> = {
-                    value: iteration.value,
-                    done: iteration.done
-                };
-
-                return result;
+    *[Symbol.iterator](): Iterator<TSource> {
+        for (let element of this._elements) {
+            if (this._predicate(element)) {
+                yield element;
             }
-        };
+        }
     }
 }
 
-class Select<TSource, TDestination> extends Linqable<TDestination> {
+class Select<TSource, TResult> extends Linqable<TResult> {
     private _elements: Iterable<TSource>;
-    private _selector: (element: TSource) => any;
+    private _selector: (element: TSource) => TResult;
 
-    constructor(elements: Iterable<TSource>, selector: (element: TSource) => TDestination) {
+    constructor(elements: Iterable<TSource>, selector: (element: TSource) => TResult) {
         super();
         this._elements = elements;
         this._selector = selector;
     }
 
-    [Symbol.iterator](): Iterator<TDestination> {
-        let iter = this._elements[Symbol.iterator]();
+    *[Symbol.iterator](): Iterator<TResult> {
+        for (let element of this._elements) {
+            yield this._selector(element);
+        }
+    }
+}
 
-        return {
-            next: (): IteratorResult<TDestination> => {
-                let iteration = iter.next();
 
-                let value = iteration.done ? undefined : this._selector(iteration.value);
+class SelectMany<TSource, TResult> extends Linqable<TResult> {
+    private _elements: Iterable<TSource>;
+    private _selector: (element: TSource) => Iterable<TResult>;
 
-                let result: IteratorResult<TDestination> = {
-                    value: value,
-                    done: iteration.done
-                };
+    constructor(elements: Iterable<TSource>, selector: (element: TSource) => Iterable<TResult>) {
+        super();
+        this._elements = elements;
+        this._selector = selector;
+    }
 
-                return result;
+    *[Symbol.iterator](): Iterator<TResult> {
+        for (let element of this._elements) {
+            let innerElements = this._selector(element)
+            for (let innerElement of innerElements) {
+                yield innerElement;
             }
-        };
+        }
     }
 }
 
@@ -460,7 +463,7 @@ class Group<TKey, TValue> extends Linqable<[TKey, TValue[]]> {
         this._selector = selector;
     }
 
-    [Symbol.iterator](): Iterator<[TKey, TValue[]]> {
+    *[Symbol.iterator](): Iterator<[TKey, TValue[]]> {
         let groups = new Map<TKey, TValue[]>();
         
         for (let element of this._elements) {
@@ -470,20 +473,50 @@ class Group<TKey, TValue> extends Linqable<[TKey, TValue[]]> {
             groups.set(key, group);
         }
 
-        let groupsIterator = groups[Symbol.iterator]();
+        for (let group of groups) {
+            yield group;
+        }
+    }
+}
 
-        return {
-            next: (): IteratorResult<[TKey, TValue[]]> => {
-                let iteration = groupsIterator.next();;
+class Join<TLeft, TRight, TResult> extends Linqable<TResult> {
+    private _leftElements: Iterable<TLeft>;
+    private _rightElements: Iterable<TRight>;
+    private _leftSelector: (element: TLeft) => any;
+    private _rightSelector: (element: TRight) => any;
+    private _resultSelector: (left: TLeft, right: TRight) => TResult;
 
-                let result: IteratorResult<[TKey, TValue[]]> = {
-                    value: iteration.value,
-                    done: iteration.done
-                };
+    constructor(leftElements: Iterable<TLeft>, 
+        rightElements: Iterable<TRight>,
+        leftSelector: (element: TLeft) => any, 
+        rightSelector: (element: TRight) => any, 
+        resultSelector: (left: TLeft, right: TRight) => TResult) {
+        super();
+        this._leftElements = leftElements;
+        this._rightElements = rightElements;
+        this._leftSelector = leftSelector;
+        this._rightSelector = rightSelector;
+        this._resultSelector = resultSelector;
+    }
 
-                return result;
+    *[Symbol.iterator](): Iterator<TResult> {
+        let groups = new Map<any, TRight[]>();
+        
+        for (let element of this._rightElements) {
+            let key = this._rightSelector(element);
+            let group = groups.get(key) || [];
+            group.push(element);
+            groups.set(key, group);
+        }
+
+        for (let left of this._leftElements) {
+            let leftKey = this._leftSelector(left);
+            let group = groups.get(leftKey) || [];
+            
+            for (let match of group) {
+                yield this._resultSelector(left, match);
             }
-        };
+        }
     }
 }
 
@@ -497,7 +530,7 @@ class Ordered<TSource> extends Linqable<TSource> {
         this._comparer = comparer;
     }
 
-    [Symbol.iterator](): Iterator<TSource> {
+    *[Symbol.iterator](): Iterator<TSource> {
         let elements = [];
 
         for (let element of this._elements) {
@@ -506,20 +539,9 @@ class Ordered<TSource> extends Linqable<TSource> {
 
         elements.sort(this._comparer);
 
-        let iterator = elements[Symbol.iterator]();
-
-        return {
-            next: (): IteratorResult<TSource> => {
-                let iteration = iterator.next();;
-
-                let result: IteratorResult<TSource> = {
-                    value: iteration.value,
-                    done: iteration.done
-                };
-
-                return result;
-            }
-        };
+        for (let element of elements) {
+            yield element;
+        }
     }
 }
 
@@ -528,11 +550,11 @@ export function linq<T>(iterable: Iterable<T>) {
 }
 
 export function range(start: number = 0, step: number = 1, end: number = Infinity): Linqable<number> {
-    return linq((function* () {let i = start;
-
-        while (end == Infinity || i <= end) {
-            yield i;
-            i += step;
+    return linq({
+        *[Symbol.iterator]() {
+            for (let i = start; end == Infinity || i <= end; i += step) {
+                yield i;
+            }
         }
-    })());
+    });
 }
