@@ -336,7 +336,6 @@ class List<TSource> extends Linqable<TSource> {
     }
 }
 
-
 class Zip<TLeft, TRight, TResult> extends Linqable<TResult> {
     private _selector: (left: TLeft, right: TRight) => TResult;
     private _left: Iterable<TLeft>;
@@ -518,7 +517,7 @@ class Ordered<TSource> extends Linqable<TSource> {
     }
 }
 
-export function linq<T>(iterable: Iterable<T>) {
+export function linq<T>(iterable: Iterable<T>): Linqable<T> {
     return new List<T>(iterable);
 }
 
