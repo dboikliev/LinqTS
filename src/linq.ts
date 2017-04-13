@@ -313,7 +313,7 @@ class Distinct<TSource> extends Linqable<TSource> {
         this._selector = selector;
     }
 
-    [Symbol.iterator](): Iterator<TSource> {
+    *[Symbol.iterator](): Iterator<TSource> {
         let map = new Map();
         let iterator = this._elements[Symbol.iterator]();
         let iteratorResult = iterator.next();
@@ -328,17 +328,7 @@ class Distinct<TSource> extends Linqable<TSource> {
             }
         }
 
-        let mapIterator = map[Symbol.iterator]();
-        return {
-            next: (): IteratorResult<TSource> => {
-                let mapIteratorResult = mapIterator.next();
-                let result: IteratorResult<TSource> = {
-                    value: mapIteratorResult.done ? undefined : mapIteratorResult.value[1],
-                    done: mapIteratorResult.done
-                };
-                return result;
-            }
-        }
+        yield* map.values();
     }
 }
 
@@ -446,9 +436,7 @@ class SelectMany<TSource, TResult> extends Linqable<TResult> {
     *[Symbol.iterator](): Iterator<TResult> {
         for (let element of this._elements) {
             let innerElements = this._selector(element)
-            for (let innerElement of innerElements) {
-                yield innerElement;
-            }
+            yield* innerElements;
         }
     }
 }
@@ -473,9 +461,7 @@ class Group<TKey, TValue> extends Linqable<[TKey, TValue[]]> {
             groups.set(key, group);
         }
 
-        for (let group of groups) {
-            yield group;
-        }
+        yield* groups;
     }
 }
 
@@ -539,9 +525,7 @@ class Ordered<TSource> extends Linqable<TSource> {
 
         elements.sort(this._comparer);
 
-        for (let element of elements) {
-            yield element;
-        }
+        yield* elements;
     }
 }
 
