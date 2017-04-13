@@ -21,9 +21,9 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
 
         return false;
     }
-    
+
     /**
-     * Performs a join on object matching property values according to the provided leftSelector and rightSelector.
+     * Performs a join on objects matching property values according to the provided leftSelector and rightSelector.
      * The matching objects are merged into another value by resultSelector.
      * @param  {Iterable<TRight>} right The collection being to which the join is performed
      * @param  {function} leftSelector A property selector for objects from the left collection
