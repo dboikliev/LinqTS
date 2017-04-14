@@ -22,6 +22,14 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
         return false;
     }
 
+    all(predicate: (element: TSource) => boolean): boolean {
+        for (let value of this) {
+            if (!predicate(value)) {
+                return false;
+            }
+        }
+    }
+
     /**
      * Performs a join on objects matching property values according to the provided leftSelector and rightSelector.
      * The matching objects are merged into another value by resultSelector.
