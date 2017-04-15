@@ -22,6 +22,11 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
         return false;
     }
 
+    /**
+     * Checks if all of the elements match the provided predicate.
+     * @param {function} predicate A predicate which the elements will be checked against.
+     * @return {boolean} Whether an element matching the predicate is found or not.
+     */
     all(predicate: (element: TSource) => boolean): boolean {
         for (let value of this) {
             if (!predicate(value)) {
@@ -50,19 +55,40 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
                 resultSelector
             );
     }
-
+    
+    
+    /**
+     * Skips a specific number of elements.
+     * @param  {number} count The number of elements to skip.
+     * @returns An iterable with a beginning after the skipped values.
+     */
     skip(count: number): Linqable<TSource> {
         return new Skip<TSource>(this, count);
     }
 
+    /**
+     * Skips elements while they satisfy the provided predicate.
+     * @param  {function} predicate A predicate which the elements will be checked against.
+     * @returns An iterable with a beginning after the skipped values.
+     */
     skipWhile(predicate: (element: TSource) => boolean): Linqable<TSource> {
         return new SkipWhile<TSource>(this, predicate);
     }
 
+    /**
+     * Takes a specific number of elements.
+     * @param  {number} count The number of elements to take.
+     * @returns An iterable for the taken elements.
+     */
     take(count: number): Linqable<TSource> {
         return new Take<TSource>(this, count);
     }
 
+    /**
+     * Takes elements while they satisfy the provided predicate.
+     * @param {function} predicate A predicate which the elements will be checked against.
+     * @returns An iterable for the taken elements.
+     */
     takeWhile(predicate: (element: TSource) => boolean): Linqable<TSource> {
         return new TakeWhile<TSource>(this, predicate);
     }
