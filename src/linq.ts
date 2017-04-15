@@ -158,6 +158,11 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
         return new Ordered<TSource>(this, comparer);
     }
 
+    /**
+     * Reduces the iterable into a value.
+     * @param  {TResult} seed A starting value.
+     * @param  {function} accumulator An accumulator function.
+     */
     aggregate<TResult>(seed: TResult, accumulator: (accumulated: TResult, element: TSource) => TResult) {
          let accumulated = seed;
 
@@ -168,11 +173,22 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
          return accumulated;
     }
 
+    /**
+     * Gets the first element of the iterable.
+     * @returns {TSource} The first element of the iterable.
+     */
     first(): TSource {
         let iter = this[Symbol.iterator]();
         return iter.next().value;
     }
 
+    /**
+     * Gets the first element of the sequence. If a predicate is provited the first element matching the predicated will be returned.
+     * If there aren't any matching elements or if the sequence is empty a default value provided by the defaultInitializer will be returned.
+     * @param  {function} predicate A predicate used for finding a matching element.
+     * @param  {function} defaultInitializer A function returning default value if there aren't any matching elements.
+     * @returns The first matching element or a default value.
+     */
     firstOrDefault<TDefault>(predicate?: (element: TSource) => boolean, defaultInitializer: () => TDefault = () => undefined): TSource | TDefault {
         if (predicate) {
             for (let value of this) {
@@ -190,7 +206,12 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
             return descriptor.done ? defaultInitializer() : descriptor.value;
         }
     }
-
+    
+    /**
+     * Gets the max element in a sequence according to a transform function.
+     * @param  {function} transform A function returning a primitive value used for copmaring elements in the sequence.
+     * @returns TSource The max element of the sequence.
+     */
     maxBy(transform: (element: TSource) => number | string): TSource {
         let iterator = this[Symbol.iterator]();
         let iteratorResult = iterator.next();
@@ -210,6 +231,11 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
         return bestMax;
     }
 
+    /**
+     * Gets the min element in a sequence according to a transform function.
+     * @param  {function} transform A function returning a primitive value used for copmaring elements in the sequence.
+     * @returns TSource The min element of the sequence.
+     */
     minBy(transform: (element: TSource) => number | string): TSource {
         let iterator = this[Symbol.iterator]();
         let iteratorResult = iterator.next();
@@ -229,6 +255,11 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
         return bestMin;
     }
 
+    /**
+     * Gets the averege value for a sequence.
+     * @param  {function} transform A function returning a number value used for summing elements in the sequence.
+     * @returns TSource The average value of the sequence.
+     */
     averageBy(transform: (element: TSource) => number): number {
         let sum = 0;
         let count = 0;
@@ -242,6 +273,10 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
         return avg;
     }
 
+    /**
+     * Calls a function for each element of the sequence.
+     * @param  {function} action A function called for each element of the sequence.
+     */
     forEach(action: (element: TSource, index: number) => void): void {
         let index = 0;
         for (let element of this) {
@@ -250,10 +285,19 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
         }
     }
 
+    /**
+     * Gets the element at an index.
+     * @param  {number} index The index of the element.
+     */
     elementAt(index: number): TSource {
         return this.skip(index).take(1).first();
     }
 
+    
+    /**
+     * Turns the sequence to an array.
+     * @returns {TSource[]} An array of the sequence elements.
+     */
     toArray(): TSource[] {
         let array: TSource[] = [];
 
@@ -265,6 +309,10 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
         return array;
     }
 
+    /**
+     * Counts the number of elements in the sequence.
+     * @returns number The number of elements in the sequence.
+     */
     count(): number {
         let current = 0;
 
