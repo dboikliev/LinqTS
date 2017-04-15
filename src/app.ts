@@ -14,3 +14,6 @@ let evenNums = range()
     .where(i => i % 2 == 0)
     .groupBy(i => Math.floor(i / 10))
     .forEach(([key, values]) => console.log(key + " : " + values));
+
+
+range(1, 1, 100).except(range(50, 1, 100)).forEach(console.log);
