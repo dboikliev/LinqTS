@@ -16,6 +16,7 @@ An api for querying iterables, implemented in TypeScript and inspired by .NET's 
 1. take
 1. takeWhile
 1. except
+1. intersect
 1. aggregate
 1. any
 1. all

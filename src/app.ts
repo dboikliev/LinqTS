@@ -16,4 +16,4 @@ let evenNums = range()
     .forEach(([key, values]) => console.log(key + " : " + values));
 
 
-range(1, 1, 100).except(range(50, 1, 100)).forEach(console.log);
+range(1, 1, 100).intersect(range(50, 1, 100)).forEach(console.log);

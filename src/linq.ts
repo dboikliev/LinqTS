@@ -310,7 +310,7 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
 
     /**
      * Counts the number of elements in the sequence.
-     * @returns number The number of elements in the sequence.
+     * @returns {number} The number of elements in the sequence.
      */
     count(): number {
         let current = 0;
@@ -324,10 +324,20 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
 
     /**
      * Excludes all elements of the provided sequence from the current sequence.
-     * @returns number A sequence of the elements which are not present in the provided sequence.
+     * @param  {Iterable<TSource>} right 
+     * @returns {number} A sequence of the elements which are not present in the provided sequence.
      */
     except(right: Iterable<TSource>): Linqable<TSource> {
         return new Except<TSource>(this, right);
+    }
+
+    /**
+     * Intersects the current sequence with the provided sequence.
+     * @param  {Iterable<TSource>} right 
+     * @returns {number} A sequence of the elements which are present in both the provided sequences.
+     */
+    intersect(right: Iterable<TSource>): Linqable<TSource> {
+        return new Intersect<TSource>(this, right);
     }
 }
 
@@ -345,6 +355,26 @@ class Except<TSource> extends Linqable<TSource> {
         let set = new Set(this._right);
         for (let element of this._left) {
             if (!set.has(element)) {
+                yield element;
+            }
+        }
+    }
+}
+
+class Intersect<TSource> extends Linqable<TSource> {
+    private _left: Iterable<TSource>;
+    private _right: Iterable<TSource>;
+
+    constructor(left: Iterable<TSource>, right: Iterable<TSource>) {
+        super();
+        this._left = left;
+        this._right = right;
+    }
+
+    *[Symbol.iterator]() {
+        let set = new Set(this._right);
+        for (let element of this._left) {
+            if (set.has(element)) {
                 yield element;
             }
         }
