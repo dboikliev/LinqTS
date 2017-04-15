@@ -3,7 +3,7 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
 
     /**
      * Checks if any of the elements match the provided predicate.
-     * @param {function} predicate A predicate which the elements will be checked against.
+     * @param  {function} predicate A predicate which the elements will be checked against.
      * @return {boolean} Whether an element matching the predicate is found or not.
      */
     any(predicate?: (element: TSource) => boolean): boolean {
@@ -24,7 +24,7 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
 
     /**
      * Checks if all of the elements match the provided predicate.
-     * @param {function} predicate A predicate which the elements will be checked against.
+     * @param  {function} predicate A predicate which the elements will be checked against.
      * @return {boolean} Whether an element matching the predicate is found or not.
      */
     all(predicate: (element: TSource) => boolean): boolean {
@@ -87,37 +87,74 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
     /**
      * Takes elements while they satisfy the provided predicate.
      * @param {function} predicate A predicate which the elements will be checked against.
-     * @returns An iterable for the taken elements.
+     * @returns An iterable of the taken elements.
      */
     takeWhile(predicate: (element: TSource) => boolean): Linqable<TSource> {
         return new TakeWhile<TSource>(this, predicate);
     }
-
+    
+    /**
+     * Filters the elements based on the predicate.
+     * @param  {function} predicate A predicate which the elements will be checked against.
+     * @returns An iterable of the filtered elements.
+     */
     where(predicate: (element: TSource) => boolean): Linqable<TSource> {
         return new Where<TSource>(this, predicate);
     }
 
+    
+    /**
+     * Transforms the elements of the iterable into another value.
+     * @param  {function} selector A function which transforms an element into another value.
+     * @returns An iterable of the transformed elements.
+     */
     select<TResult>(selector: (element: TSource) => TResult): Linqable<TResult> {
         return new Select<TSource, TResult>(this, selector);
     }
 
+    /**
+     * Flattens iterable elements into a single iterable sequence.
+     * @param  {function} selector A function which transforms an element into another value.
+     * @returns An iterable of the transformed elements.
+     */
     selectMany<TResult>(selector: (element: TSource) => Iterable<TResult>): Linqable<TResult> {
         return new SelectMany<TSource, TResult>(this, selector);
     }
 
+    /**
+     * Applies a transformation function to each corresponding pair of elements from the iterables.
+     * @param  {Iterable<TRight>} right The second iterable.
+     * @param  {function} selector A function witch transforms a pair of elements into another value.
+     * @returns An iterable of the trasnformed values.
+     */
     zip<TRight, TResult>(right: Iterable<TRight>, selector: (left: TSource, right: TRight) => TResult): Linqable<TResult> {
         return new Zip<TSource, TRight, TResult>(this, right, selector);
     }
 
+    /**
+     * Takes the distinct elements based on the result of a selector function.
+     * @param  {function} selector A function the result of which is used for comparing the elements in the iterable.
+     * @returns An iterable of the distinct elements.
+     */
     distinct(selector: (element: TSource) => any = (element: TSource) => element): Linqable<TSource> {
         return new Distinct<TSource>(this, selector);
     }
 
+    /**
+     * Groups elements based on a selector function.
+     * @param  {function} selector A function providing the key for the group.
+     * @returns An iterable of groups.
+     */
     groupBy<TKey>(selector: (element: TSource) => TKey): Linqable<[TKey, TSource[]]> {
         return new Group<TKey, TSource>(this, selector);
     }
 
-    orderBy(comparer: (first: TSource, second: TSource) => number): Ordered<TSource> {
+    /**
+     * Orders elements based on a comparer function.
+     * @param  {function} comparer A function used for comparing the elements.
+     * @returns An iterable of the ordered elements.
+     */
+    orderBy(comparer: (first: TSource, second: TSource) => number): Linqable<TSource> {
         return new Ordered<TSource>(this, comparer);
     }
 
