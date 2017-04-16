@@ -496,20 +496,14 @@ class Distinct<TSource> extends Linqable<TSource> {
 
     *[Symbol.iterator](): Iterator<TSource> {
         let map = new Map();
-        let iterator = this._elements[Symbol.iterator]();
-        let iteratorResult = iterator.next();
-        while (!iteratorResult.done) {
-            let key = this._selector(iteratorResult.value);
+        for (let element of this._elements) {
+            let key = this._selector(element);
 
-            if (map.has(key)) {
-                iteratorResult = iterator.next();
-            }
-            else {
-                map.set(key, iteratorResult.value);
+            if (!map.has(key)) {
+                map.set(key, element);
+                yield element;
             }
         }
-
-        yield* map.values();
     }
 }
 
