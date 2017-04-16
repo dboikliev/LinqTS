@@ -1,6 +1,10 @@
 # LinqTS
 
-An api for querying iterables, implemented in TypeScript and inspired by .NET's IEnumerable<T> extension methods.
+An api for querying iterables, implemented in TypeScript and inspired by .NET's LINQ methods.
+
+## Motivation:
+
+At the time of writing I have not been able to find a library implementing an API similar to .NET's LINQ methods utilizing ECMAScript 6 iterators.
 
 ## Supported operations:
 1. where

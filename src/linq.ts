@@ -600,7 +600,6 @@ class Select<TSource, TResult> extends Linqable<TResult> {
     }
 }
 
-
 class SelectMany<TSource, TResult> extends Linqable<TResult> {
     private _elements: Iterable<TSource>;
     private _selector: (element: TSource) => Iterable<TResult>;
@@ -707,10 +706,22 @@ class Ordered<TSource> extends Linqable<TSource> {
     }
 }
 
+/**
+ * Wraps an interable into an object which supports LINQ queries.
+ * @param {Iterable<T>} iterable The sequence which will be queried.
+ * @returns {Linqable<number>} An object with support for LINQ queries.
+ */
 export function linq<T>(iterable: Iterable<T>): Linqable<T> {
     return new List<T>(iterable);
 }
 
+/**
+ * Generates a sequence of numbers from start to end (if specified), increasing by the speficied step.
+ * @param  {number} start The beginning of the sequence. 0 by default.
+ * @param  {number} step The ammount to increment by on each iteration. 1 by default.
+ * @param  {number} end The end of the sequence. Infinity by default.
+ * @returns {Linqable<number>}
+ */
 export function range(start: number = 0, step: number = 1, end: number = Infinity): Linqable<number> {
     return linq({
         *[Symbol.iterator]() {
