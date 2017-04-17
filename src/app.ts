@@ -5,17 +5,10 @@ interface IPerson {
     age: number;
 }
 
-let people = range(1, 1)
-    .take(10)
-    .select(i => ({ name: i, friends: range(1, 1, 10).select(n => ({ name: "Inner" + n })) }));
 
-// let evenNums = range()
-//     .take(100)
-//     .where(i => i % 2 == 0)
-//     .groupBy(i => Math.floor(i / 10))
-//     .forEach(([key, values]) => console.log(key + " : " + values));
+let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+let evenNumbers = linq(numbers).where(i => i % 2 == 0);
 
-range(1, 1)
-    .take(10)
-    .distinct()
-    .forEach(console.log)
+for (let number of evenNumbers) {
+    console.log(number)
+}

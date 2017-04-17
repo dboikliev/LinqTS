@@ -456,10 +456,10 @@ class Take<TSource> extends Linqable<TSource> {
         let current = 0;
         for (let element of this._elements) {
             if (current >= this._count) {
-                break;
+                return;
             }
-            yield element;
             current++;
+            yield element;
         }
     }
 }

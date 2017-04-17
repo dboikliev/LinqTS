@@ -7,7 +7,7 @@ An api for querying iterables, implemented in TypeScript and inspired by .NET's 
 At the time of writing I have not been able to find a library implementing an API similar to .NET's LINQ methods utilizing ECMAScript 6 iterators.
 
 ## Supported operations:
-1. where
+1. [where](#where)
 1. select
 1. selectMany
 1. distinct
@@ -34,7 +34,7 @@ At the time of writing I have not been able to find a library implementing an AP
 1. toArray
 1. count
 
-## Example
+## Examples:
 
 #### Building and executing a query:
 
@@ -65,4 +65,30 @@ for (let name of namesOfPeopleOlderThan22) {
 ```
 Ivan
 Deyan
+```
+
+## Operations:
+
+#### 1. Where<a id="where"></a>
+
+Where filters the iterable based on a predicate function.
+A sequence of the elements for which the predicate returns ```true``` will be returned.
+
+```typescript
+let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+let evenNumbers = linq(numbers).where(i => i % 2 == 0);
+
+for (let number of evenNumbers) {
+    console.log(number)
+}
+```
+
+#### Result:
+
+```
+2
+4
+6
+8
+10
 ```
