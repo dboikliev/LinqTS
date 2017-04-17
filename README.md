@@ -8,7 +8,7 @@ At the time of writing I have not been able to find a library implementing an AP
 
 ## Supported operations:
 1. [where](#where)
-1. select
+1. [select](#select)
 1. selectMany
 1. distinct
 1. zip
@@ -91,4 +91,27 @@ for (let number of evenNumbers) {
 6
 8
 10
+```
+
+#### 2. Select <a id="select"></a>
+
+Each element of an iterable is trasnformed into another value - the return value of the function passed to ```select```.
+
+```typescript
+let numbers = [1, 2, 3, 4, 5];
+let numbersTimes10 = linq(numbers).select(i => i * 10);
+
+for (let number of numbersTimes10) {
+    console.log(number)
+}
+```
+
+#### Result:
+
+```
+10
+20
+30
+40
+50
 ```

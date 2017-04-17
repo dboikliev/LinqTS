@@ -6,9 +6,9 @@ interface IPerson {
 }
 
 
-let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-let evenNumbers = linq(numbers).where(i => i % 2 == 0);
+let numbers = [1, 2, 3, 4, 5];
+let numbersTimes10 = linq(numbers).select(i => i * 10);
 
-for (let number of evenNumbers) {
+for (let number of numbersTimes10) {
     console.log(number)
 }
