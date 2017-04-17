@@ -9,7 +9,7 @@ At the time of writing I have not been able to find a library implementing an AP
 ## Supported operations:
 1. [where](#where)
 1. [select](#select)
-1. selectMany
+1. [selectMany](#selectMany)
 1. distinct
 1. zip
 1. groupBy
@@ -116,4 +116,34 @@ for (let number of numbersTimes10) {
 30
 40
 50
+```
+
+#### 3. SelectMany <a id="selectMany"></a>
+
+Flattens iterable elements into a single iterable sequence.
+```selectMany``` expects a function which takes an element from the sequence returns an iterable. All of the results are flattent into a single sequence.
+
+```typescript
+let numbers = [{
+    inner: [1, 2, 3] 
+}, {
+    inner: [4, 5, 6]
+}];
+
+let flattened = linq(numbers).selectMany(x => x.inner);
+
+for (let number of flattened) {
+    console.log(number)
+}
+```
+
+#### Result:
+
+```
+1
+2
+3
+4
+5
+6
 ```

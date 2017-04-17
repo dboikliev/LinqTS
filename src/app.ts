@@ -1,14 +1,14 @@
 import { linq, range } from "./linq";
 
-interface IPerson {
-    name: string;
-    age: number;
-}
 
+let numbers = [{
+    inner: [1, 2, 3] 
+}, {
+    inner: [4, 5, 6]
+}];
 
-let numbers = [1, 2, 3, 4, 5];
-let numbersTimes10 = linq(numbers).select(i => i * 10);
+let flattened = linq(numbers).selectMany(x => x.inner);
 
-for (let number of numbersTimes10) {
+for (let number of flattened) {
     console.log(number)
 }
