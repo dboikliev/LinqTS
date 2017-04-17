@@ -1,6 +1,6 @@
 # LinqTS
 
-An api for querying iterables, implemented in TypeScript and inspired by .NET's LINQ methods.
+An api for lazy querying of iterables, implemented in TypeScript and inspired by .NET's LINQ methods.
 
 ## Supported operations:
 1. [where](#where)
