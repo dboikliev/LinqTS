@@ -38,6 +38,8 @@ At the time of writing I have not been able to find a library implementing an AP
 
 #### Building and executing a query:
 
+The API any objects which are iterable in JavaScript. In order to use the method it is required to call ```linq``` with the object that we want to iterate as a parameter. The result of ```linq``` is ```Linqable``` object which supports the api.
+
 ```typescript
 import { linq } from "./linq";
 
