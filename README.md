@@ -6,7 +6,6 @@ An api for lazy querying of iterables, implemented in TypeScript and inspired by
 
 Implementing a lazy API similar to .NET's LINQ methods by using iterators.
 
-
 ## Supported operations:
 1. [where](#where)
 1. [select](#select)
