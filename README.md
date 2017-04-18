@@ -10,7 +10,7 @@ Implementing a lazy API similar to .NET's LINQ methods by using iterators.
 1. [where](#where)
 1. [select](#select)
 1. [selectMany](#selectMany)
-1. distinct
+1. [distinct](#distinct)
 1. zip
 1. groupBy
 1. join
@@ -146,4 +146,26 @@ for (let number of flattened) {
 4
 5
 6
+```
+
+#### 4. Distinct<a id="distinct"></a>
+
+Gets the distinct elements of a sequence based on a selector function. If a selector function is not passed, it will get the distinct elements by reference.
+
+```typescript
+let numbers = [{ value: 1 }, { value: 1 }, { value: 2 }, { value: 2 }, { value: 3 }, { value: 3 }];
+
+let distinct = linq(numbers).distinct(el => el.value);
+
+for (let number of distinct) {
+    console.log(number)
+}
+```
+
+#### Result:
+
+```
+{ value: 1 }
+{ value: 2 }
+{ value: 3 }
 ```

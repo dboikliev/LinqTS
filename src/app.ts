@@ -1,14 +1,10 @@
 import { linq, range } from "./linq";
 
 
-let numbers = [{
-    inner: [1, 2, 3] 
-}, {
-    inner: [4, 5, 6]
-}];
+let numbers = [{ value: 1 }, { value: 1 }, { value: 2 }, { value: 2 }, { value: 3 }, { value: 3 }];
 
-let flattened = linq(numbers).selectMany(x => x.inner);
+let distinct = linq(numbers).distinct(el => el.value);
 
-for (let number of flattened) {
+for (let number of distinct) {
     console.log(number)
 }
