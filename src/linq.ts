@@ -706,7 +706,7 @@ class Ordered<TSource> extends Linqable<TSource> {
  * @param {Iterable<T>} iterable The sequence which will be queried.
  * @returns {Linqable<number>} An object with support for LINQ queries.
  */
-export function linq<T>(iterable: Iterable<T>): Linqable<T> {
+export default function linq<T>(iterable: Iterable<T>): Linqable<T> {
     return new List<T>(iterable);
 }
 
