@@ -1,10 +1,11 @@
 import { linq, range } from "./linq";
 
+let odds = [1, 3, 5, 7];
+let evens = [2, 4, 6, 8];
 
-let numbers = [{ value: 1 }, { value: 1 }, { value: 2 }, { value: 2 }, { value: 3 }, { value: 3 }];
+let oddEvenPairs = linq(odds)
+    .zip(evens, (odd, even) => ({ odd, even }));
 
-let distinct = linq(numbers).distinct(el => el.value);
-
-for (let number of distinct) {
-    console.log(number)
+for (let element of oddEvenPairs) {
+    console.log(element);
 }

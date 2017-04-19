@@ -11,7 +11,7 @@ Implementing a lazy API similar to .NET's LINQ methods by using iterators.
 1. [select](#select)
 1. [selectMany](#selectMany)
 1. [distinct](#distinct)
-1. zip
+1. [zip](#zip)
 1. groupBy
 1. join
 1. orderBy
@@ -168,4 +168,29 @@ for (let number of distinct) {
 { value: 1 }
 { value: 2 }
 { value: 3 }
+```
+
+#### 5. Zip<a id="zip"></a>
+
+Applies a transformation function to each corresponding pair of elements from the iterables. The paring ends when the shorter sequence ends, the remaining elements of the other sequence are ignored.
+
+```typescript
+let odds = [1, 3, 5, 7];
+let evens = [2, 4, 6, 8];
+
+let oddEvenPairs = linq(odds)
+    .zip(evens, (odd, even) => ({ odd, even }));
+
+for (let element of oddEvenPairs) {
+    console.log(element);
+}
+```
+
+### Result:
+
+```
+{ odd: 1, even: 2 }
+{ odd: 3, even: 4 }
+{ odd: 5, even: 6 }
+{ odd: 7, even: 8 }
 ```

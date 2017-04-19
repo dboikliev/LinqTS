@@ -122,6 +122,7 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
 
     /**
      * Applies a transformation function to each corresponding pair of elements from the iterables.
+     * The paring ends when the shorter sequence ends, the remaining elements of the other sequence are ignored.
      * @param  {Iterable<TRight>} right The second iterable.
      * @param  {function} selector A function witch transforms a pair of elements into another value.
      * @returns An iterable of the trasnformed values.
