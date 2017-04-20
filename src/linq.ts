@@ -44,8 +44,8 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
      * @param  {function} resultSelector A function merging the matching objects into a result
      * @returns {Linqable} An iterable of values produced by resultSelector
      */
-    join<TRight, TResult>(right: Iterable<TRight>, 
-        leftSelector: (element: TSource) => any, 
+    join<TRight, TResult>(right: Iterable<TRight>,
+        leftSelector: (element: TSource) => any,
         rightSelector: (element: TRight) => any,
         resultSelector: (left: TSource, right: TRight) => TResult): Linqable<TResult> {
             return new Join<TSource, TRight, TResult>(this,
@@ -55,8 +55,8 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
                 resultSelector
             );
     }
-    
-    
+
+
     /**
      * Skips a specific number of elements.
      * @param  {number} count The number of elements to skip.
@@ -92,7 +92,7 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
     takeWhile(predicate: (element: TSource) => boolean): Linqable<TSource> {
         return new TakeWhile<TSource>(this, predicate);
     }
-    
+
     /**
      * Filters the elements based on a predicate.
      * @param  {function} predicate A predicate which the elements will be checked against.
@@ -101,7 +101,7 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
     where(predicate: (element: TSource) => boolean): Linqable<TSource> {
         return new Where<TSource>(this, predicate);
     }
-    
+
     /**
      * Transforms the elements of the iterable into another value.
      * @param  {function} selector A function which transforms an element into another value.
@@ -202,11 +202,11 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
         else {
             let iter = this[Symbol.iterator]();
             let descriptor = iter.next();
-            
+
             return descriptor.done ? defaultInitializer() : descriptor.value;
         }
     }
-    
+
     /**
      * Gets the max element in a sequence according to a transform function.
      * @param  {function} transform A function returning a primitive value used for copmaring elements in the sequence.
@@ -293,7 +293,6 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
         return this.skip(index).take(1).first();
     }
 
-    
     /**
      * Turns the sequence to an array.
      * @returns {TSource[]} An array of the sequence elements.
@@ -388,7 +387,7 @@ class Skip<TSource> extends Linqable<TSource> {
 
     constructor(elements: Iterable<TSource>, count: number) {
         super();
-        this._elements = elements
+        this._elements = elements;
         this._count = count;
     }
 
@@ -412,7 +411,7 @@ class SkipWhile<TSource> extends Linqable<TSource> {
 
     constructor(elements: Iterable<TSource>, predicate: (element: TSource) => boolean) {
         super();
-        this._elements = elements
+        this._elements = elements;
         this._predicate = predicate;
     }
 
@@ -422,7 +421,7 @@ class SkipWhile<TSource> extends Linqable<TSource> {
         let lastResult;
         do {
             lastResult = iterator.next();
-        } while(this._predicate(lastResult.value));
+        } while (this._predicate(lastResult.value));
 
         return {
             next: (): IteratorResult<TSource> => {
@@ -439,7 +438,7 @@ class SkipWhile<TSource> extends Linqable<TSource> {
                 };
                 return result;
             }
-        }
+        };
     }
 }
 
@@ -449,7 +448,7 @@ class Take<TSource> extends Linqable<TSource> {
 
     constructor(elements: Iterable<TSource>, count: number) {
         super();
-        this._elements = elements
+        this._elements = elements;
         this._count = count;
     }
 
@@ -471,7 +470,7 @@ class TakeWhile<TSource> extends Linqable<TSource> {
 
     constructor(elements: Iterable<TSource>, predicate: (element: TSource) => boolean) {
         super();
-        this._elements = elements
+        this._elements = elements;
         this._predicate = predicate;
     }
 
@@ -491,7 +490,7 @@ class Distinct<TSource> extends Linqable<TSource> {
 
     constructor(elements: Iterable<TSource>, selector?: (element: TSource) => any) {
         super();
-        this._elements = elements
+        this._elements = elements;
         this._selector = selector;
     }
 
@@ -607,7 +606,7 @@ class SelectMany<TSource, TResult> extends Linqable<TResult> {
 
     *[Symbol.iterator](): Iterator<TResult> {
         for (let element of this._elements) {
-            let innerElements = this._selector(element)
+            let innerElements = this._selector(element);
             yield* innerElements;
         }
     }
@@ -625,7 +624,7 @@ class Group<TKey, TValue> extends Linqable<[TKey, TValue[]]> {
 
     *[Symbol.iterator](): Iterator<[TKey, TValue[]]> {
         let groups = new Map<TKey, TValue[]>();
-        
+
         for (let element of this._elements) {
             let key = this._selector(element);
             let group = groups.get(key) || [];
@@ -644,10 +643,10 @@ class Join<TLeft, TRight, TResult> extends Linqable<TResult> {
     private _rightSelector: (element: TRight) => any;
     private _resultSelector: (left: TLeft, right: TRight) => TResult;
 
-    constructor(leftElements: Iterable<TLeft>, 
+    constructor(leftElements: Iterable<TLeft>,
         rightElements: Iterable<TRight>,
-        leftSelector: (element: TLeft) => any, 
-        rightSelector: (element: TRight) => any, 
+        leftSelector: (element: TLeft) => any,
+        rightSelector: (element: TRight) => any,
         resultSelector: (left: TLeft, right: TRight) => TResult) {
         super();
         this._leftElements = leftElements;
@@ -659,7 +658,7 @@ class Join<TLeft, TRight, TResult> extends Linqable<TResult> {
 
     *[Symbol.iterator](): Iterator<TResult> {
         let groups = new Map<any, TRight[]>();
-        
+
         for (let element of this._rightElements) {
             let key = this._rightSelector(element);
             let group = groups.get(key) || [];
@@ -670,7 +669,7 @@ class Join<TLeft, TRight, TResult> extends Linqable<TResult> {
         for (let left of this._leftElements) {
             let leftKey = this._leftSelector(left);
             let group = groups.get(leftKey) || [];
-            
+
             for (let match of group) {
                 yield this._resultSelector(left, match);
             }
@@ -720,7 +719,7 @@ export default function linq<T>(iterable: Iterable<T>): Linqable<T> {
 export function range(start: number = 0, step: number = 1, end: number = Infinity): Linqable<number> {
     return linq({
         *[Symbol.iterator]() {
-            for (let i = start; end == Infinity || i <= end; i += step) {
+            for (let i = start; end === Infinity || i <= end; i += step) {
                 yield i;
             }
         }
