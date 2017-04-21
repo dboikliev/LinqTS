@@ -186,7 +186,7 @@ for (let element of oddEvenPairs) {
 }
 ```
 
-### Result:
+#### Result:
 
 ```
 { odd: 1, even: 2 }
