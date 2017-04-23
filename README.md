@@ -1,5 +1,7 @@
 # LinqTS
 
+[![Build Status](https://travis-ci.org/dboikliev/LinqTS.svg?branch=master)](https://travis-ci.org/dboikliev/LinqTS)
+
 An api for lazy querying of iterables, implemented in TypeScript and inspired by .NET's LINQ methods.
 
 ## Motivation:
