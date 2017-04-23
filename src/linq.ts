@@ -273,6 +273,13 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
         return avg;
     }
 
+    /**
+     * Tests the equality of two seuqneces by checking each corresponding pari of elements against the provided predicate.
+     * If a predicate is not provided the elements will be compared using the strict equality (===) operator.
+     * @param {Iterable<TRight>} right The sequence which will be compared to the current sequence.
+     * @param {function} predicate A function that takes an element of each sequence compares them and returns a boolean depeneding whether they are considered equal or not. 
+     * @returns {boolean} True if both sequences are of the same length and all corresponding pairs of elements are equal according to the predicate function. False otherwise.
+     */
     sequenceEquals<TRight>(right: Iterable<TRight>, predicate: (left: TSource, right: TRight) => boolean = (left, right) => left as any === right): boolean {
         let sourceIterator = this[Symbol.iterator]();
         let rightIterator = right[Symbol.iterator]();
