@@ -273,6 +273,25 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
         return avg;
     }
 
+    sequenceEquals<TRight>(right: Iterable<TRight>, predicate: (left: TSource, right: TRight) => boolean = (left, right) => left as any === right): boolean {
+        let sourceIterator = this[Symbol.iterator]();
+        let rightIterator = right[Symbol.iterator]();
+
+        let [sourceResult, rightResult] = [sourceIterator.next(),  rightIterator.next()];
+
+        while (!sourceResult.done && !rightResult.done)  {
+
+            if (!sourceResult.done && !rightResult.done && !predicate(sourceResult.value, rightResult.value)) {
+                return false;
+            }
+
+            sourceResult = sourceIterator.next();
+            rightResult = rightIterator.next();
+        }
+
+        return sourceResult.done && rightResult.done;
+    }
+
     /**
      * Calls a function for each element of the sequence.
      * @param  {function} action A function called for each element of the sequence.
