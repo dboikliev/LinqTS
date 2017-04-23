@@ -1,16 +1,23 @@
 {
   "name": "linqts",
   "version": "1.0.0",
-  "description": "",
+  "description": "An api for lazy querying of iterables, implemented in TypeScript and inspired by .NET's LINQ methods.",
   "main": "app.js",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
-    "jscs": "^3.0.7"
+    "typescript": "^2.2.2"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "Deyan Boikliev",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dboikliev/LinqTS.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dboikliev/LinqTS/issues"
+  },
+  "homepage": "https://github.com/dboikliev/LinqTS#readme"
 }
