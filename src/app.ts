@@ -1,10 +1,7 @@
-import linq from "./linq";
+import { range } from "./linq";
 
-let odds = [1, 3, 5, 7];
-let evens = [2, 4, 6, 8];
+let first = [{ name: "Pesho" }];
+let second = [{ name: "Pesho" }];
 
-let areEqual = linq(odds)
-    .sequenceEquals(evens);
+console.log(range(1, 1, 100).last());
 
-console.log(areEqual);
-    

@@ -208,6 +208,44 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
     }
 
     /**
+     * Gets the last element of the iterable.
+     * @returns {TSource} The last element of the iterable.
+     */
+    last(): TSource {
+        let last;
+        for (let element of this) {
+            last = element;
+        }
+        return last;
+    }
+
+    /**
+     * Gets the last element of the sequence. If a predicate is provited the last element matching the predicated will be returned.
+     * If there aren't any matching elements or if the sequence is empty a default value provided by the defaultInitializer will be returned.
+     * @param  {function} predicate A predicate used for finding a matching element.
+     * @param  {function} defaultInitializer A function returning default value if there aren't any matching elements.
+     * @returns The last matching element or a default value.
+     */
+    lastOrDefault<TDefault>(predicate?: (element: TSource) => boolean, defaultInitializer: () => TDefault = () => undefined): TSource | TDefault {
+        let last;
+        let isFound = false;
+        for (let value of this) {
+            if (predicate) {
+                if (predicate(value)) {
+                    last = value;
+                    isFound = true;
+                }
+            }
+            else {
+                last = value;
+                isFound = true;
+            }
+        }
+
+        return isFound ? last : defaultInitializer();
+    }
+
+    /**
      * Gets the max element in a sequence according to a transform function.
      * @param  {function} transform A function returning a primitive value used for copmaring elements in the sequence.
      * @returns TSource The max element of the sequence.
@@ -731,7 +769,7 @@ class Ordered<TSource> extends Linqable<TSource> {
  * @param {Iterable<T>} iterable The sequence which will be queried.
  * @returns {Linqable<number>} An object with support for LINQ queries.
  */
-export default function linq<T>(iterable: Iterable<T>): Linqable<T> {
+export function linq<T>(iterable: Iterable<T>): Linqable<T> {
     return new List<T>(iterable);
 }
 
