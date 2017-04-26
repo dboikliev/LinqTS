@@ -33,6 +33,8 @@ Implementing a lazy API similar to .NET's LINQ methods by using iterators.
 1. elementAt
 1. first
 1. firstOrDefault
+1. last
+1. lastOrDefault
 1. forEach
 1. toArray
 1. count
