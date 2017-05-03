@@ -56,7 +56,6 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
             );
     }
 
-
     /**
      * Skips a specific number of elements.
      * @param  {number} count The number of elements to skip.
@@ -402,6 +401,24 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
      */
     intersect(right: Iterable<TSource>): Linqable<TSource> {
         return new Intersect<TSource>(this, right);
+    }
+
+    /**
+     * Gets the index of the element in the sequence.
+     * @param  {TSource} element 
+     * @returns {number} The index of the element.
+     */
+    indexOf(element: TSource): number {
+        let index = 0;
+
+        for (let el of this) {
+            if (el === element) {
+                return index;
+            }
+            index++;
+        }
+
+        return -1;
     }
 }
 
