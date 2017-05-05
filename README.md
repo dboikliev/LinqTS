@@ -30,6 +30,7 @@ Implementing a lazy API similar to .NET's LINQ methods by using iterators.
 1. maxBy
 1. averageBy
 1. sequenceEquals
+1. indexOf
 1. elementAt
 1. first
 1. firstOrDefault
