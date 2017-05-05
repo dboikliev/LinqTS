@@ -806,3 +806,12 @@ export function range(start: number = 0, step: number = 1, end: number = Infinit
         }
     });
 }
+
+/**
+ * The identity function (x => x). It takes an element and returns it.
+ * @param  {T} element The element to return.
+ * @returns {T} The element which was passed as a parameter.
+ */
+export function id<T>(element: T) {
+    return element;
+}
