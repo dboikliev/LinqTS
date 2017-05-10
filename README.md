@@ -40,6 +40,8 @@ Implementing a lazy API similar to .NET's LINQ methods by using iterators.
 1. forEach
 1. toArray
 1. count
+1. range
+1. id
 
 ## Examples:
 

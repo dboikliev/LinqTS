@@ -5,4 +5,5 @@ let second = [{ name: "Pesho" }];
 
 range(1, 1, 100)
     .windowed(5)
+    .select(win => linq(win).averageBy(id))
     .forEach(console.log);
