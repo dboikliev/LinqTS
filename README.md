@@ -24,6 +24,7 @@ Implementing a lazy API similar to .NET's LINQ methods by using iterators.
 1. except
 1. intersect
 1. aggregate
+1. windowed
 1. any
 1. all
 1. minBy
