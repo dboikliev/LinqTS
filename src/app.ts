@@ -10,17 +10,9 @@ let people = [
     { id: 7, age: 5 },
 ];
 
-let ordered = linq(people).orderBy((a, b) => {
-    if (a.age > b.age) {
-        return 1;
-    }
-    else if (a.age < b.age) {
-        return -1;
-    }
-    return 0;
-})
+let elements = linq(people).skip(3);
 
-for (let element of ordered) {
+for (let element of elements) {
     console.log(element);
 }
     
