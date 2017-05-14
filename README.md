@@ -16,7 +16,7 @@ Implementing a lazy API similar to .NET's LINQ methods by using iterators.
 1. [zip](#zip)
 1. [groupBy](#groupBy)
 1. [join](#join)
-1. orderBy
+1. [orderBy](#orderBy)
 1. skip
 1. skipWhile
 1. take
@@ -204,7 +204,7 @@ for (let element of oddEvenPairs) {
 { odd: 7, even: 8 }
 ```
 
-#### 6. GroupBy<a id="zip"></a>
+#### 6. GroupBy<a id="groupBy"></a>
 
 Groups elements based on a selector function. The function returns a sequence of arrays with the group key as the first element and an array of the group elements as the second element.
 
@@ -223,7 +223,7 @@ for (let group of groups) {
 [ 0, [ 2, 4, 6, 8, 10 ] ]
 ```
 
-#### 7. Join<a id="zip"></a>
+#### 7. Join<a id="join"></a>
 
 Performs a join on objects matching property values according to the provided leftSelector and rightSelector. The matching objects are merged into another value by resultSelector.
 
@@ -242,4 +242,46 @@ for (let group of joined) {
 
 ```
 { name: 'Ivan', age: 21, phone: '0123456789' }
+```
+
+#### 8. OrderBy<a id="orderBy"></a>
+
+ Orders elements based on a comparer function.
+
+```typescript
+let people = [
+    { id: 1, age: 18 },
+    { id: 2, age: 29 },
+    { id: 3, age: 8 },
+    { id: 4, age: 20 },
+    { id: 5, age: 18 },
+    { id: 6, age: 32 },
+    { id: 7, age: 5 },
+];
+
+let ordered = linq(people).orderBy((a, b) => {
+    if (a.age > b.age) {
+        return 1;
+    }
+    else if (a.age < b.age) {
+        return -1;
+    }
+    return 0;
+})
+
+for (let element of ordered) {
+    console.log(element);
+}
+```
+
+#### Result:
+
+```
+{ id: 7, age: 5 }
+{ id: 3, age: 8 }
+{ id: 1, age: 18 }
+{ id: 5, age: 18 }
+{ id: 4, age: 20 }
+{ id: 2, age: 29 }
+{ id: 6, age: 32 }
 ```

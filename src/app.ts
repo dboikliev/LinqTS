@@ -1,11 +1,26 @@
 import { range, id, linq } from "./linq";
 
-let first = [{ name: "Ivan", age: 21 }];
-let second = [{ name: "Ivan", phone: "0123456789" }];
+let people = [
+    { id: 1, age: 18 },
+    { id: 2, age: 29 },
+    { id: 3, age: 8 },
+    { id: 4, age: 20 },
+    { id: 5, age: 18 },
+    { id: 6, age: 32 },
+    { id: 7, age: 5 },
+];
 
-let joined = linq(first).join(second, f => f.name, s => s.name, (f, s) => ({ name: f.name, age: f.age, phone: s.phone }));
+let ordered = linq(people).orderBy((a, b) => {
+    if (a.age > b.age) {
+        return 1;
+    }
+    else if (a.age < b.age) {
+        return -1;
+    }
+    return 0;
+})
 
-for (let group of joined) {
-    console.log(group);
+for (let element of ordered) {
+    console.log(element);
 }
     
