@@ -14,8 +14,8 @@ Implementing a lazy API similar to .NET's LINQ methods by using iterators.
 1. [selectMany](#selectMany)
 1. [distinct](#distinct)
 1. [zip](#zip)
-1. groupBy
-1. join
+1. [groupBy](#groupBy)
+1. [join](#join)
 1. orderBy
 1. skip
 1. skipWhile
@@ -202,4 +202,44 @@ for (let element of oddEvenPairs) {
 { odd: 3, even: 4 }
 { odd: 5, even: 6 }
 { odd: 7, even: 8 }
+```
+
+#### 6. GroupBy<a id="zip"></a>
+
+Groups elements based on a selector function. The function returns a sequence of arrays with the group key as the first element and an array of the group elements as the second element.
+
+```typescript
+let groups = linq([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).groupBy(i => i % 2);
+
+for (let group of groups) {
+    console.log(group);
+}
+```
+
+#### Result:
+
+```
+[ 1, [ 1, 3, 5, 7, 9 ] ]
+[ 0, [ 2, 4, 6, 8, 10 ] ]
+```
+
+#### 7. Join<a id="zip"></a>
+
+Performs a join on objects matching property values according to the provided leftSelector and rightSelector. The matching objects are merged into another value by resultSelector.
+
+```typescript
+let first = [{ name: "Ivan", age: 21 }];
+let second = [{ name: "Ivan", phone: "0123456789" }];
+
+let joined = linq(first).join(second, f => f.name, s => s.name, (f, s) => ({ name: f.name, age: f.age, phone: s.phone }));
+
+for (let group of joined) {
+    console.log(group);
+}
+```
+
+#### Result:
+
+```
+{ name: 'Ivan', age: 21, phone: '0123456789' }
 ```
