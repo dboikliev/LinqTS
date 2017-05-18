@@ -413,6 +413,15 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
     }
 
     /**
+     * Provides a sliding window of elements from the siquence.
+     * @param  {number} size The size of the window.
+     * @returns {Iterable<TSource[]>} A sequence of windows.
+     */
+    windowed(size: number): Linqable<TSource[]> {
+        return new Windowed(this, size);
+    }
+
+    /**
      * Gets the index of the element in the sequence.
      * @param  {TSource} element 
      * @returns {number} The index of the element.
@@ -428,6 +437,43 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
         }
 
         return -1;
+    }
+}
+
+class Windowed<TSource> extends Linqable<TSource[]> {
+    private _source: Iterable<TSource>;
+    private _size: number;
+
+    constructor(source: Iterable<TSource>, size: number) {
+        super();
+        this._source = source;
+        this._size = size;
+    }
+
+    *[Symbol.iterator]() {
+        let window = [];
+
+        let iterator = this._source[Symbol.iterator]();
+        let current: IteratorResult<TSource>;
+        for (let i = 0; i < this._size; i++) {
+            current = iterator.next();
+            if (current.done) {
+                break;
+            }
+            window.push(current.value);
+        }
+
+        yield window;
+
+        current = iterator.next();
+        while (current && !current.done) {
+            window.shift();
+            if (window.length < this._size) {
+                window.push(current.value);
+            }
+            yield window;
+            current = iterator.next();
+        }
     }
 }
 
@@ -831,4 +877,13 @@ export function range(start: number = 0, step: number = 1, end: number = Infinit
             }
         }
     });
+}
+
+/**
+ * The identity function (x => x). It takes an element and returns it.
+ * @param  {T} element The element to return.
+ * @returns {T} The element which was passed as a parameter.
+ */
+export function id<T>(element: T) {
+    return element;
 }
