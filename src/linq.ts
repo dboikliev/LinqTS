@@ -158,6 +158,15 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
     }
 
     /**
+     * Concatenates the sequences together.
+     * @param  {Iterable<TSourse>} other The sequence that will be concatenated to the current sequence.
+     * @returns An iterable of the concatenated elements.
+     */
+    concat(other: Iterable<TSource>): Linqable<TSource> {
+        return new Concat<TSource>(this, other);
+    }
+
+    /**
      * Reduces the iterable into a value.
      * @param  {TResult} seed A starting value.
      * @param  {function} accumulator An accumulator function.
@@ -781,13 +790,30 @@ class Ordered<TSource> extends Linqable<TSource> {
     }
 }
 
+
+class Concat<TSource> extends Linqable<TSource> {
+    private _first: Iterable<TSource>;
+    private _second:  Iterable<TSource>;
+
+    constructor(first: Iterable<TSource>, second: Iterable<TSource>) {
+        super();
+        this._first = first;
+        this._second = second;
+    }
+
+    *[Symbol.iterator](): Iterator<TSource> {
+        yield* this._first;
+        yield* this._second;
+    }
+}
+
 /**
  * Wraps an interable into an object which supports LINQ queries.
  * @param {Iterable<T>} iterable The sequence which will be queried.
  * @returns {Linqable<number>} An object with support for LINQ queries.
  */
-export function linq<T>(iterable: Iterable<T>): Linqable<T> {
-    return new List<T>(iterable);
+export function linq<T>(iterable: Iterable<T> | number | string | object): Linqable<T> {
+    return new List<T>(iterable as Iterable<T>);
 }
 
 /**
