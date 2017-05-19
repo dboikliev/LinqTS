@@ -396,7 +396,7 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
 
     /**
      * Excludes all elements of the provided sequence from the current sequence.
-     * @param  {Iterable<TSource>} right 
+     * @param  {Iterable<TSource>} right The sequence of elements that will be excluded.
      * @returns {number} A sequence of the elements which are not present in the provided sequence.
      */
     except(right: Iterable<TSource>): Linqable<TSource> {
@@ -405,11 +405,20 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
 
     /**
      * Intersects the current sequence with the provided sequence.
-     * @param  {Iterable<TSource>} right 
+     * @param  {Iterable<TSource>} right The sequence of elements that will be intersected with the current seqeunce.
      * @returns {number} A sequence of the elements which are present in both the provided sequences.
      */
     intersect(right: Iterable<TSource>): Linqable<TSource> {
         return new Intersect<TSource>(this, right);
+    }
+    
+    /**
+     * Performs a unioon operation on the current sequence and the provided sequence.
+     * @param  {Iterable<TSource>} right The other sequence with which a union will be performed.
+     * @returns {number} A sequence of the unique elements of both sequences.
+     */
+    union(right: Iterable<TSource>): Linqable<TSource> {
+        return new Union<TSource>(this, right);
     }
 
     /**
@@ -511,6 +520,32 @@ class Intersect<TSource> extends Linqable<TSource> {
         let set = new Set(this._right);
         for (let element of this._left) {
             if (set.has(element)) {
+                yield element;
+            }
+        }
+    }
+}
+
+class Union<TSource> extends Linqable<TSource> {
+    private _left: Iterable<TSource>;
+    private _right: Iterable<TSource>;
+
+    constructor(left: Iterable<TSource>, right: Iterable<TSource>) {
+        super();
+        this._left = left;
+        this._right = right;
+    }
+
+    *[Symbol.iterator]() {
+        let set = new Set(this._left);
+
+        for (let element of set) {
+            yield element;
+        }
+
+        for (let element of this._right) {
+            if (!set.has(element)) {
+                set.add(element)
                 yield element;
             }
         }

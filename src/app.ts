@@ -7,7 +7,4 @@ let first = [{ name: "Pesho" }];
 let second = [{ name: "Pesho" }];
 
 
-range(1, 1)
-    .take(10)
-    .concat(range(20, 10).take(20))
-    .forEach(e => console.log(e));
+range(1, 1, 10).union(range(5, 1, 20)).forEach(e => console.log(e));
