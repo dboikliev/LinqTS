@@ -158,6 +158,15 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
     }
 
     /**
+     * Concatenates the sequences together.
+     * @param  {Iterable<TSourse>} other The sequence that will be concatenated to the current sequence.
+     * @returns An iterable of the concatenated elements.
+     */
+    concat(other: Iterable<TSource>): Linqable<TSource> {
+        return new Concat<TSource>(this, other);
+    }
+
+    /**
      * Reduces the iterable into a value.
      * @param  {TResult} seed A starting value.
      * @param  {function} accumulator An accumulator function.
@@ -387,7 +396,7 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
 
     /**
      * Excludes all elements of the provided sequence from the current sequence.
-     * @param  {Iterable<TSource>} right 
+     * @param  {Iterable<TSource>} right The sequence of elements that will be excluded.
      * @returns {number} A sequence of the elements which are not present in the provided sequence.
      */
     except(right: Iterable<TSource>): Linqable<TSource> {
@@ -396,11 +405,20 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
 
     /**
      * Intersects the current sequence with the provided sequence.
-     * @param  {Iterable<TSource>} right 
+     * @param  {Iterable<TSource>} right The sequence of elements that will be intersected with the current seqeunce.
      * @returns {number} A sequence of the elements which are present in both the provided sequences.
      */
     intersect(right: Iterable<TSource>): Linqable<TSource> {
         return new Intersect<TSource>(this, right);
+    }
+    
+    /**
+     * Performs a unioon operation on the current sequence and the provided sequence.
+     * @param  {Iterable<TSource>} right The other sequence with which a union will be performed.
+     * @returns {number} A sequence of the unique elements of both sequences.
+     */
+    union(right: Iterable<TSource>): Linqable<TSource> {
+        return new Union<TSource>(this, right);
     }
 
     /**
@@ -502,6 +520,32 @@ class Intersect<TSource> extends Linqable<TSource> {
         let set = new Set(this._right);
         for (let element of this._left) {
             if (set.has(element)) {
+                yield element;
+            }
+        }
+    }
+}
+
+class Union<TSource> extends Linqable<TSource> {
+    private _left: Iterable<TSource>;
+    private _right: Iterable<TSource>;
+
+    constructor(left: Iterable<TSource>, right: Iterable<TSource>) {
+        super();
+        this._left = left;
+        this._right = right;
+    }
+
+    *[Symbol.iterator]() {
+        let set = new Set(this._left);
+
+        for (let element of set) {
+            yield element;
+        }
+
+        for (let element of this._right) {
+            if (!set.has(element)) {
+                set.add(element)
                 yield element;
             }
         }
@@ -827,13 +871,30 @@ class Ordered<TSource> extends Linqable<TSource> {
     }
 }
 
+
+class Concat<TSource> extends Linqable<TSource> {
+    private _first: Iterable<TSource>;
+    private _second:  Iterable<TSource>;
+
+    constructor(first: Iterable<TSource>, second: Iterable<TSource>) {
+        super();
+        this._first = first;
+        this._second = second;
+    }
+
+    *[Symbol.iterator](): Iterator<TSource> {
+        yield* this._first;
+        yield* this._second;
+    }
+}
+
 /**
  * Wraps an interable into an object which supports LINQ queries.
  * @param {Iterable<T>} iterable The sequence which will be queried.
  * @returns {Linqable<number>} An object with support for LINQ queries.
  */
-export function linq<T>(iterable: Iterable<T>): Linqable<T> {
-    return new List<T>(iterable);
+export function linq<T>(iterable: Iterable<T> | number | string | object): Linqable<T> {
+    return new List<T>(iterable as Iterable<T>);
 }
 
 /**
