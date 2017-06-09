@@ -904,7 +904,7 @@ export function linq<T>(iterable: Iterable<T> | number | string | object): Linqa
  * @param  {number} end The end of the sequence. Infinity by default.
  * @returns {Linqable<number>}
  */
-export function range(start: number = 0, step: number = 1, end: number = Infinity): Linqable<number> {
+export function seq(start: number = 0, step: number = 1, end: number = Infinity): Linqable<number> {
     return linq({
         *[Symbol.iterator]() {
             for (let i = start; end === Infinity || i <= end; i += step) {
