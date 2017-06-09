@@ -422,7 +422,7 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
     }
 
     /**
-     * Provides a sliding window of elements from the siquence.
+     * Provides a sliding window of elements from the sequence.
      * @param  {number} size The size of the window.
      * @returns {Iterable<TSource[]>} A sequence of windows.
      */
