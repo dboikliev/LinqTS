@@ -64,13 +64,10 @@ let people: IPerson[] = [
     { name: "Deyan", age: 25 }
 ];
 
-let namesOfPeopleOlderThan22 = linq(people)
+linq(people)
     .where(p => p.age > 22)
     .select(p => p.name)
-
-for (let name of namesOfPeopleOlderThan22) {
-    console.log(name);
-}
+    .forEach(name => console.log(name))
 ```
 
 #### Result:

@@ -411,7 +411,7 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
     intersect(right: Iterable<TSource>): Linqable<TSource> {
         return new Intersect<TSource>(this, right);
     }
-    
+
     /**
      * Performs a unioon operation on the current sequence and the provided sequence.
      * @param  {Iterable<TSource>} right The other sequence with which a union will be performed.
@@ -545,7 +545,7 @@ class Union<TSource> extends Linqable<TSource> {
 
         for (let element of this._right) {
             if (!set.has(element)) {
-                set.add(element)
+                set.add(element);
                 yield element;
             }
         }
