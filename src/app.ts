@@ -3,11 +3,8 @@ import {
     linq
 } from "./linq";
 
-let people = [
-    { name: "Ivan", age: 25 },
-    { name: "Deyan", age: 22 }
-];
+let numbers = [1, 2, 3];
 
-let oldest = linq(people).maxBy(p => p.age);
+let indexOfTwo = linq(numbers).indexOf(2);
 
-console.log(oldest);
+console.log(indexOfTwo);

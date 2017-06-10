@@ -591,7 +591,7 @@ console.log(youngest);
 
 #### 22. MaxBy<a id="maxBy"></a>
 
-Gets the min element in a sequence according to a transform function.
+Gets the max element in a sequence according to a transform function.
 
 ```typescript
 let people = [
@@ -608,4 +608,63 @@ console.log(oldest);
 
 ```
 { name: "Ivan", age: 25 }
+```
+
+#### 23. AverageBy<a id="averageBy"></a>
+
+Gets the averege value for a sequence.
+
+```typescript
+let people = [
+    { name: "Ivan", age: 25 },
+    { name: "Deyan", age: 22 }
+];
+
+let averageAge = linq(people).averageBy(p => p.age);
+
+console.log(averageAge);
+```
+
+#### Result:
+
+```
+23.5
+```
+
+#### 24. SequenceEquals<a id="sequenceEquals"></a>
+
+Tests the equality of two seuqneces by checking each corresponding pari of elements against the provided predicate.
+If a predicate is not provided the elements will be compared using the strict equality (===) operator.
+
+```typescript
+let first = [1, 2, 3];
+let second = [1, 2, 3];
+
+let areEqual = linq(first).sequenceEquals(second);
+
+console.log(areEqual);
+```
+
+#### Result:
+
+```
+true
+```
+
+#### 25. IndexOf<a id="indexOf"></a>
+
+Gets the index of the element in the sequence.
+
+```typescript
+let numbers = [1, 2, 3];
+
+let indexOfTwo = linq(numbers).indexOf(2);
+
+console.log(indexOfTwo);
+```
+
+#### Result:
+
+```
+1
 ```
