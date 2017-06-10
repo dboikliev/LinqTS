@@ -167,7 +167,7 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
     }
 
     /**
-     * Reduces the iterable into a value.
+     * Reduces the sequence into a value.
      * @param  {TResult} seed A starting value.
      * @param  {function} accumulator An accumulator function.
      */

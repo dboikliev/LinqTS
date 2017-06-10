@@ -25,9 +25,9 @@ Implementing a lazy API similar to .NET's LINQ methods by using iterators.
 1. [intersect](#intersect)
 1. [concat](#concat)
 1. [union](#union)
-1. aggregate
-1. windowed
-1. any
+1. [aggregate](#aggregate)
+1. [windowed](#wondowed)
+1. [any](#any)
 1. all
 1. minBy
 1. maxBy
@@ -492,4 +492,78 @@ for (let element of elements) {
 4
 5
 6
+```
+
+#### 17. Aggregate<a id="aggregate"></a>
+
+Reduces the sequence into a value using an accumulator function.
+
+```typescript
+let people = [
+    { name: "Ivan", age: 20 },
+    { name: "Deyan", age: 22 }
+];
+
+let sumOfAges = linq(people).aggregate(0, (total, person) => total += person.age);
+
+console.log(sumOfAges);
+```
+
+#### Result:
+
+```
+42
+```
+
+#### 18. Windowed<a id="windowed"></a>
+
+Provides a sliding window of elements from the sequence.
+
+```typescript
+let groups = linq([1, 2, 3, 4, 5, 6]).windowed(3);
+
+for (let group of groups) {
+    console.log(group);
+}
+```
+
+#### Result:
+
+```
+[ 1, 2, 3 ]
+[ 2, 3, 4 ]
+[ 3, 4, 5 ]
+[ 4, 5, 6 ]
+```
+
+#### 19. Any<a id="any"></a>
+
+Checks if any of the elements match the provided predicate.
+
+```typescript
+let containsEven = linq([1, 2, 4, 6]).any(n => n % 2 === 0);
+
+console.log(containsEven);
+```
+
+#### Result:
+
+```
+true
+```
+
+#### 20. All<a id="all"></a>
+
+Checks if all of the elements match the provided predicate.
+
+```typescript
+let areAllEvent = linq([1, 2, 4, 6]).all(n => n % 2 === 0);
+
+console.log(areAllEvent);
+```
+
+#### Result:
+
+```
+false
 ```
