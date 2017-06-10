@@ -28,7 +28,7 @@ Implementing a lazy API similar to .NET's LINQ methods by using iterators.
 1. [aggregate](#aggregate)
 1. [windowed](#wondowed)
 1. [any](#any)
-1. all
+1. [all](#all)
 1. minBy
 1. maxBy
 1. averageBy
