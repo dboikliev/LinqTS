@@ -413,7 +413,7 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
     }
 
     /**
-     * Performs a unioon operation on the current sequence and the provided sequence.
+     * Performs a union operation on the current sequence and the provided sequence.
      * @param  {Iterable<TSource>} right The other sequence with which a union will be performed.
      * @returns {number} A sequence of the unique elements of both sequences.
      */

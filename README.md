@@ -21,10 +21,10 @@ Implementing a lazy API similar to .NET's LINQ methods by using iterators.
 1. [skipWhile](#skipWhile)
 1. [take](#take)
 1. [takeWhile](#takeWhile)
-1. except
-1. intersect
-1. concat
-1. union
+1. [except](#except)
+1. [intersect](#intersect)
+1. [concat](#concat)
+1. [union](#union)
 1. aggregate
 1. windowed
 1. any
@@ -426,4 +426,70 @@ for (let element of elements) {
 1
 2
 4
+```
+
+#### 14. Intersect<a id="intersect"></a>
+
+Returns a sequence representing the intersection of the sequences - elements present in both sequences.
+
+```typescript
+let elements = linq([1, 2, 3, 4, 5, 6]).intersect([3, 5, 6, 7, 8]);
+
+for (let element of elements) {
+    console.log(element);
+}
+```
+
+#### Result:
+
+```
+3
+5
+6
+```
+
+#### 15. Concat<a id="concat"></a>
+
+Concatenates the sequences together.
+
+```typescript
+let elements = linq([1, 2, 3]).concat([4, 5, 6]);
+
+for (let element of elements) {
+    console.log(element);
+}
+```
+
+#### Result:
+
+```
+1
+2
+3
+4
+5
+6
+```
+
+#### 16. Union<a id="union"></a>
+
+Performs a union operation on the current sequence and the provided sequence and returns a sequence of unique elements present in the both sequences.
+
+```typescript
+let elements = linq([1, 2, 3, 3, 4, 5]).union([4, 5, 5, 6]);
+
+for (let element of elements) {
+    console.log(element);
+}
+```
+
+#### Result:
+
+```
+1
+2
+3
+4
+5
+6
 ```
