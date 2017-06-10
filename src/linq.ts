@@ -191,7 +191,7 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
     }
 
     /**
-     * Gets the first element of the sequence. If a predicate is provited the first element matching the predicated will be returned.
+     * Gets the first element of the sequence. If a predicate is provided the first element matching the predicated will be returned.
      * If there aren't any matching elements or if the sequence is empty a default value provided by the defaultInitializer will be returned.
      * @param  {function} predicate A predicate used for finding a matching element.
      * @param  {function} defaultInitializer A function returning default value if there aren't any matching elements.
@@ -228,7 +228,7 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
     }
 
     /**
-     * Gets the last element of the sequence. If a predicate is provited the last element matching the predicated will be returned.
+     * Gets the last element of the sequence. If a predicate is provided the last element matching the predicated will be returned.
      * If there aren't any matching elements or if the sequence is empty a default value provided by the defaultInitializer will be returned.
      * @param  {function} predicate A predicate used for finding a matching element.
      * @param  {function} defaultInitializer A function returning default value if there aren't any matching elements.
@@ -347,6 +347,7 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
 
     /**
      * Calls a function for each element of the sequence.
+     * The function receives the element and its index in the seqeunce as parameters.
      * @param  {function} action A function called for each element of the sequence.
      */
     forEach(action: (element: TSource, index: number) => void): void {

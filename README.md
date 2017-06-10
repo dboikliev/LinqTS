@@ -668,3 +668,189 @@ console.log(indexOfTwo);
 ```
 1
 ```
+
+#### 26. ElementAt<a id="elementAt"></a>
+
+Gets the element at an index.
+
+```typescript
+let numbers = [1, 2, 3];
+
+let elementAtIndexOne = linq(numbers).elementAt(1);
+
+console.log(elementAtIndexOne);
+```
+
+#### Result:
+
+```
+2
+```
+
+#### 27. First<a id="first"></a>
+
+Gets the first element of the iterable.
+
+```typescript
+let numbers = [1, 2, 3];
+
+let firstElement = linq(numbers).first();
+
+console.log(firstElement);
+```
+
+#### Result:
+
+```
+1
+```
+
+#### 28. FirstOrDefault<a id="firstOrDefault"></a>
+
+Gets the first element of the sequence. If a predicate is provided the first element matching the predicated will be returned.
+If there aren't any matching elements or if the sequence is empty a default value provided by the defaultInitializer will be returned.
+
+```typescript
+let numbers = [1, 2, 3];
+
+let firstEvenElement = linq(numbers).firstOrDefault(n => n % 2 === 0);
+let firstElementLargerThanFive = linq(numbers).firstOrDefault(n => n > 5, () => -1);
+
+console.log(firstEvenElement);
+console.log(firstElementLargerThanFive);
+```
+
+#### Result:
+
+```
+2
+-1
+```
+
+#### 29. Last<a id="last"></a>
+
+Gets the last element of the iterable.
+
+```typescript
+let numbers = [1, 2, 3];
+
+let lastElement = linq(numbers).last();
+
+console.log(lastElement);
+```
+
+#### Result:
+
+```
+3
+```
+
+#### 30. LastOrDefault<a id="lastOrDefault"></a>
+
+Gets the last element of the sequence. If a predicate is provided the last element matching the predicated will be returned.
+If there aren't any matching elements or if the sequence is empty a default value provided by the defaultInitializer will be returned.
+
+```typescript
+let numbers = [1, 2, 3, 4];
+
+let lastEvenElement = linq(numbers).lastOrDefault(n => n % 2 === 0);
+let lastElementLargerThanFive = linq(numbers).lastOrDefault(n => n > 5, () => -1);
+
+console.log(lastEvenElement);
+console.log(lastElementLargerThanFive);
+```
+
+#### Result:
+
+```
+4
+-1
+```
+
+#### 31. ForEach<a id="forEach"></a>
+
+Calls a function for each element of the sequence.
+The function receives the element and its index in the seqeunce as parameters.
+
+```typescript
+linq([1, 2, 3, 4]).forEach(console.log);
+```
+
+#### Result:
+
+```
+1 0
+2 1
+3 2
+4 3
+```
+
+#### 32. ToArray<a id="toArray"></a>
+
+Turns the sequence to an array.
+
+```typescript
+let array = linq([1, 2, 3, 4])
+    .concat([5, 6, 7])
+    .toArray();
+
+console.log(array);
+```
+
+#### Result:
+
+```
+[ 1, 2, 3, 4, 5, 6, 7 ]
+```
+
+#### 33. Count<a id="count"></a>
+
+Counts the number of elements in the sequence.
+
+```typescript
+let count = linq([1, 2, 3, 4]).count();
+
+console.log(count);
+```
+
+#### Result:
+
+```
+4
+```
+
+#### 34. Seq<a id="seq"></a>
+
+Generates a sequence of numbers from start to end (if specified), increasing by the speficied step.
+
+```typescript
+let limited = seq(1, 2, 10).toArray();
+console.log(limited);
+
+let unlimited = seq(1, 2).take(15).toArray();
+console.log(unlimited);
+```
+
+#### Result:
+
+```
+[ 1, 3, 5, 7, 9 ]
+[ 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29 ]
+```
+
+#### 35. Id<a id="id"></a>
+
+The identity function (x => x). It takes an element and returns it.
+It can be useful for operaions like minBy, maxBy, averageBy, and in general in cases where we want the transfor function to return the same element.
+
+```typescript
+let average = linq([1, 2, 3, 4, 5, 6]).averageBy(id);
+
+console.log(average);
+```
+
+#### Result:
+
+```
+3.5
+```

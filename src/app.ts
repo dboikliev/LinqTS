@@ -1,10 +1,8 @@
 import {
-    seq,
+    id,
     linq
 } from "./linq";
 
-let numbers = [1, 2, 3];
+let average = linq([1, 2, 3, 4, 5, 6]).averageBy(id);
 
-let indexOfTwo = linq(numbers).indexOf(2);
-
-console.log(indexOfTwo);
+console.log(average);
