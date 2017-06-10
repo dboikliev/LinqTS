@@ -29,21 +29,21 @@ Implementing a lazy API similar to .NET's LINQ methods by using iterators.
 1. [windowed](#wondowed)
 1. [any](#any)
 1. [all](#all)
-1. minBy
-1. maxBy
-1. averageBy
-1. sequenceEquals
-1. indexOf
-1. elementAt
-1. first
-1. firstOrDefault
-1. last
-1. lastOrDefault
-1. forEach
-1. toArray
-1. count
-1. seq
-1. id
+1. [minBy](#minBy)
+1. [maxBy](#maxBy)
+1. [averageBy](#averageBy)
+1. [sequenceEquals](#sequenceEquals)
+1. [indexOf](#indexOf)
+1. [elementAt](#elementAt)
+1. [first](#first)
+1. [firstOrDefault](#firstOrDefault)
+1. [last](#last)
+1. [lastOrDefault](#lastOrDefault)
+1. [forEach](#forEach)
+1. [toArray](#toArray)
+1. [count](#count)
+1. [seq](#seq)
+1. [id](#id)
 
 ## Examples:
 
@@ -566,4 +566,46 @@ console.log(areAllEvent);
 
 ```
 false
+```
+
+#### 21. MinBy<a id="minBy"></a>
+
+Gets the min element in a sequence according to a transform function.
+
+```typescript
+let people = [
+    { name: "Ivan", age: 25 },
+    { name: "Deyan", age: 22 }
+];
+
+let youngest = linq(people).minBy(p => p.age);
+
+console.log(youngest);
+```
+
+#### Result:
+
+```
+{ name: 'Deyan', age: 22 }
+```
+
+#### 22. MaxBy<a id="maxBy"></a>
+
+Gets the min element in a sequence according to a transform function.
+
+```typescript
+let people = [
+    { name: "Ivan", age: 25 },
+    { name: "Deyan", age: 22 }
+];
+
+let oldest = linq(people).maxBy(p => p.age);
+
+console.log(oldest);
+```
+
+#### Result:
+
+```
+{ name: "Ivan", age: 25 }
 ```

@@ -3,6 +3,11 @@ import {
     linq
 } from "./linq";
 
-let areAllEvent = linq([1, 2, 4, 6]).all(n => n % 2 === 0);
+let people = [
+    { name: "Ivan", age: 25 },
+    { name: "Deyan", age: 22 }
+];
 
-console.log("Are all even:", areAllEvent);
+let oldest = linq(people).maxBy(p => p.age);
+
+console.log(oldest);
