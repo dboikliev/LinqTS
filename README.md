@@ -18,9 +18,9 @@ Implementing a lazy API similar to .NET's LINQ methods by using iterators.
 1. [join](#join)
 1. [orderBy](#orderBy)
 1. [skip](#skip)
-1. skipWhile
-1. take
-1. takeWhile
+1. [skipWhile](#skipWhile)
+1. [take](#take)
+1. [takeWhile](#takeWhile)
 1. except
 1. intersect
 1. concat
@@ -314,4 +314,116 @@ for (let element of elements) {
 { id: 5, age: 18 }
 { id: 6, age: 32 }
 { id: 7, age: 5 }
+```
+
+#### 10. SkipWhile<a id="skipWhile"></a>
+
+Skips the elements in the sequence while the predicate returns `true`.
+
+```typescript
+let people = [
+    { id: 1, age: 18 },
+    { id: 2, age: 20 },
+    { id: 3, age: 30 },
+    { id: 4, age: 25 },
+    { id: 5, age: 18 },
+    { id: 6, age: 32 },
+    { id: 7, age: 5 },
+];
+
+let elements = linq(people).skipWhile(p => p.age % 2 === 0);
+
+for (let element of elements) {
+    console.log(element);
+}
+```
+
+#### Result:
+
+```
+{ id: 4, age: 25 }
+{ id: 5, age: 18 }
+{ id: 6, age: 32 }
+{ id: 7, age: 5 }
+```
+
+#### 11. Take<a id="take"></a>
+
+Takes a specific number of elements.
+
+```typescript
+let people = [
+    { id: 1, age: 18 },
+    { id: 2, age: 20 },
+    { id: 3, age: 30 },
+    { id: 4, age: 25 },
+    { id: 5, age: 18 },
+    { id: 6, age: 32 },
+    { id: 7, age: 5 },
+];
+
+let elements = linq(people).take(4);
+
+for (let element of elements) {
+    console.log(element);
+}
+```
+
+#### Result:
+
+```
+{ id: 1, age: 18 },
+{ id: 2, age: 20 },
+{ id: 3, age: 30 },
+{ id: 4, age: 25 }
+```
+
+#### 12. TakeWhile<a id="takeWhile"></a>
+
+Takes elements from the sequence while the predicate returns `true`.
+
+```typescript
+let people = [
+    { id: 1, age: 18 },
+    { id: 2, age: 20 },
+    { id: 3, age: 30 },
+    { id: 4, age: 25 },
+    { id: 5, age: 18 },
+    { id: 6, age: 32 },
+    { id: 7, age: 5 },
+];
+
+let elements = linq(people).takeWhile(p => p.age % 2 === 0);
+
+for (let element of elements) {
+    console.log(element);
+}
+```
+
+#### Result:
+
+```
+{ id: 1, age: 18 },
+{ id: 2, age: 20 },
+{ id: 3, age: 30 }
+```
+
+#### 13. Except<a id="except"></a>
+
+Returns a sequence of elements which are not present in the sequence passed to `except`.
+
+```typescript
+let elements = linq([1, 2, 3, 4, 5, 6]).except([3, 5, 6]);
+
+for (let element of elements) {
+    console.log(element);
+}
+```
+
+#### Result:
+
+```
+1
+2
+4
 ```

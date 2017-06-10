@@ -1,4 +1,4 @@
-import { 
+import {
     seq,
     linq
 } from "./linq";
@@ -6,5 +6,8 @@ import {
 let first = [{ name: "Pesho" }];
 let second = [{ name: "Pesho" }];
 
+let elements = linq([1, 2, 3, 4, 5, 6]).except([3, 5, 6]);
 
-seq(1, 1, 10).union(seq(5, 1, 20)).forEach(e => console.log(e));
+for (let element of elements) {
+    console.log(element);
+}
