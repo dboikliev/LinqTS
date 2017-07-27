@@ -841,7 +841,7 @@ console.log(unlimited);
 #### 35. Id<a id="id"></a>
 
 The identity function (x => x). It takes an element and returns it.
-It can be useful for operaions like minBy, maxBy, averageBy, and in general in cases where we want the transfor function to return the same element.
+It can be useful for operaions like minBy, maxBy, averageBy, and in general in cases where we want the transform function to return the same element.
 
 ```typescript
 let average = linq([1, 2, 3, 4, 5, 6]).averageBy(id);
