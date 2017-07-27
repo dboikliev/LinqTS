@@ -894,20 +894,35 @@ class Ordered<TSource> extends Linqable<TSource> {
             let firstComparison = this._comparer(first, second);
 
             if (firstComparison === 0) {
-                let a = selector(first);
-                let b = selector(second);
-                if (a > b) {
-                    return 1;
-                }
-                else if (a === b) {
-                    return 0;
-                }
-                else {
-                    return -1;
-                }
+                return this.compare(first, second, selector);
             }
             return firstComparison;
         });
+    }
+
+    thenByDescending(selector: (elemment: TSource) => number | string): Ordered<TSource> {
+        return new Ordered(this._elements, (first, second) => {
+            let firstComparison = this._comparer(first, second);
+
+            if (firstComparison === 0) {
+                return this.compare(second, first, selector);
+            }
+            return firstComparison;
+        });
+    }
+
+    private compare(first: TSource, second: TSource, selector: (element: TSource) => number | string) {
+        let a = selector(first);
+        let b = selector(second);
+        if (a > b) {
+            return 1;
+        }
+        else if (a === b) {
+            return 0;
+        }
+        else {
+            return -1;
+        }
     }
 }
 
