@@ -149,12 +149,30 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
     }
 
     /**
-     * Orders elements based on a comparer function.
-     * @param  {function} comparer A function used for comparing the elements.
+     * Orders elements based on a comparer or selector function.
+     * @param  {function} comparer A function or a selector used for comparing the elements.
      * @returns An iterable of the ordered elements.
      */
-    orderBy(comparer: (first: TSource, second: TSource) => number): Linqable<TSource> {
-        return new Ordered<TSource>(this, comparer);
+    orderBy(comparer: ((first: TSource, second: TSource) => number) | ((element: TSource) => number | string)): Ordered<TSource> {
+        if (comparer.length === 2) {
+            return new Ordered<TSource>(this, comparer as (first: TSource, second: TSource) => number);
+        }
+
+        return new Ordered<TSource>(this, (left, right) => {
+            let selector = comparer as (element: TSource) => number | string;
+            let a = selector(left);
+            let b = selector(right);
+
+            if (a > b) {
+                return 1;
+            }
+            else if (a === b) {
+                return 0;
+            }
+            else {
+                return -1;
+            }
+        });
     }
 
     /**
@@ -869,6 +887,27 @@ class Ordered<TSource> extends Linqable<TSource> {
         elements.sort(this._comparer);
 
         yield* elements;
+    }
+
+    thenBy(selector: (elemment: TSource) => number | string): Ordered<TSource> {
+        return new Ordered(this._elements, (first, second) => {
+            let firstComparison = this._comparer(first, second);
+
+            if (firstComparison === 0) {
+                let a = selector(first);
+                let b = selector(second);
+                if (a > b) {
+                    return 1;
+                }
+                else if (a === b) {
+                    return 0;
+                }
+                else {
+                    return -1;
+                }
+            }
+            return firstComparison;
+        });
     }
 }
 
