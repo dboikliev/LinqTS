@@ -26,7 +26,7 @@ Implementing a lazy API similar to .NET's LINQ methods by using iterators.
 1. [concat](#concat)
 1. [union](#union)
 1. [aggregate](#aggregate)
-1. [windowed](#wondowed)
+1. [windowed](#windowed)
 1. [any](#any)
 1. [all](#all)
 1. [minBy](#minBy)
@@ -517,10 +517,11 @@ console.log(sumOfAges);
 
 #### 18. Windowed<a id="windowed"></a>
 
-Provides a sliding window of elements from the sequence.
+Provides a sliding window of elements from the sequence. By default the windows slides 1 element over.
+A second parameter may be provided to change the number of elements being skipped.
 
 ```typescript
-let groups = linq([1, 2, 3, 4, 5, 6]).windowed(3);
+let groups = linq([1, 2, 3, 4, 5, 6]).windowed(3, 2);
 
 for (let group of groups) {
     console.log(group);
@@ -530,10 +531,11 @@ for (let group of groups) {
 #### Result:
 
 ```
-[ 1, 2, 3 ]
-[ 2, 3, 4 ]
-[ 3, 4, 5 ]
-[ 4, 5, 6 ]
+[ 1, 2, 3 ], 
+[ 3, 4, 5 ], 
+[ 5, 6, 7 ], 
+[ 7, 8, 9 ], 
+[ 9, 10 ]
 ```
 
 #### 19. Any<a id="any"></a>

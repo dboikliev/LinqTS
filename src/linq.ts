@@ -442,12 +442,23 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
     }
 
     /**
+     * Provides batches of elements from the sequence.
+     * @param  {number} size The size of the batch.
+     * @returns {Iterable<TSource[]>} A sequence of batches.
+     */
+    batch(size: number): Linqable<TSource[]> {
+        const step = size;
+        return new Windowed(this, size, step);
+    }
+
+    /**
      * Provides a sliding window of elements from the sequence.
      * @param  {number} size The size of the window.
+     * @param  {number} step The number of elements to skip when sliding.
      * @returns {Iterable<TSource[]>} A sequence of windows.
      */
-    windowed(size: number): Linqable<TSource[]> {
-        return new Windowed(this, size);
+    windowed(size: number, step: number = 1): Linqable<TSource[]> {
+        return new Windowed(this, size, step);
     }
 
     /**
@@ -472,11 +483,13 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
 class Windowed<TSource> extends Linqable<TSource[]> {
     private _source: Iterable<TSource>;
     private _size: number;
+    private _step: number;
 
-    constructor(source: Iterable<TSource>, size: number) {
+    constructor(source: Iterable<TSource>, size: number, step: number) {
         super();
         this._source = source;
         this._size = size;
+        this._step = step;
     }
 
     *[Symbol.iterator]() {
@@ -492,16 +505,35 @@ class Windowed<TSource> extends Linqable<TSource[]> {
             window.push(current.value);
         }
 
-        yield window;
+        yield Array.from(window);
 
         current = iterator.next();
         while (current && !current.done) {
-            window.shift();
-            if (window.length < this._size) {
-                window.push(current.value);
+            let skipped = 0;
+            while (skipped < this._step && window.length > 0) {
+                window.shift();
+                skipped++;
             }
-            yield window;
-            current = iterator.next();
+
+            while (window.length < this._size) {
+                if (skipped >= this._step) {
+                    window.push(current.value);
+                }
+                else {
+                    skipped++;
+                }
+
+                current = iterator.next();
+                if (current.done) {
+                    break;
+                }
+            }
+
+            if (window.length === 0) {
+                return;
+            }
+
+            yield Array.from(window);
         }
     }
 }
