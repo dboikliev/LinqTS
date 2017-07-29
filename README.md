@@ -79,7 +79,7 @@ Deyan
 
 ## Operations:
 
-#### 1. Where<a id="where"></a>
+#### Where<a id="where"></a>
 
 Where filters the iterable based on a predicate function.
 A sequence of the elements for which the predicate returns `true` will be returned.
@@ -103,7 +103,7 @@ for (let number of evenNumbers) {
 10
 ```
 
-#### 2. Select <a id="select"></a>
+####Select <a id="select"></a>
 
 Each element of an iterable is trasnformed into another value - the return value of the function passed to `select`.
 
@@ -126,7 +126,7 @@ for (let number of numbersTimes10) {
 50
 ```
 
-#### 3. SelectMany <a id="selectMany"></a>
+####SelectMany <a id="selectMany"></a>
 
 Flattens iterable elements into a single iterable sequence.
 `selectMany` expects a function which takes an element from the sequence returns an iterable. All of the results are flattent into a single sequence.
@@ -156,7 +156,7 @@ for (let number of flattened) {
 6
 ```
 
-#### 4. Distinct<a id="distinct"></a>
+#### Distinct<a id="distinct"></a>
 
 Gets the distinct elements of a sequence based on a selector function. If a selector function is not passed, it will get the distinct elements by reference.
 
@@ -178,7 +178,7 @@ for (let number of distinct) {
 { value: 3 }
 ```
 
-#### 5. Zip<a id="zip"></a>
+#### Zip<a id="zip"></a>
 
 Applies a transformation function to each corresponding pair of elements from the iterables. The paring ends when the shorter sequence ends, the remaining elements of the other sequence are ignored.
 
@@ -203,7 +203,7 @@ for (let element of oddEvenPairs) {
 { odd: 7, even: 8 }
 ```
 
-#### 6. GroupBy<a id="groupBy"></a>
+#### GroupBy<a id="groupBy"></a>
 
 Groups elements based on a selector function. The function returns a sequence of arrays with the group key as the first element and an array of the group elements as the second element.
 
@@ -222,7 +222,7 @@ for (let group of groups) {
 [ 0, [ 2, 4, 6, 8, 10 ] ]
 ```
 
-#### 7. Join<a id="join"></a>
+#### Join<a id="join"></a>
 
 Performs a join on objects matching property values according to the provided leftSelector and rightSelector. The matching objects are merged into another value by resultSelector.
 
@@ -243,7 +243,7 @@ for (let group of joined) {
 { name: 'Ivan', age: 21, phone: '0123456789' }
 ```
 
-#### 8. OrderBy<a id="orderBy"></a>
+#### OrderBy<a id="orderBy"></a>
 
 Orders elements based on a comparer function.
 
@@ -285,7 +285,7 @@ for (let element of ordered) {
 { id: 6, age: 32 }
 ```
 
-#### 9. Skip<a id="skip"></a>
+#### Skip<a id="skip"></a>
 
 Skips a specific number of elements.
 
@@ -316,7 +316,7 @@ for (let element of elements) {
 { id: 7, age: 5 }
 ```
 
-#### 10. SkipWhile<a id="skipWhile"></a>
+#### SkipWhile<a id="skipWhile"></a>
 
 Skips the elements in the sequence while the predicate returns `true`.
 
@@ -347,7 +347,7 @@ for (let element of elements) {
 { id: 7, age: 5 }
 ```
 
-#### 11. Take<a id="take"></a>
+#### Take<a id="take"></a>
 
 Takes a specific number of elements.
 
@@ -378,7 +378,7 @@ for (let element of elements) {
 { id: 4, age: 25 }
 ```
 
-#### 12. TakeWhile<a id="takeWhile"></a>
+#### TakeWhile<a id="takeWhile"></a>
 
 Takes elements from the sequence while the predicate returns `true`.
 
@@ -408,7 +408,7 @@ for (let element of elements) {
 { id: 3, age: 30 }
 ```
 
-#### 13. Except<a id="except"></a>
+#### Except<a id="except"></a>
 
 Returns a sequence of elements which are not present in the sequence passed to `except`.
 
@@ -428,7 +428,7 @@ for (let element of elements) {
 4
 ```
 
-#### 14. Intersect<a id="intersect"></a>
+#### Intersect<a id="intersect"></a>
 
 Returns a sequence representing the intersection of the sequences - elements present in both sequences.
 
@@ -448,7 +448,7 @@ for (let element of elements) {
 6
 ```
 
-#### 15. Concat<a id="concat"></a>
+#### Concat<a id="concat"></a>
 
 Concatenates the sequences together.
 
@@ -471,7 +471,7 @@ for (let element of elements) {
 6
 ```
 
-#### 16. Union<a id="union"></a>
+#### Union<a id="union"></a>
 
 Performs a union operation on the current sequence and the provided sequence and returns a sequence of unique elements present in the both sequences.
 
@@ -494,7 +494,7 @@ for (let element of elements) {
 6
 ```
 
-#### 17. Aggregate<a id="aggregate"></a>
+#### Aggregate<a id="aggregate"></a>
 
 Reduces the sequence into a value using an accumulator function.
 
@@ -515,7 +515,7 @@ console.log(sumOfAges);
 42
 ```
 
-#### 18. Windowed<a id="windowed"></a>
+#### Windowed<a id="windowed"></a>
 
 Provides a sliding window of elements from the sequence. By default the windows slides 1 element over.
 A second parameter may be provided to change the number of elements being skipped.
@@ -538,7 +538,7 @@ for (let group of groups) {
 [ 9, 10 ]
 ```
 
-#### 19. Any<a id="any"></a>
+#### Any<a id="any"></a>
 
 Checks if any of the elements match the provided predicate.
 
@@ -554,7 +554,7 @@ console.log(containsEven);
 true
 ```
 
-#### 20. All<a id="all"></a>
+#### All<a id="all"></a>
 
 Checks if all of the elements match the provided predicate.
 
@@ -570,7 +570,7 @@ console.log(areAllEvent);
 false
 ```
 
-#### 21. MinBy<a id="minBy"></a>
+#### MinBy<a id="minBy"></a>
 
 Gets the min element in a sequence according to a transform function.
 
@@ -591,7 +591,7 @@ console.log(youngest);
 { name: 'Deyan', age: 22 }
 ```
 
-#### 22. MaxBy<a id="maxBy"></a>
+#### MaxBy<a id="maxBy"></a>
 
 Gets the max element in a sequence according to a transform function.
 
@@ -612,7 +612,7 @@ console.log(oldest);
 { name: "Ivan", age: 25 }
 ```
 
-#### 23. AverageBy<a id="averageBy"></a>
+#### AverageBy<a id="averageBy"></a>
 
 Gets the averege value for a sequence.
 
@@ -633,7 +633,7 @@ console.log(averageAge);
 23.5
 ```
 
-#### 24. SequenceEquals<a id="sequenceEquals"></a>
+#### SequenceEquals<a id="sequenceEquals"></a>
 
 Tests the equality of two seuqneces by checking each corresponding pari of elements against the provided predicate.
 If a predicate is not provided the elements will be compared using the strict equality (===) operator.
@@ -653,7 +653,7 @@ console.log(areEqual);
 true
 ```
 
-#### 25. IndexOf<a id="indexOf"></a>
+#### IndexOf<a id="indexOf"></a>
 
 Gets the index of the element in the sequence.
 
@@ -671,7 +671,7 @@ console.log(indexOfTwo);
 1
 ```
 
-#### 26. ElementAt<a id="elementAt"></a>
+#### ElementAt<a id="elementAt"></a>
 
 Gets the element at an index.
 
@@ -689,7 +689,7 @@ console.log(elementAtIndexOne);
 2
 ```
 
-#### 27. First<a id="first"></a>
+#### First<a id="first"></a>
 
 Gets the first element of the iterable.
 
@@ -707,7 +707,7 @@ console.log(firstElement);
 1
 ```
 
-#### 28. FirstOrDefault<a id="firstOrDefault"></a>
+#### FirstOrDefault<a id="firstOrDefault"></a>
 
 Gets the first element of the sequence. If a predicate is provided the first element matching the predicated will be returned.
 If there aren't any matching elements or if the sequence is empty a default value provided by the defaultInitializer will be returned.
@@ -729,7 +729,7 @@ console.log(firstElementLargerThanFive);
 -1
 ```
 
-#### 29. Last<a id="last"></a>
+#### Last<a id="last"></a>
 
 Gets the last element of the iterable.
 
@@ -747,7 +747,7 @@ console.log(lastElement);
 3
 ```
 
-#### 30. LastOrDefault<a id="lastOrDefault"></a>
+#### LastOrDefault<a id="lastOrDefault"></a>
 
 Gets the last element of the sequence. If a predicate is provided the last element matching the predicated will be returned.
 If there aren't any matching elements or if the sequence is empty a default value provided by the defaultInitializer will be returned.
@@ -769,7 +769,7 @@ console.log(lastElementLargerThanFive);
 -1
 ```
 
-#### 31. ForEach<a id="forEach"></a>
+#### ForEach<a id="forEach"></a>
 
 Calls a function for each element of the sequence.
 The function receives the element and its index in the seqeunce as parameters.
@@ -787,7 +787,7 @@ linq([1, 2, 3, 4]).forEach(console.log);
 4 3
 ```
 
-#### 32. ToArray<a id="toArray"></a>
+#### ToArray<a id="toArray"></a>
 
 Turns the sequence to an array.
 
@@ -805,7 +805,7 @@ console.log(array);
 [ 1, 2, 3, 4, 5, 6, 7 ]
 ```
 
-#### 33. Count<a id="count"></a>
+#### Count<a id="count"></a>
 
 Counts the number of elements in the sequence.
 
@@ -821,7 +821,7 @@ console.log(count);
 4
 ```
 
-#### 34. Seq<a id="seq"></a>
+#### Seq<a id="seq"></a>
 
 Generates a sequence of numbers from start to end (if specified), increasing by the speficied step.
 
@@ -840,7 +840,7 @@ console.log(unlimited);
 [ 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29 ]
 ```
 
-#### 35. Id<a id="id"></a>
+#### Id<a id="id"></a>
 
 The identity function (x => x). It takes an element and returns it.
 It can be useful for operaions like minBy, maxBy, averageBy, and in general in cases where we want the transform function to return the same element.
