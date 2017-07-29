@@ -48,12 +48,12 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
         leftSelector: (element: TSource) => any,
         rightSelector: (element: TRight) => any,
         resultSelector: (left: TSource, right: TRight) => TResult): Linqable<TResult> {
-            return new Join<TSource, TRight, TResult>(this,
-                right,
-                leftSelector,
-                rightSelector,
-                resultSelector
-            );
+        return new Join<TSource, TRight, TResult>(this,
+            right,
+            leftSelector,
+            rightSelector,
+            resultSelector
+        );
     }
 
     /**
@@ -122,12 +122,13 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
     /**
      * Applies a transformation function to each corresponding pair of elements from the iterables.
      * The paring ends when the shorter sequence ends, the remaining elements of the other sequence are ignored.
+     * If a selector is not proviced the result will be an array of [left, right] array pairs.
      * @param  {Iterable<TRight>} right The second iterable.
      * @param  {function} selector A function witch transforms a pair of elements into another value.
      * @returns An iterable of the trasnformed values.
      */
-    zip<TRight, TResult>(right: Iterable<TRight>, selector: (left: TSource, right: TRight) => TResult): Linqable<TResult> {
-        return new Zip<TSource, TRight, TResult>(this, right, selector);
+    zip<TRight, TResult = [TSource, TRight]>(right: Iterable<TRight>, selector?: (left: TSource, right: TRight) => TResult): Linqable<TResult> {
+        return new Zip<TSource, TRight, TResult>(this, right, (selector || ((a, b) => [a, b])) as any);
     }
 
     /**
@@ -190,13 +191,13 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
      * @param  {function} accumulator An accumulator function.
      */
     aggregate<TResult>(seed: TResult, accumulator: (accumulated: TResult, element: TSource) => TResult) {
-         let accumulated = seed;
+        let accumulated = seed;
 
-         for (let element of this) {
+        for (let element of this) {
             accumulated = accumulator(accumulated, element);
-         }
+        }
 
-         return accumulated;
+        return accumulated;
     }
 
     /**
@@ -348,9 +349,9 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
         let sourceIterator = this[Symbol.iterator]();
         let rightIterator = right[Symbol.iterator]();
 
-        let [sourceResult, rightResult] = [sourceIterator.next(),  rightIterator.next()];
+        let [sourceResult, rightResult] = [sourceIterator.next(), rightIterator.next()];
 
-        while (!sourceResult.done && !rightResult.done)  {
+        while (!sourceResult.done && !rightResult.done) {
 
             if (!sourceResult.done && !rightResult.done && !predicate(sourceResult.value, rightResult.value)) {
                 return false;
@@ -894,7 +895,7 @@ class Ordered<TSource> extends Linqable<TSource> {
             let firstComparison = this._comparer(first, second);
 
             if (firstComparison === 0) {
-                return this.compare(first, second, selector);
+                return this.compareWithSelector(first, second, selector);
             }
             return firstComparison;
         });
@@ -905,13 +906,13 @@ class Ordered<TSource> extends Linqable<TSource> {
             let firstComparison = this._comparer(first, second);
 
             if (firstComparison === 0) {
-                return this.compare(second, first, selector);
+                return this.compareWithSelector(second, first, selector);
             }
             return firstComparison;
         });
     }
 
-    private compare(first: TSource, second: TSource, selector: (element: TSource) => number | string) {
+    private compareWithSelector(first: TSource, second: TSource, selector: (element: TSource) => number | string): number {
         let a = selector(first);
         let b = selector(second);
         if (a > b) {
@@ -929,7 +930,7 @@ class Ordered<TSource> extends Linqable<TSource> {
 
 class Concat<TSource> extends Linqable<TSource> {
     private _first: Iterable<TSource>;
-    private _second:  Iterable<TSource>;
+    private _second: Iterable<TSource>;
 
     constructor(first: Iterable<TSource>, second: Iterable<TSource>) {
         super();
