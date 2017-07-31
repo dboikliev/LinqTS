@@ -103,7 +103,7 @@ for (let number of evenNumbers) {
 10
 ```
 
-####Select <a id="select"></a>
+#### Select <a id="select"></a>
 
 Each element of an iterable is trasnformed into another value - the return value of the function passed to `select`.
 
@@ -126,7 +126,7 @@ for (let number of numbersTimes10) {
 50
 ```
 
-####SelectMany <a id="selectMany"></a>
+#### SelectMany <a id="selectMany"></a>
 
 Flattens iterable elements into a single iterable sequence.
 `selectMany` expects a function which takes an element from the sequence returns an iterable. All of the results are flattent into a single sequence.
