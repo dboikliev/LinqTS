@@ -321,6 +321,15 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
     }
 
     /**
+     *  
+     * @param  {function} transform A function returning a number value used for summing elements in the sequence.
+     * @returns TSource The average value of the sequence.
+     */
+    sumBy(selector: (element: TSource) => number): number {
+        return this.aggregate(0, (acc, current) => acc + selector(current));
+    }
+
+    /**
      * Gets the averege value for a sequence.
      * @param  {function} transform A function returning a number value used for summing elements in the sequence.
      * @returns TSource The average value of the sequence.
