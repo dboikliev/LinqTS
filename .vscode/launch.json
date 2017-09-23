@@ -9,16 +9,8 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceRoot}\\src\\app.ts",
-            "outFiles": ["${workspaceRoot}\\build\\**\\*.js"]
+            "program": "${workspaceRoot}/src/app.ts",
+            "outFiles": ["${workspaceRoot}/build/**/*.js"]
         }
-        // {
-        //     "type": "node",
-        //     "request": "attach",
-        //     "name": "Attach to Port",
-        //     "address": "localhost",
-        //     "port": 5858,
-        //     "outFiles": ["${workspaceRoot}\\build\\app.js"]
-        // }
     ]
 }
