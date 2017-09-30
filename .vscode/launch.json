@@ -9,8 +9,8 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceRoot}/src/app.ts",
-            "outFiles": ["${workspaceRoot}/build/**/*.js"]
+            "program": "${workspaceRoot}\\src\\app.ts",
+            "outFiles": ["${workspaceRoot}\\build\\**\\*.js"]
         }
     ]
 }
