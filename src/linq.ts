@@ -277,7 +277,7 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
      * @param  {function} transform A function returning a primitive value used for copmaring elements in the sequence.
      * @returns TSource The max element of the sequence.
      */
-    maxBy(transform: (element: TSource) => number | string): TSource {
+    max(transform: (element: TSource) => number | string): TSource {
         let iterator = this[Symbol.iterator]();
         let iteratorResult = iterator.next();
         let bestMax = iteratorResult.value;
@@ -301,7 +301,7 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
      * @param  {function} transform A function returning a primitive value used for copmaring elements in the sequence.
      * @returns TSource The min element of the sequence.
      */
-    minBy(transform: (element: TSource) => number | string): TSource {
+    min(transform: (element: TSource) => number | string): TSource {
         let iterator = this[Symbol.iterator]();
         let iteratorResult = iterator.next();
         let bestMin = iteratorResult.value;
@@ -325,7 +325,7 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
      * @param  {function} transform A function returning a number value used for summing elements in the sequence.
      * @returns TSource The average value of the sequence.
      */
-    sumBy(selector: (element: TSource) => number): number {
+    sum(selector: (element: TSource) => number): number {
         return this.aggregate(0, (acc, current) => acc + selector(current));
     }
 
@@ -334,7 +334,7 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
      * @param  {function} transform A function returning a number value used for summing elements in the sequence.
      * @returns TSource The average value of the sequence.
      */
-    averageBy(transform: (element: TSource) => number): number {
+    average(transform: (element: TSource) => number): number {
         let sum = 0;
         let count = 0;
 
@@ -1016,6 +1016,6 @@ export function seq(start: number = 0, step: number = 1, end: number = Infinity)
  * @param  {T} element The element to return.
  * @returns {T} The element which was passed as a parameter.
  */
-export function id<T>(element: T) {
+export function id<T>(element: T): T {
     return element;
 }

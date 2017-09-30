@@ -6,6 +6,6 @@ import {
 
 let sorted = seq(1, 1, 10)
     .take(3)
-    .sumBy(id);
+    .sum(id);
 
 console.log(sorted);
