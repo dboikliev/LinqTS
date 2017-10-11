@@ -399,9 +399,7 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
      * @returns {TSource[]} An array of the sequence elements.
      */
     toArray(): TSource[] {
-        let array: TSource[] = [];
-
-        this.aggregate(array, (acc, el) => {
+        let array = this.aggregate([], (acc, el) => {
             acc.push(el);
             return acc;
         });
