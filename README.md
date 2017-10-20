@@ -30,9 +30,9 @@ Implementing a lazy API similar to .NET's LINQ methods by using iterators.
 1. [windowed](#windowed)
 1. [any](#any)
 1. [all](#all)
-1. [min](#minBy)
-1. [max](#maxBy)
-1. [average](#averageBy)
+1. [min](#min)
+1. [max](#max)
+1. [average](#average)
 1. [sequenceEquals](#sequenceEquals)
 1. [indexOf](#indexOf)
 1. [elementAt](#elementAt)
@@ -568,7 +568,7 @@ console.log(areAllEvent);
 false
 ```
 
-#### MinBy<a id="minBy"></a>
+#### Min<a id="min"></a>
 
 Gets the min element in a sequence according to a transform function.
 
@@ -578,7 +578,7 @@ let people = [
     { name: "Deyan", age: 22 }
 ];
 
-let youngest = linq(people).minBy(p => p.age);
+let youngest = linq(people).min(p => p.age);
 
 console.log(youngest);
 ```
@@ -589,7 +589,7 @@ console.log(youngest);
 { name: 'Deyan', age: 22 }
 ```
 
-#### MaxBy<a id="maxBy"></a>
+#### Max<a id="max"></a>
 
 Gets the max element in a sequence according to a transform function.
 
@@ -599,7 +599,7 @@ let people = [
     { name: "Deyan", age: 22 }
 ];
 
-let oldest = linq(people).maxBy(p => p.age);
+let oldest = linq(people).max(p => p.age);
 
 console.log(oldest);
 ```
@@ -610,7 +610,7 @@ console.log(oldest);
 { name: "Ivan", age: 25 }
 ```
 
-#### AverageBy<a id="averageBy"></a>
+#### Average<a id="average"></a>
 
 Gets the averege value for a sequence.
 
@@ -620,7 +620,7 @@ let people = [
     { name: "Deyan", age: 22 }
 ];
 
-let averageAge = linq(people).averageBy(p => p.age);
+let averageAge = linq(people).average(p => p.age);
 
 console.log(averageAge);
 ```
@@ -841,10 +841,10 @@ console.log(unlimited);
 #### Id<a id="id"></a>
 
 The identity function (x => x). It takes an element and returns it.
-It can be useful for operaions like minBy, maxBy, averageBy, and in general in cases where we want the transform function to return the same element.
+It can be useful for operaions like min, max, average, and in general in cases where we want the transform function to return the same element.
 
 ```typescript
-let average = linq([1, 2, 3, 4, 5, 6]).averageBy(id);
+let average = linq([1, 2, 3, 4, 5, 6]).average(id);
 
 console.log(average);
 ```
