@@ -150,15 +150,11 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
     }
 
     /**
-     * Orders elements based on a comparer or selector function.
+     * Orders elements based on a selector function.
      * @param  {function} comparer A function or a selector used for comparing the elements.
      * @returns An iterable of the ordered elements.
      */
-    orderBy(comparer: ((first: TSource, second: TSource) => number) | ((element: TSource) => number | string)): Ordered<TSource> {
-        if (comparer.length === 2) {
-            return new Ordered<TSource>(this, comparer as (first: TSource, second: TSource) => number);
-        }
-
+    orderBy(comparer: ((element: TSource) => number | string)): Ordered<TSource> {
         return new Ordered<TSource>(this, (left, right) => {
             let selector = comparer as (element: TSource) => number | string;
             let a = selector(left);
@@ -167,6 +163,24 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
             if (a > b) return 1;
             
             if (a < b) return -1;
+
+            return 0;
+        });
+    }
+
+     /**
+     * Orders elements based on a selector function in desceding order.
+     * @param  {function} selector A function or a selector used for comparing the elements.
+     * @returns An iterable of the ordered elements.
+     */
+    orderByDescending(selector: ((element: TSource) => number | string)): Ordered<TSource> {
+        return new Ordered<TSource>(this, (left, right) => {
+            let a = selector(left);
+            let b = selector(right);
+
+            if (a > b) return -1;
+            
+            if (a < b) return 1;
 
             return 0;
         });

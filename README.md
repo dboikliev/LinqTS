@@ -17,6 +17,7 @@ Implementing a lazy API similar to .NET's LINQ methods by using iterators.
 1. [groupBy](#groupBy)
 1. [join](#join)
 1. [orderBy](#orderBy)
+1. [orderByDescending](#orderByDescending)
 1. [skip](#skip)
 1. [skipWhile](#skipWhile)
 1. [take](#take)
@@ -245,7 +246,7 @@ for (let group of joined) {
 
 #### OrderBy<a id="orderBy"></a>
 
-Orders elements based on a comparer function.
+Orders elements in asceding order based on a selector function.
 
 ```typescript
 let people = [
@@ -258,15 +259,7 @@ let people = [
     { id: 7, age: 5 },
 ];
 
-let ordered = linq(people).orderBy((a, b) => {
-    if (a.age > b.age) {
-        return 1;
-    }
-    else if (a.age < b.age) {
-        return -1;
-    }
-    return 0;
-})
+let ordered = linq(people).orderBy(p => p.age)
 
 for (let element of ordered) {
     console.log(element);
@@ -284,6 +277,11 @@ for (let element of ordered) {
 { id: 2, age: 29 }
 { id: 6, age: 32 }
 ```
+
+#### OrderByDescending<a id="orderByDescending"></a>
+
+Equivalent of `orderBy`.
+Orders elements in descending order based on a selector function.
 
 #### Skip<a id="skip"></a>
 
