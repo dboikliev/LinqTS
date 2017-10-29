@@ -28,6 +28,7 @@ Implementing a lazy API similar to .NET's LINQ methods by using iterators.
 1. [union](#union)
 1. [aggregate](#aggregate)
 1. [windowed](#windowed)
+1. [batch](#batch)
 1. [any](#any)
 1. [all](#all)
 1. [min](#min)
@@ -519,21 +520,39 @@ Provides a sliding window of elements from the sequence. By default the windows 
 A second parameter may be provided to change the number of elements being skipped.
 
 ```typescript
-let groups = linq([1, 2, 3, 4, 5, 6]).windowed(3, 2);
+let windows = linq([1, 2, 3, 4, 5, 6]).windowed(3, 2);
 
-for (let group of groups) {
-    console.log(group);
+for (let window of windows) {
+    console.log(window);
 }
 ```
 
 #### Result:
 
 ```
-[ 1, 2, 3 ], 
-[ 3, 4, 5 ], 
-[ 5, 6, 7 ], 
-[ 7, 8, 9 ], 
-[ 9, 10 ]
+[ 1, 2, 3 ]
+[ 3, 4, 5 ]
+[ 5, 6 ]
+```
+
+#### Batch<a id="batch"></a>
+
+Splits the sequence into batches/cunks of the specified size.
+
+```typescript
+let batches = linq([1, 2, 3, 4, 5, 6, 7, 8]).batch(3);
+
+for (let batch of batches) {
+    console.log(batch);
+}
+```
+
+#### Result:
+
+```
+[ 1, 2, 3 ]
+[ 4, 5, 6 ]
+[ 7, 8 ]
 ```
 
 #### Any<a id="any"></a>

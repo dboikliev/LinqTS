@@ -4,8 +4,8 @@ import {
     seq
 } from "./linq";
 
-console.log(seq(0, 1, 100)
-.orderBy(id)
-.thenBy(x => x % 2)
-.thenBy(x => x.toString().length)
-.toArray())
+let groups = linq([1, 2, 3, 4, 5, 6, 7, 8]).batch(3);
+
+for (let group of groups) {
+    console.log(group);
+}
