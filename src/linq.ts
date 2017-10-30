@@ -187,6 +187,14 @@ export abstract class Linqable<TSource> implements Iterable<TSource> {
     }
 
     /**
+     * Reverses the order of the sequence, e.g. reverse (1, 2, 3) -> (3, 2, 1)
+     * @returns An iterable of the reversed squence of elements.
+     */
+    reverse(): Linqable<TSource> {
+        return new Reverse(this);
+    }
+
+    /**
      * Concatenates the sequences together.
      * @param  {Iterable<TSourse>} other The sequence that will be concatenated to the current sequence.
      * @returns An iterable of the concatenated elements.
@@ -990,6 +998,27 @@ class Concat<TSource> extends Linqable<TSource> {
     *[Symbol.iterator](): Iterator<TSource> {
         yield* this._first;
         yield* this._second;
+    }
+}
+
+class Reverse<TSource> extends Linqable<TSource> {
+    private _elements: Iterable<TSource>;
+
+    constructor(elements: Iterable<TSource>) {
+        super();
+        this._elements = elements;
+    }
+
+    *[Symbol.iterator](): Iterator<TSource> {
+        let stack: TSource[] = [];
+
+        for (let element of this._elements) {
+            stack.push(element);
+        }
+
+        while (stack.length) {
+            yield stack.pop();
+        }
     }
 }
 

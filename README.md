@@ -18,6 +18,7 @@ Implementing a lazy API similar to .NET's LINQ methods by using iterators.
 1. [join](#join)
 1. [orderBy](#orderBy)
 1. [orderByDescending](#orderByDescending)
+1. [reverse](#reverse)
 1. [skip](#skip)
 1. [skipWhile](#skipWhile)
 1. [take](#take)
@@ -283,6 +284,32 @@ for (let element of ordered) {
 
 Equivalent of `orderBy`.
 Orders elements in descending order based on a selector function.
+
+#### Reverse<a id="reverse"></a>
+
+Reverses the order of the sequence, e.g. reverse (1, 2, 3) -> (3, 2, 1)
+
+```typescript
+let reversed = linq([1, 2, 3, 4, 5, 6, 7, 8])
+    .reverse()
+
+for (let element of reversed) {
+    console.log(element);
+}
+```
+
+#### Result:
+
+```
+8
+7
+6
+5
+4
+3
+2
+1
+```
 
 #### Skip<a id="skip"></a>
 

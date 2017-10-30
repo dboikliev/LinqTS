@@ -4,8 +4,9 @@ import {
     seq
 } from "./linq";
 
-let groups = linq([1, 2, 3, 4, 5, 6, 7, 8]).batch(3);
+let reversed = linq([1, 2, 3, 4, 5, 6, 7, 8])
+    .reverse()
 
-for (let group of groups) {
-    console.log(group);
+for (let element of reversed) {
+    console.log(element);
 }
