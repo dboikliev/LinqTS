@@ -6,6 +6,7 @@ import {
 
 let reversed = linq([1, 2, 3, 4, 5, 6, 7, 8])
     .reverse()
+    .orderBy(id)
 
 for (let element of reversed) {
     console.log(element);
