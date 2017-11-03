@@ -17,11 +17,13 @@ export function linq<T>(iterable: Iterable<T> | number | string | object): Linqa
  * @returns {ble<number>}
  */
 export function seq(start: number = 0, step: number = 1, end: number = Infinity): Linqable<number> {
-    return linq((function* () {
+    function* sequenceGenerator() {
         for (let i = start; end === Infinity || i <= end; i += step) {
             yield i;
         }
-    }()));
+    }
+
+    return linq(sequenceGenerator());
 }
 
 /**
