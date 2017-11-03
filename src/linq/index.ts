@@ -6,7 +6,7 @@ import { Linqable } from "./linqable";
  * @returns {ble<number>} An object with support for queries.
  */
 export function linq<T>(iterable: Iterable<T>): Linqable<T> {
-    return new Linqable<T>(iterable as Iterable<T>);
+    return new Linqable<T>(iterable);
 }
 
 /**
