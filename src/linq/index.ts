@@ -3,7 +3,7 @@ import { Linqable } from "./linqable";
 /**
  * Wraps an interable into an object which supports queries.
  * @param {Iterable<T>} iterable The sequence which will be queried.
- * @returns {ble<number>} An object with support for queries.
+ * @returns {Linqable<number>} An object with support for queries.
  */
 export function linq<T>(iterable: Iterable<T>): Linqable<T> {
     return new Linqable<T>(iterable);
@@ -14,7 +14,7 @@ export function linq<T>(iterable: Iterable<T>): Linqable<T> {
  * @param  {number} start The beginning of the sequence. 0 by default.
  * @param  {number} step The ammount to increment by on each iteration. 1 by default.
  * @param  {number} end The end of the sequence. Infinity by default.
- * @returns {ble<number>}
+ * @returns {Linqable<number>}
  */
 export function seq(start: number = 0, step: number = 1, end: number = Infinity): Linqable<number> {
     function* sequenceGenerator() {
