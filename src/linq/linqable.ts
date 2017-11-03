@@ -56,7 +56,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
         leftSelector: (element: TSource) => any,
         rightSelector: (element: TRight) => any,
         resultSelector: (left: TSource, right: TRight) => TResult): Linqable<TResult> {
-        return new Linqable(new Iterables.Join<TSource, TRight, TResult>(this,
+        return new Linqable(new Iterables.Join(this,
             right,
             leftSelector,
             rightSelector,
@@ -70,7 +70,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns An iterable with a beginning after the skipped values.
      */
     skip(count: number): Linqable<TSource> {
-        return new Linqable(new Iterables.Skip<TSource>(this, count));
+        return new Linqable(new Iterables.Skip(this, count));
     }
 
     /**
@@ -79,7 +79,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns An iterable with a beginning after the skipped values.
      */
     skipWhile(predicate: (element: TSource) => boolean): Linqable<TSource> {
-        return new Linqable(new Iterables.SkipWhile<TSource>(this, predicate));
+        return new Linqable(new Iterables.SkipWhile(this, predicate));
     }
 
     /**
@@ -88,7 +88,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns An iterable for the taken elements.
      */
     take(count: number): Linqable<TSource> {
-        return new Linqable(new Iterables.Take<TSource>(this, count));
+        return new Linqable(new Iterables.Take(this, count));
     }
 
     /**
@@ -97,7 +97,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns An iterable of the taken elements.
      */
     takeWhile(predicate: (element: TSource) => boolean): Linqable<TSource> {
-        return new Linqable(new Iterables.TakeWhile<TSource>(this, predicate));
+        return new Linqable(new Iterables.TakeWhile(this, predicate));
     }
 
     /**
@@ -106,7 +106,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns An iterable of the filtered elements.
      */
     where(predicate: (element: TSource) => boolean): Linqable<TSource> {
-        return new Linqable(new Iterables.Where<TSource>(this, predicate));
+        return new Linqable(new Iterables.Where(this, predicate));
     }
 
     /**
@@ -115,7 +115,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns An iterable of the transformed elements.
      */
     select<TResult>(selector: (element: TSource) => TResult): Linqable<TResult> {
-        return  new Linqable(new Iterables.Select<TSource, TResult>(this, selector));
+        return  new Linqable(new Iterables.Select(this, selector));
     }
 
     /**
@@ -124,7 +124,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns An iterable of the transformed elements.
      */
     selectMany<TResult>(selector: (element: TSource) => Iterable<TResult>): Linqable<TResult> {
-        return  new Linqable(new Iterables.SelectMany<TSource, TResult>(this, selector));
+        return  new Linqable(new Iterables.SelectMany(this, selector));
     }
 
     /**
@@ -136,7 +136,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns An iterable of the trasnformed values.
      */
     zip<TRight, TResult = [TSource, TRight]>(right: Iterable<TRight>, selector?: (left: TSource, right: TRight) => TResult): Linqable<TResult> {
-        return  new Linqable(new Iterables.Zip<TSource, TRight, TResult>(this, right, (selector || ((a, b) => [a, b])) as any));
+        return  new Linqable(new Iterables.Zip(this, right, (selector || ((a, b) => [a, b])) as any));
     }
 
     /**
@@ -145,7 +145,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns An iterable of the distinct elements.
      */
     distinct(selector: (element: TSource) => any = (element: TSource) => element): Linqable<TSource> {
-        return new Linqable(new Iterables.Distinct<TSource>(this, selector));
+        return new Linqable(new Iterables.Distinct(this, selector));
     }
 
     /**
@@ -154,7 +154,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns An iterable of groups.
      */
     groupBy<TKey>(selector: (element: TSource) => TKey): Linqable<[TKey, TSource[]]> {
-        return new Linqable(new Iterables.Group<TKey, TSource>(this, selector));
+        return new Linqable(new Iterables.Group(this, selector));
     }
 
     /**
@@ -207,7 +207,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns An iterable of the concatenated elements.
      */
     concat(other: Iterable<TSource>): Linqable<TSource> {
-        return new Linqable(new Iterables.Concat<TSource>(this, other));
+        return new Linqable(new Iterables.Concat(this, other));
     }
 
     /**
@@ -452,7 +452,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns {number} A sequence of the elements which are not present in the provided sequence.
      */
     except(right: Iterable<TSource>): Linqable<TSource> {
-        return new Linqable(new Iterables.Except<TSource>(this, right));
+        return new Linqable(new Iterables.Except(this, right));
     }
 
     /**
@@ -461,7 +461,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns {number} A sequence of the elements which are present in both the provided sequences.
      */
     intersect(right: Iterable<TSource>): Linqable<TSource> {
-        return new Linqable(new Iterables.Intersect<TSource>(this, right));
+        return new Linqable(new Iterables.Intersect(this, right));
     }
 
     /**
@@ -470,7 +470,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns {number} A sequence of the unique elements of both sequences.
      */
     union(right: Iterable<TSource>): Linqable<TSource> {
-        return new Linqable(new Iterables.Union<TSource>(this, right));
+        return new Linqable(new Iterables.Union(this, right));
     }
 
     /**
