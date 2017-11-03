@@ -1,20 +1,16 @@
 export class Union<TSource>  {
-    private _left: Iterable<TSource>;
-    private _right: Iterable<TSource>;
-
-    constructor(left: Iterable<TSource>, right: Iterable<TSource>) {
-        this._left = left;
-        this._right = right;
+    constructor(private left: Iterable<TSource>, 
+                private right: Iterable<TSource>) {
     }
 
     *[Symbol.iterator]() {
-        let set = new Set(this._left);
+        let set = new Set(this.left);
 
         for (let element of set) {
             yield element;
         }
 
-        for (let element of this._right) {
+        for (let element of this.right) {
             if (!set.has(element)) {
                 set.add(element);
                 yield element;

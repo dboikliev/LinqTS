@@ -1,14 +1,11 @@
 export class Reverse<TSource>  {
-    private _elements: Iterable<TSource>;
-
-    constructor(elements: Iterable<TSource>) {
-        this._elements = elements;
+    constructor(private elements: Iterable<TSource>) {
     }
 
     *[Symbol.iterator](): Iterator<TSource> {
         let stack: TSource[] = [];
 
-        for (let element of this._elements) {
+        for (let element of this.elements) {
             stack.push(element);
         }
 

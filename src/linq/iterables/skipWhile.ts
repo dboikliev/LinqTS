@@ -1,19 +1,15 @@
 export class SkipWhile<TSource>  {
-    private _elements: Iterable<TSource>;
-    private _predicate: (element: TSource) => boolean;
-
-    constructor(elements: Iterable<TSource>, predicate: (element: TSource) => boolean) {
-        this._elements = elements;
-        this._predicate = predicate;
+    constructor(private elements: Iterable<TSource>,
+                private predicate: (element: TSource) => boolean) {
     }
 
     [Symbol.iterator](): Iterator<TSource> {
-        let iterator = this._elements[Symbol.iterator]();
+        let iterator = this.elements[Symbol.iterator]();
 
         let lastResult;
         do {
             lastResult = iterator.next();
-        } while (this._predicate(lastResult.value));
+        } while (this.predicate(lastResult.value));
 
         return {
             next: (): IteratorResult<TSource> => {

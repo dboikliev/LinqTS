@@ -1,15 +1,11 @@
 export class Select<TSource, TResult>  {
-    private _elements: Iterable<TSource>;
-    private _selector: (element: TSource) => TResult;
-
-    constructor(elements: Iterable<TSource>, selector: (element: TSource) => TResult) {
-        this._elements = elements;
-        this._selector = selector;
+    constructor(private elements: Iterable<TSource>, 
+                private selector: (element: TSource) => TResult) {
     }
 
     *[Symbol.iterator](): Iterator<TResult> {
-        for (let element of this._elements) {
-            yield this._selector(element);
+        for (let element of this.elements) {
+            yield this.selector(element);
         }
     }
 }

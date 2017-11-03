@@ -1,15 +1,11 @@
 export class Except<TSource>  {
-    private _left: Iterable<TSource>;
-    private _right: Iterable<TSource>;
-
-    constructor(left: Iterable<TSource>, right: Iterable<TSource>) {
-        this._left = left;
-        this._right = right;
+    constructor(private left: Iterable<TSource>, 
+                private right: Iterable<TSource>) {
     }
 
     *[Symbol.iterator]() {
-        let set = new Set(this._right);
-        for (let element of this._left) {
+        let set = new Set(this.right);
+        for (let element of this.left) {
             if (!set.has(element)) {
                 yield element;
             }

@@ -1,16 +1,12 @@
 export class Take<TSource>  {
-    private _elements: Iterable<TSource>;
-    private _count: number;
-
-    constructor(elements: Iterable<TSource>, count: number) {
-        this._elements = elements;
-        this._count = count;
+    constructor(private elements: Iterable<TSource>, 
+                private count: number) {
     }
 
     *[Symbol.iterator](): Iterator<TSource> {
         let current = 0;
-        for (let element of this._elements) {
-            if (current >= this._count) {
+        for (let element of this.elements) {
+            if (current >= this.count) {
                 return;
             }
             current++;

@@ -1,15 +1,11 @@
 export class TakeWhile<TSource>  {
-    private _elements: Iterable<TSource>;
-    private _predicate: (element: TSource) => boolean;
-
-    constructor(elements: Iterable<TSource>, predicate: (element: TSource) => boolean) {
-        this._elements = elements;
-        this._predicate = predicate;
+    constructor(private elements: Iterable<TSource>, 
+                private predicate: (element: TSource) => boolean) {
     }
 
     *[Symbol.iterator](): Iterator<TSource> {
-        for (let element of this._elements) {
-            if (!this._predicate(element)) {
+        for (let element of this.elements) {
+            if (!this.predicate(element)) {
                 break;
             }
             yield element;

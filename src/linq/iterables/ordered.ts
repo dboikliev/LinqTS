@@ -1,26 +1,22 @@
 export class Ordered<TSource>  {
-    private _elements: Iterable<TSource>;
-    private _comparer: (first: TSource, second: TSource) => number;
-
-    constructor(elements: Iterable<TSource>, comparer: (first: TSource, second: TSource) => number) {
-        this._elements = elements;
-        this._comparer = comparer;
+    constructor(private elements: Iterable<TSource>, 
+                private comparer: (first: TSource, second: TSource) => number) {
     }
 
     *[Symbol.iterator](): Iterator<TSource> {
-        let elements = [];
+        let sorted = [];
 
-        for (let element of this._elements) {
-            elements.push(element);
+        for (let element of this.elements) {
+            sorted.push(element);
         }
 
-        elements.sort(this._comparer);
+        sorted.sort(this.comparer);
 
-        yield* elements;
+        yield* sorted;
     }
 
     from(selector: (elemment: TSource) => number | string, isAscending: boolean): Ordered<TSource> {
-        return new Ordered(this._elements, this.nestComparisons(selector, isAscending));
+        return new Ordered(this.elements, this.nestComparisons(selector, isAscending));
     }
 
     private nestComparisons(selector: (elemment: TSource) => number | string, isAscending: boolean) {

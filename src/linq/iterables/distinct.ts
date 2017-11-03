@@ -1,16 +1,12 @@
 export class Distinct<TSource> {
-    private _elements: Iterable<TSource>;
-    private _selector: (element: TSource) => any;
-
-    constructor(elements: Iterable<TSource>, selector?: (element: TSource) => any) {
-        this._elements = elements;
-        this._selector = selector;
+    constructor(private elements: Iterable<TSource>, 
+                private selector?: (element: TSource) => any) {
     }
 
     *[Symbol.iterator](): Iterator<TSource> {
         let map = new Map();
-        for (let element of this._elements) {
-            let key = this._selector(element);
+        for (let element of this.elements) {
+            let key = this.selector(element);
 
             if (!map.has(key)) {
                 map.set(key, element);

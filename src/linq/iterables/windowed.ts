@@ -1,20 +1,15 @@
 export class Windowed<TSource>  {
-    private _source: Iterable<TSource>;
-    private _size: number;
-    private _step: number;
-
-    constructor(source: Iterable<TSource>, size: number, step: number) {
-        this._source = source;
-        this._size = size;
-        this._step = step;
+    constructor(private source: Iterable<TSource>, 
+                private size: number, 
+                private step: number) {
     }
 
     *[Symbol.iterator]() {
         let window = [];
 
-        let iterator = this._source[Symbol.iterator]();
+        let iterator = this.source[Symbol.iterator]();
         let current: IteratorResult<TSource>;
-        for (let i = 0; i < this._size; i++) {
+        for (let i = 0; i < this.size; i++) {
             current = iterator.next();
             if (current.done) {
                 break;
@@ -27,13 +22,13 @@ export class Windowed<TSource>  {
         current = iterator.next();
         while (current && !current.done) {
             let skipped = 0;
-            while (skipped < this._step && window.length > 0) {
+            while (skipped < this.step && window.length > 0) {
                 window.shift();
                 skipped++;
             }
 
-            while (window.length < this._size) {
-                if (skipped >= this._step) {
+            while (window.length < this.size) {
+                if (skipped >= this.step) {
                     window.push(current.value);
                 }
                 else {
