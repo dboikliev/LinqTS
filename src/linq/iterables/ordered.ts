@@ -20,49 +20,30 @@ export class Ordered<TSource>  {
     }
 
     from(selector: (elemment: TSource) => number | string, isAscending: boolean): Ordered<TSource> {
-        let direction = isAscending ? 1 : -1;
-        return new Ordered(this._elements, (first, second) => {
-            let firstComparison = this._comparer(first, second);
-            if (firstComparison === 0) {
-                return this.compareWithSelector(first, second, selector) * direction; 
-            }
-            return firstComparison;
-        });
+        return new Ordered(this._elements, this.nestComparisons(selector, isAscending));
     }
 
-    // thenBy(selector: (elemment: TSource) => number | string): Ordered<TSource> {
-    //     return new Ordered(this._elements, (first, second) => {
-    //         let firstComparison = this._comparer(first, second);
+    private nestComparisons(selector: (elemment: TSource) => number | string, isAscending: boolean) {
+        return function(first, second) {
+            let firstComparison = this._comparer(first, second);
+            if (firstComparison === 0) {
+                return this.compareWithSelector(first, second, selector, isAscending) ; 
+            }
+            return firstComparison;
+        }
+    }
 
-    //         if (firstComparison === 0) {
-    //             return this.compareWithSelector(first, second, selector);
-    //         }
-    //         return firstComparison;
-    //     });
-    // }
-
-    // thenByDescending(selector: (elemment: TSource) => number | string): Ordered<TSource> {
-    //     return new Ordered(this._elements, (first, second) => {
-    //         let firstComparison = this._comparer(first, second);
-
-    //         if (firstComparison === 0) {
-    //             return this.compareWithSelector(second, first, selector);
-    //         }
-    //         return firstComparison;
-    //     });
-    // }
-
-    private compareWithSelector(first: TSource, second: TSource, selector: (element: TSource) => number | string): number {
+    private compareWithSelector(first: TSource, second: TSource, selector: (element: TSource) => number | string, isAscending: boolean) {
+        let direction = isAscending ? 1 : -1;
         let a = selector(first);
         let b = selector(second);
-        if (a > b) {
-            return 1;
-        }
-        else if (a === b) {
-            return 0;
-        }
-        else {
-            return -1;
-        }
+
+        if (a > b)
+            return direction;
+
+        if (a < b)
+            return -direction;
+        
+        return 0;
     }
 }
