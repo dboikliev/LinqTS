@@ -1,11 +1,11 @@
 
 /**
- * Wraps an interable into an object which supports LINQ queries.
+ * Wraps an interable into an object which supports queries.
  * @param {Iterable<T>} iterable The sequence which will be queried.
- * @returns {Linqable<number>} An object with support for LINQ queries.
+ * @returns {ble<number>} An object with support for queries.
  */
-export function linq<T>(iterable: Iterable<T> | number | string | object): Linq.Linqable<T> {
-    return new Linq.List<T>(iterable as Iterable<T>);
+export function T>(iterable: Iterable<T> | number | string | object): Linqable<T> {
+    return new List<T>(iterable as Iterable<T>);
 }
 
 /**
@@ -13,14 +13,12 @@ export function linq<T>(iterable: Iterable<T> | number | string | object): Linq.
  * @param  {number} start The beginning of the sequence. 0 by default.
  * @param  {number} step The ammount to increment by on each iteration. 1 by default.
  * @param  {number} end The end of the sequence. Infinity by default.
- * @returns {Linqable<number>}
+ * @returns {ble<number>}
  */
-export function seq(start: number = 0, step: number = 1, end: number = Infinity): Linq.Linqable<number> {
-    return linq({
-        *[Symbol.iterator]() {
-            for (let i = start; end === Infinity || i <= end; i += step) {
-                yield i;
-            }
+export function seq(start: number = 0, step: number = 1, end: number = Infinity): Linqable<number> {
+    return linq(function* () {
+        for (let i = start; end === Infinity || i <= end; i += step) {
+            yield i;
         }
     });
 }
