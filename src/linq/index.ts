@@ -1,11 +1,12 @@
+import { Linqable } from "./linqable";
 
 /**
  * Wraps an interable into an object which supports queries.
  * @param {Iterable<T>} iterable The sequence which will be queried.
  * @returns {ble<number>} An object with support for queries.
  */
-export function T>(iterable: Iterable<T> | number | string | object): Linqable<T> {
-    return new List<T>(iterable as Iterable<T>);
+export function linq<T>(iterable: Iterable<T> | number | string | object): Linqable<T> {
+    return new Linqable<T>(iterable as Iterable<T>);
 }
 
 /**
@@ -16,11 +17,11 @@ export function T>(iterable: Iterable<T> | number | string | object): Linqable<T
  * @returns {ble<number>}
  */
 export function seq(start: number = 0, step: number = 1, end: number = Infinity): Linqable<number> {
-    return linq(function* () {
+    return linq((function* () {
         for (let i = start; end === Infinity || i <= end; i += step) {
             yield i;
         }
-    });
+    }()));
 }
 
 /**

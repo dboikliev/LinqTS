@@ -19,27 +19,38 @@ export class Ordered<TSource>  {
         yield* elements;
     }
 
-    thenBy(selector: (elemment: TSource) => number | string): Ordered<TSource> {
+    from(selector: (elemment: TSource) => number | string, isAscending: boolean): Ordered<TSource> {
+        let direction = isAscending ? 1 : -1;
         return new Ordered(this._elements, (first, second) => {
             let firstComparison = this._comparer(first, second);
-
             if (firstComparison === 0) {
-                return this.compareWithSelector(first, second, selector);
+                return this.compareWithSelector(first, second, selector) * direction; 
             }
             return firstComparison;
         });
     }
 
-    thenByDescending(selector: (elemment: TSource) => number | string): Ordered<TSource> {
-        return new Ordered(this._elements, (first, second) => {
-            let firstComparison = this._comparer(first, second);
+    // thenBy(selector: (elemment: TSource) => number | string): Ordered<TSource> {
+    //     return new Ordered(this._elements, (first, second) => {
+    //         let firstComparison = this._comparer(first, second);
 
-            if (firstComparison === 0) {
-                return this.compareWithSelector(second, first, selector);
-            }
-            return firstComparison;
-        });
-    }
+    //         if (firstComparison === 0) {
+    //             return this.compareWithSelector(first, second, selector);
+    //         }
+    //         return firstComparison;
+    //     });
+    // }
+
+    // thenByDescending(selector: (elemment: TSource) => number | string): Ordered<TSource> {
+    //     return new Ordered(this._elements, (first, second) => {
+    //         let firstComparison = this._comparer(first, second);
+
+    //         if (firstComparison === 0) {
+    //             return this.compareWithSelector(second, first, selector);
+    //         }
+    //         return firstComparison;
+    //     });
+    // }
 
     private compareWithSelector(first: TSource, second: TSource, selector: (element: TSource) => number | string): number {
         let a = selector(first);

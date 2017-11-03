@@ -1,7 +1,7 @@
 import * as Iterables from "./iterables";
 
 export class Linqable<TSource> implements Iterable<TSource> {
-    constructor (public elements: Iterable<TSource>) {
+    constructor (protected elements: Iterable<TSource>) {
 
     }
 
@@ -159,12 +159,11 @@ export class Linqable<TSource> implements Iterable<TSource> {
 
     /**
      * Orders elements based on a selector function.
-     * @param  {function} comparer A function or a selector used for comparing the elements.
+     * @param  {function} selector A function or a selector used for comparing the elements.
      * @returns An iterable of the ordered elements.
      */
-    orderBy(comparer: ((element: TSource) => number | string)): Ordered<TSource> {
-        return new Linqable(new Iterables.Ordered<TSource>(this, (left, right) => {
-            let selector = comparer as (element: TSource) => number | string;
+    orderBy(selector: (element: TSource) => number | string): OrderedLinqable<TSource> {
+        return new OrderedLinqable(new Iterables.Ordered(this, (left, right) => {
             let a = selector(left);
             let b = selector(right);
 
@@ -181,8 +180,8 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @param  {function} selector A function or a selector used for comparing the elements.
      * @returns An iterable of the ordered elements.
      */
-    orderByDescending(selector: ((element: TSource) => number | string)): Ordered<TSource> {
-        return new Ordered<TSource>(this, (left, right) => {
+    orderByDescending(selector: (element: TSource) => number | string): OrderedLinqable<TSource> {
+        return new OrderedLinqable(new Iterables.Ordered(this, (left, right) => {
             let a = selector(left);
             let b = selector(right);
 
@@ -191,7 +190,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
             if (a < b) return 1;
 
             return 0;
-        });
+        }));
     }
 
     /**
@@ -453,7 +452,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns {number} A sequence of the elements which are not present in the provided sequence.
      */
     except(right: Iterable<TSource>): Linqable<TSource> {
-        return  new Linqable(new Iterables.Except<TSource>(this, right));
+        return new Linqable(new Iterables.Except<TSource>(this, right));
     }
 
     /**
@@ -462,7 +461,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns {number} A sequence of the elements which are present in both the provided sequences.
      */
     intersect(right: Iterable<TSource>): Linqable<TSource> {
-        return new Intersect<TSource>(this, right);
+        return new Linqable(new Iterables.Intersect<TSource>(this, right));
     }
 
     /**
@@ -471,7 +470,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns {number} A sequence of the unique elements of both sequences.
      */
     union(right: Iterable<TSource>): Linqable<TSource> {
-        return new Union<TSource>(this, right);
+        return new Linqable(new Iterables.Union<TSource>(this, right));
     }
 
     /**
@@ -481,7 +480,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      */
     batch(size: number): Linqable<TSource[]> {
         const step = size;
-        return new Windowed(this, size, step);
+        return new Linqable(new Iterables.Windowed(this, size, step));
     }
 
     /**
@@ -491,7 +490,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns {Iterable<TSource[]>} A sequence of windows.
      */
     windowed(size: number, step: number = 1): Linqable<TSource[]> {
-        return new Windowed(this, size, step);
+        return new Linqable(new Iterables.Windowed(this, size, step));
     }
 
     /**
@@ -514,7 +513,22 @@ export class Linqable<TSource> implements Iterable<TSource> {
 }
 
 export class OrderedLinqable<TSource> extends Linqable<TSource> {
-    static from((element: TSource) => string | number) {
-        
+    constructor (elements: Iterables.Ordered<TSource>) {
+        super(elements);
+    }
+
+    from(selector: (element: TSource) => string | number, isAscending: boolean): OrderedLinqable<TSource> {
+        let ordered = this.elements as Iterables.Ordered<TSource>;
+        return new OrderedLinqable(ordered.from(selector, isAscending))
+    }
+
+    public thenBy(this: OrderedLinqable<TSource>, selector: (element: TSource) => string | number): OrderedLinqable<TSource>
+    {
+        return this.from(selector, true);
+    }
+
+    public thenByDescending(this: OrderedLinqable<TSource>, selector: (element: TSource) => string | number): OrderedLinqable<TSource>
+    {
+        return this.from(selector, false);
     }
 }
