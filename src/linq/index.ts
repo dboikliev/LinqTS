@@ -5,7 +5,7 @@ import { Linqable } from "./linqable";
  * @param {Iterable<T>} iterable The sequence which will be queried.
  * @returns {ble<number>} An object with support for queries.
  */
-export function linq<T>(iterable: Iterable<T> | number | string | object): Linqable<T> {
+export function linq<T>(iterable: Iterable<T>): Linqable<T> {
     return new Linqable<T>(iterable as Iterable<T>);
 }
 
