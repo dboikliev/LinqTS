@@ -5,10 +5,14 @@
   "main": "app.js",
   "dependencies": {},
   "devDependencies": {
+    "@types/mocha": "^2.2.44",
+    "@types/node": "^8.0.47",
+    "mocha": "^4.0.1",
+    "ts-node": "^3.3.0",
     "typescript": "^2.5.2"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node_modules/.bin/mocha -r ts-node/register test/**/*.spec.ts"
   },
   "author": "Deyan Boikliev",
   "license": "ISC",
