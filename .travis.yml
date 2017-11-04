@@ -4,3 +4,6 @@ install:
 
 script:
   - tsc -p .
+
+after_success:
+- npm run coveralls
