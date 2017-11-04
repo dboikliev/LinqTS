@@ -55,13 +55,24 @@ describe("ordering tests", () => {
     });
 
     describe("thenBy tests", () => {
-        it("should sort [-3, -2, -1, 0, 1, 2, 3, 4] first by sign then by absolute value", () => {
+        it("should sort [-3, -2, -1, 0, 1, 2, 3, 4] first by sign then by absolute value in ascending order", () => {
             const sorted = linq([-3, -2, -1, 0, 1, 2, 3, 4])
                 .orderBy(x => x == 0 ? 1 : Math.sign(x))
                 .thenBy(Math.abs)
                 .toArray();
             
-            assert.deepEqual(sorted, [-1, -2, -3, 0, 1, 2, 3, 4], "elements in descending order")
+            assert.deepEqual(sorted, [-1, -2, -3, 0, 1, 2, 3, 4], "elements in ascending order")
+        });
+    })
+
+    describe("thenByDescending tests", () => {
+        it("should sort [-3, -2, -1, 0, 1, 2, 3, 4] first by sign then by absolute value in descneding order", () => {
+            const sorted = linq([-3, -2, -1, 0, 1, 2, 3, 4])
+                .orderBy(x => x == 0 ? 1 : Math.sign(x))
+                .thenByDescending(Math.abs)
+                .toArray();
+            
+            assert.deepEqual(sorted, [-3, -2, -1, 4, 3, 2, 1, 0], "elements in descending order")
         });
     })
 });
