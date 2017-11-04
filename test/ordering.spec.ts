@@ -26,6 +26,12 @@ describe("ordering tests", () => {
         
             assert.deepEqual(sorted, ['aa', 'ab', 'ba', 'c', 'ccc', 'd'], "elements in ascending order")
         })
+
+        it("should order [5, 5, 1, 2, 8, -1, 2, -2, 1, 8, 0] in ascending order", () => {
+            const sorted = linq([5, 5, 1, 2, 8, -1, 2, -2, 1, 8, 0]).orderBy(x => x).toArray()
+
+            assert.deepStrictEqual(sorted, [-2, -1, 0, 1, 1, 2, 2, 5, 5, 8, 8])
+        })
     })
 
     describe("orderByDescending tests", () => {
