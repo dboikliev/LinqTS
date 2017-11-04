@@ -522,13 +522,11 @@ export class OrderedLinqable<TSource> extends Linqable<TSource> {
         return new OrderedLinqable(ordered.from(selector, isAscending))
     }
 
-    public thenBy(this: OrderedLinqable<TSource>, selector: (element: TSource) => string | number): OrderedLinqable<TSource>
-    {
+    thenBy(this: OrderedLinqable<TSource>, selector: (element: TSource) => string | number): OrderedLinqable<TSource> {
         return this.from(selector, true);
     }
 
-    public thenByDescending(this: OrderedLinqable<TSource>, selector: (element: TSource) => string | number): OrderedLinqable<TSource>
-    {
+    thenByDescending(this: OrderedLinqable<TSource>, selector: (element: TSource) => string | number): OrderedLinqable<TSource> {
         return this.from(selector, false);
     }
 }

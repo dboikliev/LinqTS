@@ -20,8 +20,8 @@ export class Ordered<TSource>  {
     }
 
     private nestComparisons(selector: (elemment: TSource) => number | string, isAscending: boolean) {
-        return function(first, second) {
-            let firstComparison = this._comparer(first, second);
+        return (first, second) => {
+            let firstComparison = this.comparer(first, second);
             if (firstComparison === 0) {
                 return this.compareWithSelector(first, second, selector, isAscending) ; 
             }
