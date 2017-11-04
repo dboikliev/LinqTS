@@ -45,7 +45,7 @@ describe("ordering tests", () => {
             assert.deepEqual(sorted, [5, 4, 3, 2, 1], "elements in descending order");
         });
 
-        it("['c', 'ab', 'ccc', 'aa', 'd', 'ba'] should be sorted lexicographically in descending order", () => {
+        it("should sort ['c', 'ab', 'ccc', 'aa', 'd', 'ba'] lexicographically in descending order", () => {
             const sorted = linq(['c', 'ab', 'ccc', 'aa', 'd', 'ba'])
                 .orderByDescending(x => x)
                 .toArray();
