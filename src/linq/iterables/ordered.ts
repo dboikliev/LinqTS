@@ -1,6 +1,6 @@
 export class Ordered<TSource>  {
     constructor(private elements: Iterable<TSource>, 
-                private comparer: (first: TSource, second: TSource) => number) {
+                private comparer: (left: TSource, right: TSource) => number) {
     }
 
     *[Symbol.iterator](): Iterator<TSource> {
@@ -20,19 +20,19 @@ export class Ordered<TSource>  {
     }
 
     private nestComparisons(selector: (elemment: TSource) => number | string, isAscending: boolean) {
-        return (first, second) => {
-            let firstComparison = this.comparer(first, second);
+        return (left, right) => {
+            let firstComparison = this.comparer(left, right);
             if (firstComparison === 0) {
-                return this.compareWithSelector(first, second, selector, isAscending) ; 
+                return this.compareWithSelector(left, right, selector, isAscending) ; 
             }
             return firstComparison;
         }
     }
 
-    private compareWithSelector(first: TSource, second: TSource, selector: (element: TSource) => number | string, isAscending: boolean) {
+    private compareWithSelector(left: TSource, right: TSource, selector: (element: TSource) => number | string, isAscending: boolean) {
         let direction = isAscending ? 1 : -1;
-        let a = selector(first);
-        let b = selector(second);
+        let a = selector(left);
+        let b = selector(right);
 
         if (a > b)
             return direction;
