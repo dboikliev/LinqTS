@@ -28,7 +28,6 @@ export function seq(start: number = 0, step: number = 1, end: number = Infinity)
             return end === Infinity || i * direction <= end * direction
         }
 
-
         for (let i = start; isAtEnd(i, end); i += step) {
             yield i
         }
