@@ -17,8 +17,18 @@ export function linq<T>(iterable: Iterable<T>): Linqable<T> {
  * @returns {Linqable<number>}
  */
 export function seq(start: number = 0, step: number = 1, end: number = Infinity): Linqable<number> {
+    if (!step) {
+        throw Error("0 is not a valid step.")
+    }
+
     function* sequenceGenerator() {
-        for (let i = start; end === Infinity || i <= end; i += step) {
+        function isAtEnd(i, end) {
+            return end === Infinity || i * direction <= end * direction;
+        }
+
+        const direction = step >= 0 ? 1 : -1;
+
+        for (let i = start; isAtEnd(i, end); i += step) {
             yield i;
         }
     }
