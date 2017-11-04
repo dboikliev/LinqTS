@@ -1,8 +1,6 @@
 # LinqTS
 
-[![Build Status](https://travis-ci.org/dboikliev/LinqTS.svg?branch=master)](https://travis-ci.org/dboikliev/LinqTS)
-
-[![Coverage Status](https://coveralls.io/repos/github/dboikliev/LinqTS/badge.svg?branch=master)](https://coveralls.io/github/dboikliev/LinqTS?branch=master)
+[![Build Status](https://travis-ci.org/dboikliev/LinqTS.svg?branch=master)](https://travis-ci.org/dboikliev/LinqTS) [![Coverage Status](https://coveralls.io/repos/github/dboikliev/LinqTS/badge.svg?branch=master)](https://coveralls.io/github/dboikliev/LinqTS?branch=master)
 
 An api for lazy querying of iterables, implemented in TypeScript and inspired by .NET's LINQ methods.
 
