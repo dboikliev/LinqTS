@@ -5,8 +5,8 @@ export class SelectMany<TSource, TResult>  {
 
     *[Symbol.iterator](): Iterator<TResult> {
         for (let element of this.elements) {
-            let innerElements = this.selector(element);
-            yield* innerElements;
+            let innerElements = this.selector(element)
+            yield* innerElements
         }
     }
 }

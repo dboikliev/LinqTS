@@ -4,15 +4,15 @@ export class Skip<TSource>  {
     }
 
     *[Symbol.iterator](): Iterator<TSource> {
-        let iterator = this.elements[Symbol.iterator]();
-        let iteratorResult: IteratorResult<TSource> = iterator.next();
+        let iterator = this.elements[Symbol.iterator]()
+        let iteratorResult: IteratorResult<TSource> = iterator.next()
         for (let i = 0; i < this.count && !iteratorResult.done; i++) {
-            iteratorResult = iterator.next();
+            iteratorResult = iterator.next()
         }
 
         while (!iteratorResult.done) {
-            yield iteratorResult.value;
-            iteratorResult = iterator.next();
+            yield iteratorResult.value
+            iteratorResult = iterator.next()
         }
     }
 }

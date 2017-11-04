@@ -4,28 +4,28 @@ export class SkipWhile<TSource>  {
     }
 
     [Symbol.iterator](): Iterator<TSource> {
-        let iterator = this.elements[Symbol.iterator]();
+        let iterator = this.elements[Symbol.iterator]()
 
-        let lastResult;
+        let lastResult
         do {
-            lastResult = iterator.next();
-        } while (this.predicate(lastResult.value));
+            lastResult = iterator.next()
+        } while (this.predicate(lastResult.value))
 
         return {
             next: (): IteratorResult<TSource> => {
                 if (lastResult) {
-                    let copy = lastResult;
-                    lastResult = undefined;
-                    return copy;
+                    let copy = lastResult
+                    lastResult = undefined
+                    return copy
                 }
 
-                let iteratorResult = iterator.next();
+                let iteratorResult = iterator.next()
                 let result: IteratorResult<TSource> = {
                     value: iteratorResult.value,
                     done: iteratorResult.done
-                };
-                return result;
+                }
+                return result
             }
-        };
+        }
     }
 }

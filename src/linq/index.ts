@@ -1,4 +1,4 @@
-import { Linqable } from "./linqable";
+import { Linqable } from "./linqable"
 
 /**
  * Wraps an interable into an object which supports queries.
@@ -6,7 +6,7 @@ import { Linqable } from "./linqable";
  * @returns {Linqable<number>} An object with support for queries.
  */
 export function linq<T>(iterable: Iterable<T>): Linqable<T> {
-    return new Linqable(iterable);
+    return new Linqable(iterable)
 }
 
 /**
@@ -23,17 +23,17 @@ export function seq(start: number = 0, step: number = 1, end: number = Infinity)
 
     function* sequenceGenerator() {
         function isAtEnd(i, end) {
-            return end === Infinity || i * direction <= end * direction;
+            return end === Infinity || i * direction <= end * direction
         }
 
-        const direction = step >= 0 ? 1 : -1;
+        const direction = step >= 0 ? 1 : -1
 
         for (let i = start; isAtEnd(i, end); i += step) {
-            yield i;
+            yield i
         }
     }
 
-    return linq(sequenceGenerator());
+    return linq(sequenceGenerator())
 }
 
 /**
@@ -42,5 +42,5 @@ export function seq(start: number = 0, step: number = 1, end: number = Infinity)
  * @returns {T} The element which was passed as a parameter.
  */
 export function id<T>(element: T): T {
-    return element;
+    return element
 }

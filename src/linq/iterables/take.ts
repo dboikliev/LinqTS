@@ -4,13 +4,13 @@ export class Take<TSource>  {
     }
 
     *[Symbol.iterator](): Iterator<TSource> {
-        let current = 0;
+        let current = 0
         for (let element of this.elements) {
             if (current >= this.count) {
-                return;
+                return
             }
-            current++;
-            yield element;
+            current++
+            yield element
         }
     }
 }

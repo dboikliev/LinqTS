@@ -4,16 +4,16 @@ export class Union<TSource>  {
     }
 
     *[Symbol.iterator]() {
-        let set = new Set(this.left);
+        let set = new Set(this.left)
 
         for (let element of set) {
-            yield element;
+            yield element
         }
 
         for (let element of this.right) {
             if (!set.has(element)) {
-                set.add(element);
-                yield element;
+                set.add(element)
+                yield element
             }
         }
     }

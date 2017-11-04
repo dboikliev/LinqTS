@@ -5,7 +5,7 @@ export class Select<TSource, TResult>  {
 
     *[Symbol.iterator](): Iterator<TResult> {
         for (let element of this.elements) {
-            yield this.selector(element);
+            yield this.selector(element)
         }
     }
 }

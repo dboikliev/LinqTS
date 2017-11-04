@@ -4,10 +4,10 @@ export class Intersect<TSource>  {
     }
 
     *[Symbol.iterator]() {
-        let set = new Set(this.right);
+        let set = new Set(this.right)
         for (let element of this.left) {
             if (set.has(element)) {
-                yield element;
+                yield element
             }
         }
     }

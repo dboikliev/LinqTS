@@ -7,21 +7,21 @@ export class Join<TLeft, TRight, TResult>  {
     }
 
     *[Symbol.iterator](): Iterator<TResult> {
-        let groups = new Map<any, TRight[]>();
+        let groups = new Map<any, TRight[]>()
 
         for (let element of this.rightElements) {
-            let key = this.rightSelector(element);
-            let group = groups.get(key) || [];
-            group.push(element);
-            groups.set(key, group);
+            let key = this.rightSelector(element)
+            let group = groups.get(key) || []
+            group.push(element)
+            groups.set(key, group)
         }
 
         for (let left of this.leftElements) {
-            let leftKey = this.leftSelector(left);
-            let group = groups.get(leftKey) || [];
+            let leftKey = this.leftSelector(left)
+            let group = groups.get(leftKey) || []
 
             for (let match of group) {
-                yield this.resultSelector(left, match);
+                yield this.resultSelector(left, match)
             }
         }
     }

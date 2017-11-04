@@ -6,7 +6,7 @@ export class Where<TSource>  {
     *[Symbol.iterator](): Iterator<TSource> {
         for (let element of this.elements) {
             if (this.predicate(element)) {
-                yield element;
+                yield element
             }
         }
     }

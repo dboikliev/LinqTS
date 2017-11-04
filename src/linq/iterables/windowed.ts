@@ -5,47 +5,47 @@ export class Windowed<TSource>  {
     }
 
     *[Symbol.iterator]() {
-        let window = [];
+        let window = []
 
-        let iterator = this.source[Symbol.iterator]();
-        let current: IteratorResult<TSource>;
+        let iterator = this.source[Symbol.iterator]()
+        let current: IteratorResult<TSource>
         for (let i = 0; i < this.size; i++) {
-            current = iterator.next();
+            current = iterator.next()
             if (current.done) {
-                break;
+                break
             }
-            window.push(current.value);
+            window.push(current.value)
         }
 
-        yield Array.from(window);
+        yield Array.from(window)
 
-        current = iterator.next();
+        current = iterator.next()
         while (current && !current.done) {
-            let skipped = 0;
+            let skipped = 0
             while (skipped < this.step && window.length > 0) {
-                window.shift();
-                skipped++;
+                window.shift()
+                skipped++
             }
 
             while (window.length < this.size) {
                 if (skipped >= this.step) {
-                    window.push(current.value);
+                    window.push(current.value)
                 }
                 else {
-                    skipped++;
+                    skipped++
                 }
 
-                current = iterator.next();
+                current = iterator.next()
                 if (current.done) {
-                    break;
+                    break
                 }
             }
 
             if (window.length === 0) {
-                return;
+                return
             }
 
-            yield Array.from(window);
+            yield Array.from(window)
         }
     }
 }

@@ -17,7 +17,7 @@ import {
     Where, 
     Windowed, 
     Zip 
-} from "./iterables";
+} from "./iterables"
 
 export class Linqable<TSource> implements Iterable<TSource> {
     constructor (protected elements: Iterable<TSource>) {
@@ -25,7 +25,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
     }
 
     *[Symbol.iterator]() {
-        yield* this.elements;
+        yield* this.elements
     }
 
     /**
@@ -37,16 +37,16 @@ export class Linqable<TSource> implements Iterable<TSource> {
         if (predicate) {
             for (let value of this) {
                 if (predicate(value)) {
-                    return true;
+                    return true
                 }
             }
         }
         else {
-            let iter = this[Symbol.iterator]();
-            return !iter.next().done;
+            let iter = this[Symbol.iterator]()
+            return !iter.next().done
         }
 
-        return false;
+        return false
     }
 
     /**
@@ -57,7 +57,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
     all(predicate: (element: TSource) => boolean): boolean {
         for (let value of this) {
             if (!predicate(value)) {
-                return false;
+                return false
             }
         }
     }
@@ -80,7 +80,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
             leftSelector,
             rightSelector,
             resultSelector
-        ));
+        ))
     }
 
     /**
@@ -89,7 +89,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns An iterable with a beginning after the skipped values.
      */
     skip(count: number): Linqable<TSource> {
-        return new Linqable(new Skip(this, count));
+        return new Linqable(new Skip(this, count))
     }
 
     /**
@@ -98,7 +98,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns An iterable with a beginning after the skipped values.
      */
     skipWhile(predicate: (element: TSource) => boolean): Linqable<TSource> {
-        return new Linqable(new SkipWhile(this, predicate));
+        return new Linqable(new SkipWhile(this, predicate))
     }
 
     /**
@@ -107,7 +107,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns An iterable for the taken elements.
      */
     take(count: number): Linqable<TSource> {
-        return new Linqable(new Take(this, count));
+        return new Linqable(new Take(this, count))
     }
 
     /**
@@ -116,7 +116,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns An iterable of the taken elements.
      */
     takeWhile(predicate: (element: TSource) => boolean): Linqable<TSource> {
-        return new Linqable(new TakeWhile(this, predicate));
+        return new Linqable(new TakeWhile(this, predicate))
     }
 
     /**
@@ -125,7 +125,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns An iterable of the filtered elements.
      */
     where(predicate: (element: TSource) => boolean): Linqable<TSource> {
-        return new Linqable(new Where(this, predicate));
+        return new Linqable(new Where(this, predicate))
     }
 
     /**
@@ -134,7 +134,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns An iterable of the transformed elements.
      */
     select<TResult>(selector: (element: TSource) => TResult): Linqable<TResult> {
-        return  new Linqable(new Select(this, selector));
+        return  new Linqable(new Select(this, selector))
     }
 
     /**
@@ -143,7 +143,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns An iterable of the transformed elements.
      */
     selectMany<TResult>(selector: (element: TSource) => Iterable<TResult>): Linqable<TResult> {
-        return  new Linqable(new SelectMany(this, selector));
+        return  new Linqable(new SelectMany(this, selector))
     }
 
     /**
@@ -155,7 +155,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns An iterable of the trasnformed values.
      */
     zip<TRight, TResult = [TSource, TRight]>(right: Iterable<TRight>, selector?: (left: TSource, right: TRight) => TResult): Linqable<TResult> {
-        return  new Linqable(new Zip(this, right, (selector || ((a, b) => [a, b])) as any));
+        return  new Linqable(new Zip(this, right, (selector || ((a, b) => [a, b])) as any))
     }
 
     /**
@@ -164,7 +164,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns An iterable of the distinct elements.
      */
     distinct(selector: (element: TSource) => any = (element: TSource) => element): Linqable<TSource> {
-        return new Linqable(new Distinct(this, selector));
+        return new Linqable(new Distinct(this, selector))
     }
 
     /**
@@ -173,7 +173,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns An iterable of groups.
      */
     groupBy<TKey>(selector: (element: TSource) => TKey): Linqable<[TKey, TSource[]]> {
-        return new Linqable(new Group(this, selector));
+        return new Linqable(new Group(this, selector))
     }
 
     /**
@@ -183,15 +183,15 @@ export class Linqable<TSource> implements Iterable<TSource> {
      */
     orderBy(selector: (element: TSource) => number | string): OrderedLinqable<TSource> {
         return new OrderedLinqable(new Ordered(this, (left, right) => {
-            let a = selector(left);
-            let b = selector(right);
+            let a = selector(left)
+            let b = selector(right)
 
-            if (a > b) return 1;
+            if (a > b) return 1
             
-            if (a < b) return -1;
+            if (a < b) return -1
 
-            return 0;
-        }));
+            return 0
+        }))
     }
 
     /**
@@ -201,15 +201,15 @@ export class Linqable<TSource> implements Iterable<TSource> {
      */
     orderByDescending(selector: (element: TSource) => number | string): OrderedLinqable<TSource> {
         return new OrderedLinqable(new Ordered(this, (left, right) => {
-            let a = selector(left);
-            let b = selector(right);
+            let a = selector(left)
+            let b = selector(right)
 
-            if (a > b) return -1;
+            if (a > b) return -1
             
-            if (a < b) return 1;
+            if (a < b) return 1
 
-            return 0;
-        }));
+            return 0
+        }))
     }
 
     /**
@@ -217,7 +217,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns An iterable of the reversed squence of elements.
      */
     reverse(): Linqable<TSource> {
-        return new Linqable(new Reverse(this));
+        return new Linqable(new Reverse(this))
     }
 
     /**
@@ -226,7 +226,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns An iterable of the concatenated elements.
      */
     concat(other: Iterable<TSource>): Linqable<TSource> {
-        return new Linqable(new Concat(this, other));
+        return new Linqable(new Concat(this, other))
     }
 
     /**
@@ -235,13 +235,13 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @param  {function} accumulator An accumulator function.
      */
     aggregate<TResult>(seed: TResult, accumulator: (accumulated: TResult, element: TSource) => TResult) {
-        let accumulated = seed;
+        let accumulated = seed
 
         for (let element of this) {
-            accumulated = accumulator(accumulated, element);
+            accumulated = accumulator(accumulated, element)
         }
 
-        return accumulated;
+        return accumulated
     }
 
     /**
@@ -249,8 +249,8 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns {TSource} The first element of the iterable.
      */
     first(): TSource {
-        let iter = this[Symbol.iterator]();
-        return iter.next().value;
+        let iter = this[Symbol.iterator]()
+        return iter.next().value
     }
 
     /**
@@ -264,17 +264,17 @@ export class Linqable<TSource> implements Iterable<TSource> {
         if (predicate) {
             for (let value of this) {
                 if (predicate(value)) {
-                    return value;
+                    return value
                 }
             }
 
-            return defaultInitializer();
+            return defaultInitializer()
         }
         else {
-            let iter = this[Symbol.iterator]();
-            let descriptor = iter.next();
+            let iter = this[Symbol.iterator]()
+            let descriptor = iter.next()
 
-            return descriptor.done ? defaultInitializer() : descriptor.value;
+            return descriptor.done ? defaultInitializer() : descriptor.value
         }
     }
 
@@ -283,11 +283,11 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns {TSource} The last element of the iterable.
      */
     last(): TSource {
-        let last;
+        let last
         for (let element of this) {
-            last = element;
+            last = element
         }
-        return last;
+        return last
     }
 
     /**
@@ -298,22 +298,22 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns The last matching element or a default value.
      */
     lastOrDefault<TDefault>(predicate?: (element: TSource) => boolean, defaultInitializer: () => TDefault = () => undefined): TSource | TDefault {
-        let last;
-        let isFound = false;
+        let last
+        let isFound = false
         for (let value of this) {
             if (predicate) {
                 if (predicate(value)) {
-                    last = value;
-                    isFound = true;
+                    last = value
+                    isFound = true
                 }
             }
             else {
-                last = value;
-                isFound = true;
+                last = value
+                isFound = true
             }
         }
 
-        return isFound ? last : defaultInitializer();
+        return isFound ? last : defaultInitializer()
     }
 
     /**
@@ -322,22 +322,22 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns TSource The max element of the sequence.
      */
     max(transform: (element: TSource) => number | string): TSource {
-        let iterator = this[Symbol.iterator]();
-        let iteratorResult = iterator.next();
-        let bestMax = iteratorResult.value;
-        let bestMaxPrimivie = transform(bestMax);
+        let iterator = this[Symbol.iterator]()
+        let iteratorResult = iterator.next()
+        let bestMax = iteratorResult.value
+        let bestMaxPrimivie = transform(bestMax)
 
         while (!iteratorResult.done) {
-            let value = iteratorResult.value;
-            let currentPrimivie = transform(value);
+            let value = iteratorResult.value
+            let currentPrimivie = transform(value)
             if (bestMaxPrimivie < currentPrimivie) {
-                bestMax = value;
-                bestMaxPrimivie = currentPrimivie;
+                bestMax = value
+                bestMaxPrimivie = currentPrimivie
             }
-            iteratorResult = iterator.next();
+            iteratorResult = iterator.next()
         }
 
-        return bestMax;
+        return bestMax
     }
 
     /**
@@ -346,22 +346,22 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns TSource The min element of the sequence.
      */
     min(transform: (element: TSource) => number | string): TSource {
-        let iterator = this[Symbol.iterator]();
-        let iteratorResult = iterator.next();
-        let bestMin = iteratorResult.value;
-        let bestMinPrimivie = transform(bestMin);
+        let iterator = this[Symbol.iterator]()
+        let iteratorResult = iterator.next()
+        let bestMin = iteratorResult.value
+        let bestMinPrimivie = transform(bestMin)
 
         while (!iteratorResult.done) {
-            let value = iteratorResult.value;
-            let currentPrimivie = transform(value);
+            let value = iteratorResult.value
+            let currentPrimivie = transform(value)
             if (bestMinPrimivie > currentPrimivie) {
-                bestMin = value;
-                bestMinPrimivie = currentPrimivie;
+                bestMin = value
+                bestMinPrimivie = currentPrimivie
             }
-            iteratorResult = iterator.next();
+            iteratorResult = iterator.next()
         }
 
-        return bestMin;
+        return bestMin
     }
 
     /**
@@ -370,7 +370,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns TSource The average value of the sequence.
      */
     sum(selector: (element: TSource) => number): number {
-        return this.aggregate(0, (acc, current) => acc + selector(current));
+        return this.aggregate(0, (acc, current) => acc + selector(current))
     }
 
     /**
@@ -379,16 +379,16 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns TSource The average value of the sequence.
      */
     average(transform: (element: TSource) => number): number {
-        let sum = 0;
-        let count = 0;
+        let sum = 0
+        let count = 0
 
         for (let element of this) {
-            sum += transform(element);
-            count++;
+            sum += transform(element)
+            count++
         }
 
-        let avg = sum / count;
-        return avg;
+        let avg = sum / count
+        return avg
     }
 
     /**
@@ -399,21 +399,21 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns {boolean} True if both sequences are of the same length and all corresponding pairs of elements are equal according to the predicate function. False otherwise.
      */
     sequenceEquals<TRight>(right: Iterable<TRight>, predicate: (left: TSource, right: TRight) => boolean = (left, right) => left as any === right): boolean {
-        let sourceIterator = this[Symbol.iterator]();
-        let rightIterator = right[Symbol.iterator]();
+        let sourceIterator = this[Symbol.iterator]()
+        let rightIterator = right[Symbol.iterator]()
 
-        let [sourceResult, rightResult] = [sourceIterator.next(), rightIterator.next()];
+        let [sourceResult, rightResult] = [sourceIterator.next(), rightIterator.next()]
 
         while (!sourceResult.done && !rightResult.done) {
             if (!sourceResult.done && !rightResult.done && !predicate(sourceResult.value, rightResult.value)) {
-                return false;
+                return false
             }
 
-            sourceResult = sourceIterator.next();
-            rightResult = rightIterator.next();
+            sourceResult = sourceIterator.next()
+            rightResult = rightIterator.next()
         }
 
-        return sourceResult.done && rightResult.done;
+        return sourceResult.done && rightResult.done
     }
 
     /**
@@ -422,10 +422,10 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @param  {function} action A function called for each element of the sequence.
      */
     forEach(action: (element: TSource, index: number) => void): void {
-        let index = 0;
+        let index = 0
         for (let element of this) {
-            action(element, index);
-            index++;
+            action(element, index)
+            index++
         }
     }
 
@@ -434,7 +434,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @param  {number} index The index of the element.
      */
     elementAt(index: number): TSource {
-        return this.skip(index).take(1).first();
+        return this.skip(index).take(1).first()
     }
 
     /**
@@ -443,11 +443,11 @@ export class Linqable<TSource> implements Iterable<TSource> {
      */
     toArray(): TSource[] {
         let array = this.aggregate([], (acc, el) => {
-            acc.push(el);
-            return acc;
-        });
+            acc.push(el)
+            return acc
+        })
 
-        return array;
+        return array
     }
 
     /**
@@ -455,13 +455,13 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns {number} The number of elements in the sequence.
      */
     count(): number {
-        let current = 0;
+        let current = 0
 
         for (let element of this) {
-            current++;
+            current++
         }
 
-        return current;
+        return current
     }
 
     /**
@@ -470,7 +470,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns {number} A sequence of the elements which are not present in the provided sequence.
      */
     except(right: Iterable<TSource>): Linqable<TSource> {
-        return new Linqable(new Except(this, right));
+        return new Linqable(new Except(this, right))
     }
 
     /**
@@ -479,7 +479,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns {number} A sequence of the elements which are present in both the provided sequences.
      */
     intersect(right: Iterable<TSource>): Linqable<TSource> {
-        return new Linqable(new Intersect(this, right));
+        return new Linqable(new Intersect(this, right))
     }
 
     /**
@@ -488,7 +488,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns {number} A sequence of the unique elements of both sequences.
      */
     union(right: Iterable<TSource>): Linqable<TSource> {
-        return new Linqable(new Union(this, right));
+        return new Linqable(new Union(this, right))
     }
 
     /**
@@ -497,8 +497,8 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns {Iterable<TSource[]>} A sequence of batches.
      */
     batch(size: number): Linqable<TSource[]> {
-        const step = size;
-        return new Linqable(new Windowed(this, size, step));
+        const step = size
+        return new Linqable(new Windowed(this, size, step))
     }
 
     /**
@@ -508,7 +508,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns {Iterable<TSource[]>} A sequence of windows.
      */
     windowed(size: number, step: number = 1): Linqable<TSource[]> {
-        return new Linqable(new Windowed(this, size, step));
+        return new Linqable(new Windowed(this, size, step))
     }
 
     /**
@@ -517,34 +517,34 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns {number} The index of the element.
      */
     indexOf(element: TSource): number {
-        let index = 0;
+        let index = 0
 
         for (let el of this) {
             if (el === element) {
-                return index;
+                return index
             }
-            index++;
+            index++
         }
 
-        return -1;
+        return -1
     }
 }
 
 export class OrderedLinqable<TSource> extends Linqable<TSource> {
     constructor (elements: Ordered<TSource>) {
-        super(elements);
+        super(elements)
     }
 
     from(selector: (element: TSource) => string | number, isAscending: boolean): OrderedLinqable<TSource> {
-        let ordered = this.elements as Ordered<TSource>;
+        let ordered = this.elements as Ordered<TSource>
         return new OrderedLinqable(ordered.from(selector, isAscending))
     }
 
     thenBy(this: OrderedLinqable<TSource>, selector: (element: TSource) => string | number): OrderedLinqable<TSource> {
-        return this.from(selector, true);
+        return this.from(selector, true)
     }
 
     thenByDescending(this: OrderedLinqable<TSource>, selector: (element: TSource) => string | number): OrderedLinqable<TSource> {
-        return this.from(selector, false);
+        return this.from(selector, false)
     }
 }

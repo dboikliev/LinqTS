@@ -4,7 +4,7 @@ export class Concat<TSource>{
     }
 
     *[Symbol.iterator](): Iterator<TSource> {
-        yield* this.first;
-        yield* this.second;
+        yield* this.first
+        yield* this.second
     }
 }

@@ -6,9 +6,9 @@ export class TakeWhile<TSource>  {
     *[Symbol.iterator](): Iterator<TSource> {
         for (let element of this.elements) {
             if (!this.predicate(element)) {
-                break;
+                break
             }
-            yield element;
+            yield element
         }
     }
 }

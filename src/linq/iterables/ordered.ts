@@ -4,42 +4,42 @@ export class Ordered<TSource>  {
     }
 
     *[Symbol.iterator](): Iterator<TSource> {
-        let sorted = [];
+        let sorted = []
 
         for (let element of this.elements) {
-            sorted.push(element);
+            sorted.push(element)
         }
 
-        sorted.sort(this.comparer);
+        sorted.sort(this.comparer)
 
-        yield* sorted;
+        yield* sorted
     }
 
     from(selector: (elemment: TSource) => number | string, isAscending: boolean): Ordered<TSource> {
-        return new Ordered(this.elements, this.nestComparisons(selector, isAscending));
+        return new Ordered(this.elements, this.nestComparisons(selector, isAscending))
     }
 
     private nestComparisons(selector: (elemment: TSource) => number | string, isAscending: boolean) {
         return (left, right) => {
-            let firstComparison = this.comparer(left, right);
+            let firstComparison = this.comparer(left, right)
             if (firstComparison === 0) {
-                return this.compareWithSelector(left, right, selector, isAscending) ; 
+                return this.compareWithSelector(left, right, selector, isAscending)  
             }
-            return firstComparison;
+            return firstComparison
         }
     }
 
     private compareWithSelector(left: TSource, right: TSource, selector: (element: TSource) => number | string, isAscending: boolean) {
-        let direction = isAscending ? 1 : -1;
-        let a = selector(left);
-        let b = selector(right);
+        let direction = isAscending ? 1 : -1
+        let a = selector(left)
+        let b = selector(right)
 
         if (a > b)
-            return direction;
+            return direction
 
         if (a < b)
-            return -direction;
+            return -direction
         
-        return 0;
+        return 0
     }
 }
