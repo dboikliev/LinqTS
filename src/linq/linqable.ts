@@ -373,7 +373,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
     }
 
     /**
-     * Tests the equality of two seuqneces by checking each corresponding pari of elements against the provided predicate.
+     * Tests the equality of two seuqneces by checking each corresponding pair of elements against the provided predicate.
      * If a predicate is not provided the elements will be compared using the strict equality (===) operator.
      * @param {Iterable<TRight>} right The sequence which will be compared to the current sequence.
      * @param {function} predicate A function that takes an element of each sequence compares them and returns a boolean depeneding whether they are considered equal or not. 
@@ -386,7 +386,6 @@ export class Linqable<TSource> implements Iterable<TSource> {
         let [sourceResult, rightResult] = [sourceIterator.next(), rightIterator.next()];
 
         while (!sourceResult.done && !rightResult.done) {
-
             if (!sourceResult.done && !rightResult.done && !predicate(sourceResult.value, rightResult.value)) {
                 return false;
             }
@@ -420,7 +419,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
     }
 
     /**
-     * Turns the sequence to an array.
+     * Turns the sequence into an array.
      * @returns {TSource[]} An array of the sequence elements.
      */
     toArray(): TSource[] {

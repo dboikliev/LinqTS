@@ -679,7 +679,7 @@ console.log(averageAge);
 
 #### SequenceEquals<a id="sequenceEquals"></a>
 
-Tests the equality of two seuqneces by checking each corresponding pari of elements against the provided predicate.
+Tests the equality of two seuqneces by checking each corresponding pair of elements against the provided predicate.
 If a predicate is not provided the elements will be compared using the strict equality (===) operator.
 
 ```typescript
