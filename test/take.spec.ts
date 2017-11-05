@@ -25,14 +25,14 @@ describe("take tests", () => {
     })
 
     it("should take none of the elements when provided with a value of 0", () => {
-        let iterable = [1, 2, 3, 4, 5]
+        const iterable = [1, 2, 3, 4, 5]
         const sequence = linq(iterable).take(0).toArray()
 
         assert.deepStrictEqual(sequence, [])
     })
 
     it("should take none of the elements when provided with a value of less than 0", () => {
-        let iterable = [1, 2, 3, 4, 5]
+        const iterable = [1, 2, 3, 4, 5]
         const sequence = linq(iterable).take(-1).toArray()
 
         assert.deepStrictEqual(sequence, [])
