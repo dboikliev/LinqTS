@@ -51,6 +51,14 @@ describe("ordering tests", () => {
             assert.deepEqual(sorted, [5, 4, 3, 2, 1], "elements in descending order")
         })
 
+        it("should order [5, 5, 1, 2, 8, -1, 2, -2, 1, 8, 0] in descending order", () => {
+            const sorted = linq([5, 5, 1, 2, 8, -1, 2, -2, 1, 8, 0])
+                .orderByDescending(x => x)
+                .toArray()
+
+            assert.deepStrictEqual(sorted, [8, 8, 5, 5, 2, 2, 1, 1, 0, -1, -2])
+        })
+
         it("should sort ['c', 'ab', 'ccc', 'aa', 'd', 'ba'] lexicographically in descending order", () => {
             const sorted = linq(['c', 'ab', 'ccc', 'aa', 'd', 'ba'])
                 .orderByDescending(x => x)
