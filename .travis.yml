@@ -1,9 +1,8 @@
 install: 
-  - npm install -g typescript
   - npm install
 
 script:
-  - tsc -p .
+  - npm run build
 
 after_success:
 - npm run coveralls

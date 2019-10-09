@@ -250,7 +250,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      */
     first(): TSource {
         let iter = this[Symbol.iterator]()
-        return iter.next().value
+        return <TSource>iter.next().value
     }
 
     /**
@@ -271,10 +271,10 @@ export class Linqable<TSource> implements Iterable<TSource> {
             return defaultInitializer()
         }
         else {
-            let iter = this[Symbol.iterator]()
-            let descriptor = iter.next()
+            const iter = this[Symbol.iterator]()
+            const descriptor = iter.next()
 
-            return descriptor.done ? defaultInitializer() : descriptor.value
+            return descriptor.done ? defaultInitializer() : <TSource>descriptor.value
         }
     }
 
@@ -322,22 +322,27 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns TSource The max element of the sequence.
      */
     max(transform: (element: TSource) => number | string): TSource {
-        let iterator = this[Symbol.iterator]()
-        let iteratorResult = iterator.next()
-        let bestMax = iteratorResult.value
-        let bestMaxPrimivie = transform(bestMax)
+        const iterator = this[Symbol.iterator]();
+        let iteratorResult = iterator.next();
 
-        while (!iteratorResult.done) {
-            let value = iteratorResult.value
-            let currentPrimivie = transform(value)
-            if (bestMaxPrimivie < currentPrimivie) {
-                bestMax = value
-                bestMaxPrimivie = currentPrimivie
-            }
-            iteratorResult = iterator.next()
+        if (iteratorResult.done) {
+            return;
         }
 
-        return bestMax
+        let bestMax = <TSource>iteratorResult.value;
+        let bestMaxPrimitive = transform(bestMax);
+
+        while (!iteratorResult.done) {
+            let value = <TSource>iteratorResult.value;
+            let currentPrimitive = transform(value);
+            if (bestMaxPrimitive < currentPrimitive) {
+                bestMax = value;
+                bestMaxPrimitive = currentPrimitive;
+            }
+            iteratorResult = iterator.next();
+        }
+
+        return bestMax;
     }
 
     /**
@@ -346,22 +351,27 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns TSource The min element of the sequence.
      */
     min(transform: (element: TSource) => number | string): TSource {
-        let iterator = this[Symbol.iterator]()
-        let iteratorResult = iterator.next()
-        let bestMin = iteratorResult.value
-        let bestMinPrimivie = transform(bestMin)
+        let iterator = this[Symbol.iterator]();
+        let iteratorResult = iterator.next();
 
-        while (!iteratorResult.done) {
-            let value = iteratorResult.value
-            let currentPrimivie = transform(value)
-            if (bestMinPrimivie > currentPrimivie) {
-                bestMin = value
-                bestMinPrimivie = currentPrimivie
-            }
-            iteratorResult = iterator.next()
+        if (iteratorResult.done) {
+            return;
         }
 
-        return bestMin
+        let bestMin = <TSource>iteratorResult.value;
+        let bestMinPrimivie = transform(bestMin);
+
+        while (!iteratorResult.done) {
+            let value = <TSource>iteratorResult.value;
+            let currentPrimivie = transform(value);
+            if (bestMinPrimivie > currentPrimivie) {
+                bestMin = value;
+                bestMinPrimivie = currentPrimivie;
+            }
+            iteratorResult = iterator.next();
+        }
+
+        return bestMin;
     }
 
     /**
@@ -398,14 +408,14 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @param {function} predicate A function that takes an element of each sequence compares them and returns a boolean depeneding whether they are considered equal or not. 
      * @returns {boolean} True if both sequences are of the same length and all corresponding pairs of elements are equal according to the predicate function. False otherwise.
      */
-    sequenceEquals<TRight>(right: Iterable<TRight>, predicate: (left: TSource, right: TRight) => boolean = (left, right) => left as any === right): boolean {
-        let sourceIterator = this[Symbol.iterator]()
-        let rightIterator = right[Symbol.iterator]()
+    sequenceEquals<TRight>(right: Iterable<TRight>, predicate: (left: TSource, right: TRight) => boolean = (left: any, right: any) => left === right): boolean {
+        let sourceIterator = this[Symbol.iterator]();
+        let rightIterator = right[Symbol.iterator]();
 
         let [sourceResult, rightResult] = [sourceIterator.next(), rightIterator.next()]
 
         while (!sourceResult.done && !rightResult.done) {
-            if (!sourceResult.done && !rightResult.done && !predicate(sourceResult.value, rightResult.value)) {
+            if (!sourceResult.done && !rightResult.done && !predicate(<TSource>sourceResult.value, rightResult.value)) {
                 return false
             }
 
