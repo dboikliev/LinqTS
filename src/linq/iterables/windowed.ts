@@ -1,13 +1,18 @@
 export class Windowed<TSource>  {
     constructor(private source: Iterable<TSource>, 
                 private size: number, 
-                private step: number) {
+                private step: number,
+                private dropRemainder: boolean = false) {
     }
 
     *[Symbol.iterator]() {
-        let window = []
+        if (this.size <= 0) {
+            return
+        }
 
-        let iterator = this.source[Symbol.iterator]()
+        const window = []
+
+        const iterator = this.source[Symbol.iterator]()
         let current: IteratorResult<TSource>
         for (let i = 0; i < this.size; i++) {
             current = iterator.next()
@@ -17,9 +22,14 @@ export class Windowed<TSource>  {
             window.push(current.value)
         }
 
-        yield Array.from(window)
-
         current = iterator.next()
+        
+        if (this.skipWindow(window) && current.done) {
+            return
+        }
+
+        yield Array.from(window);
+
         while (current && !current.done) {
             let skipped = 0
             while (skipped < this.step && window.length > 0) {
@@ -41,11 +51,15 @@ export class Windowed<TSource>  {
                 }
             }
 
-            if (window.length === 0) {
+            if (window.length === 0 || this.skipWindow(window)) {
                 return
             }
 
             yield Array.from(window)
         }
+    }
+
+    private skipWindow(window: any[]): boolean {
+        return window.length < this.size && this.dropRemainder;
     }
 }

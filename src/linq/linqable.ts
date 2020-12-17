@@ -504,11 +504,12 @@ export class Linqable<TSource> implements Iterable<TSource> {
     /**
      * Provides batches of elements from the sequence.
      * @param  {number} size The size of the batch.
+     * @param  {boolean} dropRemainder Indicates whether to drop the last batch if it is not of full size.
      * @returns {Iterable<TSource[]>} A sequence of batches.
      */
-    batch(size: number): Linqable<TSource[]> {
+    batch(size: number, dropRemainder: boolean = false): Linqable<TSource[]> {
         const step = size
-        return new Linqable(new Windowed(this, size, step))
+        return new Linqable(new Windowed(this, size, step, dropRemainder))
     }
 
     /**
