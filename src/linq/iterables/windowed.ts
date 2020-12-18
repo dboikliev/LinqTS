@@ -1,4 +1,6 @@
-export class Windowed<TSource>  {
+import { elementsSymbol, ElementsWrapper } from "../element-wrapper"
+
+export class Windowed<TSource> implements ElementsWrapper {
     constructor(private source: Iterable<TSource>, 
                 private size: number, 
                 private step: number,
@@ -61,5 +63,14 @@ export class Windowed<TSource>  {
 
     private skipWindow(window: any[]): boolean {
         return window.length < this.size && this.dropRemainder;
+    }
+
+    
+    *[elementsSymbol](): Iterable<Iterable<TSource>> {
+        yield this.source;
+    }
+
+    toString(): string {
+        return `${Windowed.name} (size: ${this.size}, step: ${this.step}, dropRemainder: ${this.dropRemainder})`
     }
 }

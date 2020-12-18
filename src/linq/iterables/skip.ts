@@ -1,4 +1,6 @@
-export class Skip<TSource>  {
+import { elementsSymbol, ElementsWrapper } from "../element-wrapper"
+
+export class Skip<TSource> implements ElementsWrapper  {
     constructor(private elements: Iterable<TSource>, 
                 private count: number) {
     }
@@ -14,5 +16,14 @@ export class Skip<TSource>  {
             yield iteratorResult.value
             iteratorResult = iterator.next()
         }
+    }
+
+    
+    *[elementsSymbol](): Iterable<Iterable<TSource>> {
+        yield this.elements;
+    }
+
+    toString(): string {
+        return `${Skip.name} (count: ${this.count})`;
     }
 }

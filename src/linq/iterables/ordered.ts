@@ -1,6 +1,10 @@
-export class Ordered<TSource>  {
-    constructor(private elements: Iterable<TSource>, 
-                private comparer: (left: TSource, right: TSource) => number) {
+import { elementsSymbol, ElementsWrapper } from "../element-wrapper"
+
+export class Ordered<TSource> implements ElementsWrapper  {
+    constructor(private elements: Iterable<TSource>,
+        private comparer: (left: TSource, right: TSource) => number,
+        private selector: (element: TSource) => number | string,
+        private isAscending: boolean) {
     }
 
     *[Symbol.iterator](): Iterator<TSource> {
@@ -15,21 +19,25 @@ export class Ordered<TSource>  {
         yield* sorted
     }
 
+    static from<T>(elements: Iterable<T>, selector: (elemment: T) => number | string, isAscending: boolean): Ordered<T> {
+        return new Ordered(elements, (left, right) => this.compareWithSelector(left, right, selector, isAscending), selector, isAscending)
+    }
+
     from(selector: (elemment: TSource) => number | string, isAscending: boolean): Ordered<TSource> {
-        return new Ordered(this.elements, this.nestComparisons(selector, isAscending))
+        return new Ordered(this.elements, this.nestComparisons(selector, isAscending), selector, isAscending)
     }
 
     private nestComparisons(selector: (elemment: TSource) => number | string, isAscending: boolean) {
         return (left, right) => {
             let firstComparison = this.comparer(left, right)
             if (firstComparison === 0) {
-                return this.compareWithSelector(left, right, selector, isAscending)  
+                return Ordered.compareWithSelector(left, right, selector, isAscending)
             }
             return firstComparison
         }
     }
 
-    private compareWithSelector(left: TSource, right: TSource, selector: (element: TSource) => number | string, isAscending: boolean) {
+    private static compareWithSelector<T>(left: T, right: T, selector: (element: T) => number | string, isAscending: boolean) {
         let direction = isAscending ? 1 : -1
         let a = selector(left)
         let b = selector(right)
@@ -39,7 +47,16 @@ export class Ordered<TSource>  {
 
         if (a < b)
             return -direction
-        
+
         return 0
+    }
+
+
+    *[elementsSymbol](): Iterable<Iterable<TSource>> {
+        yield this.elements;
+    }
+
+    toString() {
+        return `${Ordered.name} (selector: ${this.selector}, direction: ${this.isAscending ? 'ascending' : 'descending'})`;
     }
 }

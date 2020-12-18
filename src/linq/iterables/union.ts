@@ -1,4 +1,6 @@
-export class Union<TSource>  {
+import { elementsSymbol, ElementsWrapper } from "../element-wrapper";
+
+export class Union<TSource> implements ElementsWrapper  {
     constructor(private left: Iterable<TSource>, 
                 private right: Iterable<TSource>) {
     }
@@ -16,5 +18,14 @@ export class Union<TSource>  {
                 yield element
             }
         }
+    }
+    
+    *[elementsSymbol](): Iterable<Iterable<TSource>> {
+        yield this.left;
+        yield this.right;
+    }
+
+    toString() {
+        return `${Union.name}`;
     }
 }

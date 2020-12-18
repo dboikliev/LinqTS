@@ -1,4 +1,6 @@
-export class SkipWhile<TSource>  {
+import { elementsSymbol, ElementsWrapper } from "../element-wrapper"
+
+export class SkipWhile<TSource> implements ElementsWrapper {
     constructor(private elements: Iterable<TSource>,
                 private predicate: (element: TSource) => boolean) {
     }
@@ -27,5 +29,14 @@ export class SkipWhile<TSource>  {
                 return result
             }
         }
+    }
+
+    
+    *[elementsSymbol](): Iterable<Iterable<TSource>> {
+        yield this.elements;
+    }
+
+    toString(): string {
+        return `${SkipWhile.name} (predicate: ${this.predicate})`;
     }
 }

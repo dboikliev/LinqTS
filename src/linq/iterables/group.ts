@@ -1,5 +1,6 @@
+import { elementsSymbol, ElementsWrapper } from "../element-wrapper"
 
-export class Group<TKey, TValue>  {
+export class Group<TKey, TValue> implements ElementsWrapper  {
     constructor(private elements: Iterable<TValue>, 
                 private selector: (element: TValue) => TKey) {
     }
@@ -15,5 +16,13 @@ export class Group<TKey, TValue>  {
         }
 
         yield* groups
+    }
+
+    *[elementsSymbol](): Iterable<Iterable<TValue>> {
+        yield this.elements;
+    }
+
+    toString() {
+        return `${Group.name} (selector: ${this.selector})`;
     }
 }

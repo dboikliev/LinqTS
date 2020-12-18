@@ -1,4 +1,6 @@
-export class Intersect<TSource>  {
+import { elementsSymbol, ElementsWrapper } from "../element-wrapper";
+
+export class Intersect<TSource> implements ElementsWrapper  {
     constructor(private left: Iterable<TSource>, 
                 private right: Iterable<TSource>) {
     }
@@ -10,5 +12,15 @@ export class Intersect<TSource>  {
                 yield element
             }
         }
+    }
+
+    
+    *[elementsSymbol](): Iterable<Iterable<TSource>> {
+        yield this.left;
+        yield this.right;
+    }
+
+    toString(): string {
+        return Intersect.name;
     }
 }

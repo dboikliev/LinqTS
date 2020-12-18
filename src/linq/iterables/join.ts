@@ -1,4 +1,6 @@
-export class Join<TLeft, TRight, TResult>  {
+import { elementsSymbol, ElementsWrapper } from "../element-wrapper"
+
+export class Join<TLeft, TRight, TResult> implements ElementsWrapper  {
     constructor(private leftElements: Iterable<TLeft>,
                 private rightElements: Iterable<TRight>,
                 private leftSelector: (element: TLeft) => any,
@@ -24,5 +26,15 @@ export class Join<TLeft, TRight, TResult>  {
                 yield this.resultSelector(left, match)
             }
         }
+    }
+
+    
+    *[elementsSymbol](): Iterable<Iterable<TLeft> | Iterable<TRight>> {
+        yield this.leftElements;
+        yield this.rightElements;
+    }
+
+    toString(): string {
+        return `${Join.name} (left: ${this.leftSelector}, right: ${this.rightSelector})`;
     }
 }
