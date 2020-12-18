@@ -50,6 +50,41 @@ To implement a lazy API similar by using iterators in order to simplify data-ori
 1. [seq](#seq)
 1. [id](#id)
 
+In order to visualize the resulting structre a function `prettyPrint` is provided which prints a tree-like representatio nof the operators to the console.
+
+```typescript
+import {  linq, prettyPrint, seq } from './src/linq';
+
+var elements = seq(1, 1, 10)
+                .union(seq(1, 1, 15))
+                .except([1,2])
+                .union(linq([1,2,3]).intersect([2,3]))
+                .skip(5)
+                .skipWhile(x => x < 3)
+                .groupBy(x => x % 2)
+                .zip(seq(1,5))
+
+console.log(prettyPrint(elements));
+```
+
+```text
+└──Linqable
+    └──Zip (selector: (a, b) => [a, b])
+        ├──Group (selector: x => x % 2)
+        |   └──SkipWhile (predicate: x => x < 3)
+        |       └──Skip (count: 5)
+        |           └──Union
+        |               ├──Except
+        |               |   ├──Union
+        |               |   |   ├──[object Generator]
+        |               |   |   └──Sequence (start: 1, step: 1, end: 15)
+        |               |   └──1,2
+        |               └──Intersect
+        |                   ├──1,2,3
+        |                   └──2,3
+        └──Sequence (start: 1, step: 5, end: Infinity)
+```
+
 ## Examples
 
 #### Building and executing a query:
