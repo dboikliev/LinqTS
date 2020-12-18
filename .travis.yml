@@ -2,7 +2,7 @@ install:
   - npm install
 
 script:
-  - npm run eselint
+  - npm run eslint
   - npm run build
 
 after_success:
