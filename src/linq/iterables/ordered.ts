@@ -1,62 +1,59 @@
-import { elementsSymbol, ElementsWrapper } from "../element-wrapper"
+import { elementsSymbol, ElementsWrapper } from '../element-wrapper'
 
-export class Ordered<TSource> implements ElementsWrapper  {
-    constructor(private elements: Iterable<TSource>,
-        private comparer: (left: TSource, right: TSource) => number,
-        private selector: (element: TSource) => number | string,
-        private isAscending: boolean) {
+export class Ordered<TSource> implements ElementsWrapper<TSource> {
+  constructor(private elements: Iterable<TSource>,
+    private comparer: (left: TSource, right: TSource) => number,
+    private selector: (element: TSource) => number | string,
+    private isAscending: boolean) {
+  }
+
+  *[Symbol.iterator](): IterableIterator<TSource> {
+    const sorted = []
+
+    for (const element of this.elements) {
+      sorted.push(element)
     }
 
-    *[Symbol.iterator](): Iterator<TSource> {
-        let sorted = []
+    sorted.sort(this.comparer)
 
-        for (let element of this.elements) {
-            sorted.push(element)
-        }
+    yield* sorted
+  }
 
-        sorted.sort(this.comparer)
+  static from<T>(elements: Iterable<T>, selector: (elemment: T) => number | string, isAscending: boolean): Ordered<T> {
+    return new Ordered(elements, (left, right) => this.compareWithSelector(left, right, selector, isAscending), selector, isAscending)
+  }
 
-        yield* sorted
+  from(selector: (elemment: TSource) => number | string, isAscending: boolean): Ordered<TSource> {
+    return new Ordered(this.elements, this.nestComparisons(selector, isAscending), selector, isAscending)
+  }
+
+  private nestComparisons(selector: (elemment: TSource) => number | string, isAscending: boolean) {
+    return (left: TSource, right: TSource) => {
+      const firstComparison = this.comparer(left, right)
+      if (firstComparison === 0) {
+        return Ordered.compareWithSelector(left, right, selector, isAscending)
+      }
+      return firstComparison
     }
+  }
 
-    static from<T>(elements: Iterable<T>, selector: (elemment: T) => number | string, isAscending: boolean): Ordered<T> {
-        return new Ordered(elements, (left, right) => this.compareWithSelector(left, right, selector, isAscending), selector, isAscending)
-    }
+  private static compareWithSelector<T>(left: T, right: T, selector: (element: T) => number | string, isAscending: boolean) {
+    const direction = isAscending ? 1 : -1
+    const a = selector(left)
+    const b = selector(right)
 
-    from(selector: (elemment: TSource) => number | string, isAscending: boolean): Ordered<TSource> {
-        return new Ordered(this.elements, this.nestComparisons(selector, isAscending), selector, isAscending)
-    }
+    if (a > b) { return direction }
 
-    private nestComparisons(selector: (elemment: TSource) => number | string, isAscending: boolean) {
-        return (left, right) => {
-            let firstComparison = this.comparer(left, right)
-            if (firstComparison === 0) {
-                return Ordered.compareWithSelector(left, right, selector, isAscending)
-            }
-            return firstComparison
-        }
-    }
+    if (a < b) { return -direction }
 
-    private static compareWithSelector<T>(left: T, right: T, selector: (element: T) => number | string, isAscending: boolean) {
-        let direction = isAscending ? 1 : -1
-        let a = selector(left)
-        let b = selector(right)
+    return 0
+  }
 
-        if (a > b)
-            return direction
+  *[elementsSymbol](): IterableIterator<Iterable<TSource>> {
+    yield this.elements
+  }
 
-        if (a < b)
-            return -direction
-
-        return 0
-    }
-
-
-    *[elementsSymbol](): Iterable<Iterable<TSource>> {
-        yield this.elements;
-    }
-
-    toString() {
-        return `${Ordered.name} (selector: ${this.selector}, direction: ${this.isAscending ? 'ascending' : 'descending'})`;
-    }
+  toString(): string {
+    return `${Ordered.name} (selector: ${this.selector}, direction: ${this.isAscending ? 'ascending' : 'descending'})`
+  }
 }

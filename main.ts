@@ -1,12 +1,4 @@
 import {  linq, print, seq } from './src/linq';
 
-var elements = seq(1, 1, 10)
-                .union(seq(1, 1, 15))
-                .except([1,2])
-                .union(linq([1,2,3]).intersect([2,3]))
-                .skip(5)
-                .skipWhile(x => x < 3)
-                .groupBy(x => x % 2)
-                .zip(seq(1,5))
-
+const elements = linq([1,2,3,3,3,4,4,5]).zip(seq(1, 1))
 console.log(print(elements));

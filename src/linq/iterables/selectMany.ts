@@ -1,23 +1,22 @@
-import { elementsSymbol, ElementsWrapper } from "../element-wrapper";
+import { elementsSymbol, ElementsWrapper } from '../element-wrapper'
 
-export class SelectMany<TSource, TResult> implements ElementsWrapper  {
-    constructor(private elements: Iterable<TSource>, 
-                private selector: (element: TSource) => Iterable<TResult>) {
-    }
+export class SelectMany<TSource, TResult> implements ElementsWrapper<TSource> {
+  constructor(private elements: Iterable<TSource>,
+    private selector: (element: TSource) => Iterable<TResult>) {
+  }
 
-    *[Symbol.iterator](): Iterator<TResult> {
-        for (let element of this.elements) {
-            let innerElements = this.selector(element)
-            yield* innerElements
-        }
+  *[Symbol.iterator](): IterableIterator<TResult> {
+    for (const element of this.elements) {
+      const innerElements = this.selector(element)
+      yield* innerElements
     }
+  }
 
-    
-    *[elementsSymbol](): Iterable<Iterable<TSource>> {
-        yield this.elements;
-    }
+  *[elementsSymbol](): IterableIterator<Iterable<TSource>> {
+    yield this.elements
+  }
 
-    toString() {
-        return `${SelectMany.name} (selector: ${this.selector})`;
-    }
+  toString(): string {
+    return `${SelectMany.name} (selector: ${this.selector})`
+  }
 }

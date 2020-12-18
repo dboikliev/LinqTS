@@ -1,28 +1,28 @@
-import { elementsSymbol, ElementsWrapper } from "../element-wrapper"
+import { elementsSymbol, ElementsWrapper } from '../element-wrapper'
 
-export class Group<TKey, TValue> implements ElementsWrapper  {
-    constructor(private elements: Iterable<TValue>, 
-                private selector: (element: TValue) => TKey) {
+export class Group<TKey, TValue> implements ElementsWrapper<TValue> {
+  constructor(private elements: Iterable<TValue>,
+    private selector: (element: TValue) => TKey) {
+  }
+
+  *[Symbol.iterator](): IterableIterator<[TKey, TValue[]]> {
+    const groups = new Map<TKey, TValue[]>()
+
+    for (const element of this.elements) {
+      const key = this.selector(element)
+      const group = groups.get(key) || []
+      group.push(element)
+      groups.set(key, group)
     }
 
-    *[Symbol.iterator](): Iterator<[TKey, TValue[]]> {
-        let groups = new Map<TKey, TValue[]>()
+    yield* groups
+  }
 
-        for (let element of this.elements) {
-            let key = this.selector(element)
-            let group = groups.get(key) || []
-            group.push(element)
-            groups.set(key, group)
-        }
+  *[elementsSymbol](): IterableIterator<Iterable<TValue>> {
+    yield this.elements
+  }
 
-        yield* groups
-    }
-
-    *[elementsSymbol](): Iterable<Iterable<TValue>> {
-        yield this.elements;
-    }
-
-    toString() {
-        return `${Group.name} (selector: ${this.selector})`;
-    }
+  toString(): string {
+    return `${Group.name} (selector: ${this.selector})`
+  }
 }

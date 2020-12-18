@@ -1,31 +1,31 @@
-import { elementsSymbol, ElementsWrapper } from "../element-wrapper";
+import { elementsSymbol, ElementsWrapper } from '../element-wrapper'
 
-export class Union<TSource> implements ElementsWrapper  {
-    constructor(private left: Iterable<TSource>, 
-                private right: Iterable<TSource>) {
+export class Union<TSource> implements ElementsWrapper<TSource> {
+  constructor(private left: Iterable<TSource>,
+    private right: Iterable<TSource>) {
+  }
+
+  *[Symbol.iterator](): IterableIterator<TSource> {
+    const set = new Set(this.left)
+
+    for (const element of set) {
+      yield element
     }
 
-    *[Symbol.iterator]() {
-        let set = new Set(this.left)
-
-        for (let element of set) {
-            yield element
-        }
-
-        for (let element of this.right) {
-            if (!set.has(element)) {
-                set.add(element)
-                yield element
-            }
-        }
+    for (const element of this.right) {
+      if (!set.has(element)) {
+        set.add(element)
+        yield element
+      }
     }
-    
-    *[elementsSymbol](): Iterable<Iterable<TSource>> {
-        yield this.left;
-        yield this.right;
-    }
+  }
 
-    toString() {
-        return `${Union.name}`;
-    }
+  *[elementsSymbol](): IterableIterator<Iterable<TSource>> {
+    yield this.left
+    yield this.right
+  }
+
+  toString(): string {
+    return `${Union.name}`
+  }
 }

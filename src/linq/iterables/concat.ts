@@ -1,22 +1,21 @@
-import { elementsSymbol, ElementsWrapper } from "../element-wrapper";
+import { elementsSymbol, ElementsWrapper } from '../element-wrapper'
 
-export class Concat<TSource> implements ElementsWrapper {
-    constructor(private first: Iterable<TSource>, 
-                private second: Iterable<TSource>) {
-    }
+export class Concat<TSource> implements ElementsWrapper<TSource>, Iterable<TSource> {
+  constructor(private first: Iterable<TSource>,
+    private second: Iterable<TSource>) {
+  }
 
-    *[Symbol.iterator](): Iterator<TSource> {
-        yield* this.first
-        yield* this.second
-    }
+  *[Symbol.iterator](): IterableIterator<TSource> {
+    yield* this.first
+    yield* this.second
+  }
 
-    
-    *[elementsSymbol](): Iterable<Iterable<TSource>> {
-        yield this.first;
-        yield this.second;
-    }
+  *[elementsSymbol](): IterableIterator<Iterable<TSource>> {
+    yield this.first
+    yield this.second
+  }
 
-    toString() {
-        return Concat.name;
-    }
+  toString(): string {
+    return Concat.name
+  }
 }

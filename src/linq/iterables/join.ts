@@ -1,40 +1,39 @@
-import { elementsSymbol, ElementsWrapper } from "../element-wrapper"
+import { elementsSymbol, ElementsWrapper } from '../element-wrapper'
 
-export class Join<TLeft, TRight, TResult> implements ElementsWrapper  {
-    constructor(private leftElements: Iterable<TLeft>,
-                private rightElements: Iterable<TRight>,
-                private leftSelector: (element: TLeft) => any,
-                private rightSelector: (element: TRight) => any,
-                private resultSelector: (left: TLeft, right: TRight) => TResult) {
+export class Join<TLeft, TRight, TResult> implements ElementsWrapper<TLeft | TRight> {
+  constructor(private leftElements: Iterable<TLeft>,
+    private rightElements: Iterable<TRight>,
+    private leftSelector: (element: TLeft) => unknown,
+    private rightSelector: (element: TRight) => unknown,
+    private resultSelector: (left: TLeft, right: TRight) => TResult) {
+  }
+
+  *[Symbol.iterator](): IterableIterator<TResult> {
+    const groups = new Map<unknown, TRight[]>()
+
+    for (const element of this.rightElements) {
+      const key = this.rightSelector(element)
+      const group = groups.get(key) || []
+      group.push(element)
+      groups.set(key, group)
     }
 
-    *[Symbol.iterator](): Iterator<TResult> {
-        let groups = new Map<any, TRight[]>()
+    for (const left of this.leftElements) {
+      const leftKey = this.leftSelector(left)
+      const group = groups.get(leftKey) || []
 
-        for (let element of this.rightElements) {
-            let key = this.rightSelector(element)
-            let group = groups.get(key) || []
-            group.push(element)
-            groups.set(key, group)
-        }
-
-        for (let left of this.leftElements) {
-            let leftKey = this.leftSelector(left)
-            let group = groups.get(leftKey) || []
-
-            for (let match of group) {
-                yield this.resultSelector(left, match)
-            }
-        }
+      for (const match of group) {
+        yield this.resultSelector(left, match)
+      }
     }
+  }
 
-    
-    *[elementsSymbol](): Iterable<Iterable<TLeft> | Iterable<TRight>> {
-        yield this.leftElements;
-        yield this.rightElements;
-    }
+  *[elementsSymbol](): IterableIterator<Iterable<TLeft> | Iterable<TRight>> {
+    yield this.leftElements
+    yield this.rightElements
+  }
 
-    toString(): string {
-        return `${Join.name} (left: ${this.leftSelector}, right: ${this.rightSelector})`;
-    }
+  toString(): string {
+    return `${Join.name} (left: ${this.leftSelector}, right: ${this.rightSelector})`
+  }
 }

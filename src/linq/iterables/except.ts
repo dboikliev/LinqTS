@@ -1,25 +1,25 @@
-import { elementsSymbol, ElementsWrapper } from "../element-wrapper";
+import { elementsSymbol, ElementsWrapper } from '../element-wrapper'
 
-export class Except<TSource> implements ElementsWrapper {
-    constructor(private left: Iterable<TSource>,
-        private right: Iterable<TSource>) {
-    }
+export class Except<TSource> implements ElementsWrapper<TSource> {
+  constructor(private left: Iterable<TSource>,
+    private right: Iterable<TSource>) {
+  }
 
-    *[Symbol.iterator]() {
-        let set = new Set(this.right)
-        for (let element of this.left) {
-            if (!set.has(element)) {
-                yield element
-            }
-        }
+  *[Symbol.iterator](): IterableIterator<TSource> {
+    const set = new Set(this.right)
+    for (const element of this.left) {
+      if (!set.has(element)) {
+        yield element
+      }
     }
+  }
 
-    *[elementsSymbol](): Iterable<Iterable<TSource>> {
-        yield this.left;
-        yield this.right;
-    }
+  *[elementsSymbol](): IterableIterator<Iterable<TSource>> {
+    yield this.left
+    yield this.right
+  }
 
-    toString() {
-        return Except.name;
-    }
+  toString(): string {
+    return Except.name
+  }
 }

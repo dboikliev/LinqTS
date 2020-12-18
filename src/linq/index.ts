@@ -1,6 +1,6 @@
-import { Linqable } from "./linqable"
-import { Sequence } from "./iterables/sequence";
-import { elementsSymbol, ElementsWrapper, isWrapper, unwrap } from "./element-wrapper";
+import { Linqable } from './linqable'
+import { Sequence } from './iterables/sequence'
+import { elementsSymbol, ElementsWrapper, isWrapper, unwrap } from './element-wrapper'
 
 /**
  * Wraps an interable into an object which supports queries.
@@ -8,7 +8,7 @@ import { elementsSymbol, ElementsWrapper, isWrapper, unwrap } from "./element-wr
  * @returns {Linqable<number>} An object with support for queries.
  */
 export function linq<T>(iterable: Iterable<T>): Linqable<T> {
-    return new Linqable(unwrap(iterable))
+  return new Linqable(unwrap(iterable))
 }
 
 /**
@@ -18,8 +18,8 @@ export function linq<T>(iterable: Iterable<T>): Linqable<T> {
  * @param  {number} end The end of the sequence. Infinity by default.
  * @returns {Linqable<number>}
  */
-export function seq(start: number = 0, step: number = 1, end: number = Infinity): Linqable<number> {
-    return new Linqable(new Sequence(start, step, end));
+export function seq(start = 0, step = 1, end = Infinity): Linqable<number> {
+  return new Linqable(new Sequence(start, step, end))
 }
 
 /**
@@ -28,25 +28,25 @@ export function seq(start: number = 0, step: number = 1, end: number = Infinity)
  * @returns {T} The element which was passed as a parameter.
  */
 export function id<T>(element: T): T {
-    return element
+  return element
 }
 
-export function print<T>(linqable: Linqable<T>) {
-    return printTree(linqable);
+export function print<T>(linqable: Linqable<T>): string {
+  return printTree<T>(linqable)
 }
 
-function printTree<T>(linqable: ElementsWrapper | Iterable<T>, indent = '', isLast = true) {
-    if (!linqable) {
-        return;
-    }
-    const childSymbol = isLast ? '└──' : '├──';
-    console.log(indent + childSymbol + linqable.toString().replace(/(\r?\n|\r)\s*/g, ''))
-    if (isWrapper(linqable)) {
-        const sources = Array.from(linqable[elementsSymbol]());
+function printTree<T>(linqable: ElementsWrapper<T> | Iterable<T>, indent = '', isLast = true) {
+  if (!linqable) {
+    return ''
+  }
+  const childSymbol = isLast ? '└──' : '├──'
+  console.log(indent + childSymbol + linqable.toString().replace(/(\r?\n|\r)\s*/g, ''))
+  if (isWrapper(linqable)) {
+    const sources = Array.from(linqable[elementsSymbol]())
 
-        for (let i = 0; i < sources.length; i++) {
-            const source = sources[i];
-            printTree(source, indent + (isLast ? '    ' : '|   '), i == sources.length - 1);
-        }
+    for (let i = 0; i < sources.length; i++) {
+      const source = sources[i]
+      printTree(source, indent + (isLast ? '    ' : '|   '), i === sources.length - 1)
     }
+  }
 }
