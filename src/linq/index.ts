@@ -1,5 +1,5 @@
-import { isWrapper, Linqable, Sequence, unwrap } from "./linqable"
-import { elementsSymbol, ElementsWrapper } from "./element-wrapper";
+import { Linqable, Sequence } from "./linqable"
+import { elementsSymbol, ElementsWrapper, isWrapper, unwrap } from "./element-wrapper";
 
 /**
  * Wraps an interable into an object which supports queries.

@@ -19,6 +19,7 @@ import {
     Zip 
 } from "./iterables";
 import { elementsSymbol, ElementsWrapper } from "./element-wrapper";
+import { unwrap } from "./element-wrapper";
 
 export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper {
     constructor (protected elements: Iterable<TSource>) {
@@ -580,17 +581,4 @@ export class Sequence extends Linqable<number> {
     toString(): string {
         return `${Sequence.name} (start: ${this.start}, step: ${this.step}, end: ${this.end})`;
     }
-}
-
-export function isWrapper<T>(obj: ElementsWrapper | Iterable<T>): obj is ElementsWrapper {
-    return typeof obj[elementsSymbol] === 'function';
-}
-
-export function unwrap<T>(obj: Linqable<T> | Iterable<T>): Iterable<T> {
-    if (isWrapper(obj)) {
-        for (const elements of obj[elementsSymbol]()) {
-            return elements;
-        }
-    }
-    return obj;
 }
