@@ -159,7 +159,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper {
      * @returns An iterable of the trasnformed values.
      */
     zip<TRight, TResult = [TSource, TRight]>(right: Iterable<TRight>, selector?: (left: TSource, right: TRight) => TResult): Linqable<TResult> {
-        return  new Linqable(new Zip(this.elements, right, (selector || ((a, b) => [a, b])) as any))
+        return  new Linqable(new Zip(this.elements, unwrap(right), (selector || ((a, b) => [a, b])) as any))
     }
 
     /**
@@ -466,7 +466,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper {
      * @returns {number} A sequence of the elements which are not present in the provided sequence.
      */
     except(right: Iterable<TSource>): Linqable<TSource> {
-        return new Linqable(new Except(this.elements, right))
+        return new Linqable(new Except(this.elements, unwrap(right)));
     }
 
     /**
@@ -475,7 +475,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper {
      * @returns {number} A sequence of the elements which are present in both the provided sequences.
      */
     intersect(right: Iterable<TSource>): Linqable<TSource> {
-        return new Linqable(new Intersect(this.elements, right))
+        return new Linqable(new Intersect(this.elements, unwrap(right)));
     }
 
     /**
