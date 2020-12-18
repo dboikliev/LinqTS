@@ -1,4 +1,5 @@
-import { Linqable, Sequence } from "./linqable"
+import { Linqable } from "./linqable"
+import { Sequence } from "./iterables/sequence";
 import { elementsSymbol, ElementsWrapper, isWrapper, unwrap } from "./element-wrapper";
 
 /**
@@ -18,7 +19,7 @@ export function linq<T>(iterable: Iterable<T>): Linqable<T> {
  * @returns {Linqable<number>}
  */
 export function seq(start: number = 0, step: number = 1, end: number = Infinity): Linqable<number> {
-    return new Sequence(start, step, end);
+    return new Linqable(new Sequence(start, step, end));
 }
 
 /**

@@ -556,29 +556,4 @@ export class OrderedLinqable<TSource> extends Linqable<TSource> {
 }
 
 
-export class Sequence extends Linqable<number> {
-    constructor(private start: number = 0,
-        private step: number = 1,
-        private end: number = Infinity) {
-        super(Sequence.sequence(start, step, end));
-        if (!step) {
-            throw Error("0 is not a valid step.");
-        }
-    }
 
-    private static *sequence(start: number, step: number, end: number) {
-        const direction = step >= 0 ? 1 : -1;
-
-        for (let i = start; end === Infinity || i * direction <= end * direction; i += step) {
-            yield i;
-        }
-    }
-
-    *[elementsSymbol]() {
-    }
-
-
-    toString(): string {
-        return `${Sequence.name} (start: ${this.start}, step: ${this.step}, end: ${this.end})`;
-    }
-}

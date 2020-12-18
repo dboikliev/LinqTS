@@ -76,7 +76,7 @@ console.log(prettyPrint(elements));
         |           └──Union
         |               ├──Except
         |               |   ├──Union
-        |               |   |   ├──[object Generator]
+        |               |   |   ├──Sequence (start: 1, step: 1, end: 10)
         |               |   |   └──Sequence (start: 1, step: 1, end: 15)
         |               |   └──1,2
         |               └──Intersect
