@@ -1,4 +1,6 @@
-export class Distinct<TSource> {
+import { elementsSymbol, ElementsWrapper } from "../element-wrapper";
+
+export class Distinct<TSource> implements ElementsWrapper {
     constructor(private elements: Iterable<TSource>, 
                 private selector?: (element: TSource) => any) {
     }
@@ -13,5 +15,14 @@ export class Distinct<TSource> {
                 yield element
             }
         }
+    }
+
+        
+    *[elementsSymbol](): Iterable<Iterable<TSource>> {
+        yield this.elements;
+    }
+
+    toString() {
+        return `${Distinct.name}${this.selector ? ` (selector: ${this.selector})` : ''}`
     }
 }

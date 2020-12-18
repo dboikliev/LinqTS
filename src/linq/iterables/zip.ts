@@ -1,4 +1,6 @@
-export class Zip<TLeft, TRight, TResult>  {
+import { elementsSymbol, ElementsWrapper } from "../element-wrapper"
+
+export class Zip<TLeft, TRight, TResult> implements ElementsWrapper  {
     constructor(private left: Iterable<TLeft>, 
                 private right: Iterable<TRight>, 
                 private selector: (left: TLeft, right: TRight) => TResult) {
@@ -27,5 +29,15 @@ export class Zip<TLeft, TRight, TResult>  {
                 return result
             }
         }
+    }
+
+    
+    *[elementsSymbol](): Iterable<Iterable<TLeft> | Iterable<TRight>> {
+        yield this.left;
+        yield this.right;
+    }
+
+    toString(): string {
+        return `${Zip.name} (selector: ${this.selector})`
     }
 }

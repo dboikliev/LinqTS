@@ -1,6 +1,8 @@
-export class Except<TSource>  {
-    constructor(private left: Iterable<TSource>, 
-                private right: Iterable<TSource>) {
+import { elementsSymbol, ElementsWrapper } from "../element-wrapper";
+
+export class Except<TSource> implements ElementsWrapper {
+    constructor(private left: Iterable<TSource>,
+        private right: Iterable<TSource>) {
     }
 
     *[Symbol.iterator]() {
@@ -10,5 +12,14 @@ export class Except<TSource>  {
                 yield element
             }
         }
+    }
+
+    *[elementsSymbol](): Iterable<Iterable<TSource>> {
+        yield this.left;
+        yield this.right;
+    }
+
+    toString() {
+        return Except.name;
     }
 }

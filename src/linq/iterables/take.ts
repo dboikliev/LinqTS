@@ -1,4 +1,6 @@
-export class Take<TSource>  {
+import { elementsSymbol, ElementsWrapper } from "../element-wrapper";
+
+export class Take<TSource> implements ElementsWrapper {
     constructor(private elements: Iterable<TSource>, 
                 private count: number) {
     }
@@ -12,5 +14,14 @@ export class Take<TSource>  {
             current++
             yield element
         }
+    }
+
+    
+    *[elementsSymbol](): Iterable<Iterable<TSource>> {
+        yield this.elements;
+    }
+
+    toString(): string {
+        return `${Take.name} (count: ${this.count})`;
     }
 }

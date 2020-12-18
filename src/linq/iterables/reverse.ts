@@ -1,4 +1,6 @@
-export class Reverse<TSource>  {
+import { elementsSymbol, ElementsWrapper } from "../element-wrapper";
+
+export class Reverse<TSource> implements ElementsWrapper  {
     constructor(private elements: Iterable<TSource>) {
     }
 
@@ -12,5 +14,13 @@ export class Reverse<TSource>  {
         while (stack.length) {
             yield stack.pop()
         }
+    }
+
+    *[elementsSymbol](): Iterable<Iterable<TSource>> {
+        yield this.elements;
+    }
+
+    toString() {
+        return Reverse.name;
     }
 }

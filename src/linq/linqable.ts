@@ -17,15 +17,19 @@ import {
     Where, 
     Windowed, 
     Zip 
-} from "./iterables"
+} from "./iterables";
+import { elementsSymbol, ElementsWrapper } from "./element-wrapper";
 
-export class Linqable<TSource> implements Iterable<TSource> {
+export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper {
     constructor (protected elements: Iterable<TSource>) {
 
     }
-
     *[Symbol.iterator]() {
         yield* this.elements
+    }
+
+    *[elementsSymbol](): Iterable<Iterable<TSource>> {
+        yield this.elements;
     }
 
     /**
@@ -55,9 +59,9 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @return {boolean} Whether an element matching the predicate is found or not.
      */
     all(predicate: (element: TSource) => boolean): boolean {
-        for (let value of this) {
+        for (const value of this) {
             if (!predicate(value)) {
-                return false
+                return false;
             }
         }
     }
@@ -75,12 +79,12 @@ export class Linqable<TSource> implements Iterable<TSource> {
         leftSelector: (element: TSource) => any,
         rightSelector: (element: TRight) => any,
         resultSelector: (left: TSource, right: TRight) => TResult): Linqable<TResult> {
-        return new Linqable(new Join(this,
+        return new Linqable(new Join(this.elements,
             right,
             leftSelector,
             rightSelector,
             resultSelector
-        ))
+        ));
     }
 
     /**
@@ -89,7 +93,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns An iterable with a beginning after the skipped values.
      */
     skip(count: number): Linqable<TSource> {
-        return new Linqable(new Skip(this, count))
+        return new Linqable(new Skip(this.elements, count));
     }
 
     /**
@@ -98,7 +102,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns An iterable with a beginning after the skipped values.
      */
     skipWhile(predicate: (element: TSource) => boolean): Linqable<TSource> {
-        return new Linqable(new SkipWhile(this, predicate))
+        return new Linqable(new SkipWhile(this.elements, predicate));
     }
 
     /**
@@ -107,7 +111,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns An iterable for the taken elements.
      */
     take(count: number): Linqable<TSource> {
-        return new Linqable(new Take(this, count))
+        return new Linqable(new Take(this.elements, count));
     }
 
     /**
@@ -116,7 +120,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns An iterable of the taken elements.
      */
     takeWhile(predicate: (element: TSource) => boolean): Linqable<TSource> {
-        return new Linqable(new TakeWhile(this, predicate))
+        return new Linqable(new TakeWhile(this.elements, predicate))
     }
 
     /**
@@ -125,7 +129,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns An iterable of the filtered elements.
      */
     where(predicate: (element: TSource) => boolean): Linqable<TSource> {
-        return new Linqable(new Where(this, predicate))
+        return new Linqable(new Where(this.elements, predicate))
     }
 
     /**
@@ -134,7 +138,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns An iterable of the transformed elements.
      */
     select<TResult>(selector: (element: TSource) => TResult): Linqable<TResult> {
-        return  new Linqable(new Select(this, selector))
+        return  new Linqable(new Select(this.elements, selector))
     }
 
     /**
@@ -143,7 +147,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns An iterable of the transformed elements.
      */
     selectMany<TResult>(selector: (element: TSource) => Iterable<TResult>): Linqable<TResult> {
-        return  new Linqable(new SelectMany(this, selector))
+        return  new Linqable(new SelectMany(this.elements, selector))
     }
 
     /**
@@ -155,7 +159,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns An iterable of the trasnformed values.
      */
     zip<TRight, TResult = [TSource, TRight]>(right: Iterable<TRight>, selector?: (left: TSource, right: TRight) => TResult): Linqable<TResult> {
-        return  new Linqable(new Zip(this, right, (selector || ((a, b) => [a, b])) as any))
+        return  new Linqable(new Zip(this.elements, right, (selector || ((a, b) => [a, b])) as any))
     }
 
     /**
@@ -164,7 +168,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns An iterable of the distinct elements.
      */
     distinct(selector: (element: TSource) => any = (element: TSource) => element): Linqable<TSource> {
-        return new Linqable(new Distinct(this, selector))
+        return new Linqable(new Distinct(this.elements, selector))
     }
 
     /**
@@ -173,7 +177,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns An iterable of groups.
      */
     groupBy<TKey>(selector: (element: TSource) => TKey): Linqable<[TKey, TSource[]]> {
-        return new Linqable(new Group(this, selector))
+        return new Linqable(new Group(this.elements, selector))
     }
 
     /**
@@ -182,16 +186,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns An iterable of the ordered elements.
      */
     orderBy(selector: (element: TSource) => number | string): OrderedLinqable<TSource> {
-        return new OrderedLinqable(new Ordered(this, (left, right) => {
-            let a = selector(left)
-            let b = selector(right)
-
-            if (a > b) return 1
-            
-            if (a < b) return -1
-
-            return 0
-        }))
+        return new OrderedLinqable(Ordered.from(this.elements, selector, true))
     }
 
     /**
@@ -200,16 +195,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns An iterable of the ordered elements.
      */
     orderByDescending(selector: (element: TSource) => number | string): OrderedLinqable<TSource> {
-        return new OrderedLinqable(new Ordered(this, (left, right) => {
-            let a = selector(left)
-            let b = selector(right)
-
-            if (a > b) return -1
-            
-            if (a < b) return 1
-
-            return 0
-        }))
+        return new OrderedLinqable(Ordered.from(this.elements, selector, false))
     }
 
     /**
@@ -217,7 +203,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns An iterable of the reversed squence of elements.
      */
     reverse(): Linqable<TSource> {
-        return new Linqable(new Reverse(this))
+        return new Linqable(new Reverse(this.elements))
     }
 
     /**
@@ -226,7 +212,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns An iterable of the concatenated elements.
      */
     concat(other: Iterable<TSource>): Linqable<TSource> {
-        return new Linqable(new Concat(this, other))
+        return new Linqable(new Concat(this.elements, other))
     }
 
     /**
@@ -480,7 +466,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns {number} A sequence of the elements which are not present in the provided sequence.
      */
     except(right: Iterable<TSource>): Linqable<TSource> {
-        return new Linqable(new Except(this, right))
+        return new Linqable(new Except(this.elements, right))
     }
 
     /**
@@ -489,7 +475,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns {number} A sequence of the elements which are present in both the provided sequences.
      */
     intersect(right: Iterable<TSource>): Linqable<TSource> {
-        return new Linqable(new Intersect(this, right))
+        return new Linqable(new Intersect(this.elements, right))
     }
 
     /**
@@ -498,7 +484,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns {number} A sequence of the unique elements of both sequences.
      */
     union(right: Iterable<TSource>): Linqable<TSource> {
-        return new Linqable(new Union(this, right))
+        return new Linqable(new Union(this.elements, unwrap(right)))
     }
 
     /**
@@ -509,7 +495,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      */
     batch(size: number, dropRemainder: boolean = false): Linqable<TSource[]> {
         const step = size
-        return new Linqable(new Windowed(this, size, step, dropRemainder))
+        return new Linqable(new Windowed(this.elements, size, step, dropRemainder))
     }
 
     /**
@@ -519,7 +505,7 @@ export class Linqable<TSource> implements Iterable<TSource> {
      * @returns {Iterable<TSource[]>} A sequence of windows.
      */
     windowed(size: number, step: number = 1): Linqable<TSource[]> {
-        return new Linqable(new Windowed(this, size, step))
+        return new Linqable(new Windowed(this.elements, size, step))
     }
 
     /**
@@ -539,6 +525,10 @@ export class Linqable<TSource> implements Iterable<TSource> {
 
         return -1
     }
+
+    toString(): string {
+        return Linqable.name;
+    }
 }
 
 export class OrderedLinqable<TSource> extends Linqable<TSource> {
@@ -547,7 +537,7 @@ export class OrderedLinqable<TSource> extends Linqable<TSource> {
     }
 
     from(selector: (element: TSource) => string | number, isAscending: boolean): OrderedLinqable<TSource> {
-        let ordered = this.elements as Ordered<TSource>
+        const ordered = this.elements as Ordered<TSource>
         return new OrderedLinqable(ordered.from(selector, isAscending))
     }
 
@@ -558,4 +548,49 @@ export class OrderedLinqable<TSource> extends Linqable<TSource> {
     thenByDescending(this: OrderedLinqable<TSource>, selector: (element: TSource) => string | number): OrderedLinqable<TSource> {
         return this.from(selector, false)
     }
+
+    toString(): string {
+        return OrderedLinqable.name;
+    }
+}
+
+
+export class Sequence extends Linqable<number> {
+    constructor(private start: number = 0,
+        private step: number = 1,
+        private end: number = Infinity) {
+        super(Sequence.sequence(start, step, end));
+        if (!step) {
+            throw Error("0 is not a valid step.");
+        }
+    }
+
+    private static *sequence(start: number, step: number, end: number) {
+        const direction = step >= 0 ? 1 : -1;
+
+        for (let i = start; end === Infinity || i * direction <= end * direction; i += step) {
+            yield i;
+        }
+    }
+
+    *[elementsSymbol]() {
+    }
+
+
+    toString(): string {
+        return `${Sequence.name} (start: ${this.start}, step: ${this.step}, end: ${this.end})`;
+    }
+}
+
+export function isWrapper<T>(obj: ElementsWrapper | Iterable<T>): obj is ElementsWrapper {
+    return typeof obj[elementsSymbol] === 'function';
+}
+
+export function unwrap<T>(obj: Linqable<T> | Iterable<T>): Iterable<T> {
+    if (isWrapper(obj)) {
+        for (const elements of obj[elementsSymbol]()) {
+            return elements;
+        }
+    }
+    return obj;
 }
