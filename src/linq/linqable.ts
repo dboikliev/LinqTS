@@ -19,6 +19,7 @@ import {
   Zip
 } from './iterables'
 import { elementsSymbol, ElementsWrapper, unwrap } from './element-wrapper'
+import { id } from '.'
 
 export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSource> {
   constructor(protected elements: Iterable<TSource>) {
@@ -148,7 +149,6 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
   selectMany<TResult>(selector: (element: TSource) => Iterable<TResult>): Linqable<TResult> {
     return new Linqable(new SelectMany(this.elements, selector))
   }
-
   /**
      * Applies a transformation function to each corresponding pair of elements from the
      * The paring ends when the shorter sequence ends, the remaining elements of the other sequence are ignored.
@@ -441,6 +441,38 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
     })
 
     return array
+  }
+
+  /**
+   * Turns the sequence into a map.
+   * Throws an error if there are multiple elements with the same key.
+   * @param {Function} keySelector A function which returns the key for an element in the sequence.
+   * @param {Function} valueSelector An optional function which returns the value for the key. Will use the source value if not
+   * @returns {Map<TKey, TValue>} A map of elements in the sequence.
+   */
+  toMap<TKey, TValue = TSource>(keySelector: (element: TSource) => TKey, valueSelector?: (element: TSource) => TValue): Map<TKey, TValue> {
+    return this.aggregate(new Map<TKey, TValue>(), (map, current) => {
+      const key = keySelector(current);
+      if (map.has(key)) {
+        throw Error(`An element with key "${key}" has already been added.`)
+      }
+      return map.set(key, valueSelector ? valueSelector(current) : current as never);
+    })
+  }
+
+  /**
+   * Turns the sequence into a map.
+   * @param {Function} keySelector A function which returns the key for an element in the sequence.
+   * @param {Function} valueSelector An optional function which returns the value for the key. Will use the source value if not
+   * @returns {Map<TKey, TValue>} A map of elements in the sequence.
+   */
+  toMapMany<TKey, TValue = TSource>(keySelector: (element: TSource) => TKey, valueSelector?: (element: TSource) => TValue): Map<TKey, TValue[]> {
+    return this.aggregate(new Map<TKey, TValue[]>(), (map, current) => {
+      const key = keySelector(current);
+      const value = map.get(key) || [];
+      value.push(valueSelector ? valueSelector(current) : current as never);
+      return map.set(key, value);
+    })
   }
 
   /**
