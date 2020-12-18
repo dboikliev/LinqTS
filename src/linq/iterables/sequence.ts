@@ -1,5 +1,3 @@
-
-
 export class Sequence {
     constructor(private start: number = 0,
         private step: number = 1,

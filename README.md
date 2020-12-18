@@ -53,7 +53,7 @@ To implement a lazy API similar by using iterators in order to simplify data-ori
 The function `print` is provided can be used to display tree-like representation of the operators in the console.
 
 ```typescript
-import {  linq, prettyPrint, seq } from './src/linq';
+import {  linq, print, seq } from './src/linq';
 
 var elements = seq(1, 1, 10)
                 .union(seq(1, 1, 15))

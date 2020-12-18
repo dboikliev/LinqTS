@@ -1,7 +1,7 @@
 import * as assert from "assert";
 import { linq } from "../src/linq";
 
-describe("skipWhile tests", () => {
+describe("skipWhile", () => {
     it("should skip elements from the beginning while they match a predicate", () => {
         const filtered = linq([2, 4, 6, 7, 8, 10])
             .skipWhile(x => x % 2 == 0)

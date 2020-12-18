@@ -1,7 +1,7 @@
 import * as assert from "assert";
 import { linq } from "../src/linq";
 
-describe("skip tests", () => {
+describe("skip", () => {
     it("should skip the first element and return a sequence of the rest", () => {
         const arr = linq([1,2,3,4,5])
             .skip(1)

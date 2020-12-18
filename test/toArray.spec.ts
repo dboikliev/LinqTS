@@ -1,7 +1,7 @@
 import * as assert from "assert";
 import { linq } from "../src/linq";
 
-describe("convertion to array tests", () => {
+describe("toArray", () => {
     it("should convert the linqble to an array", () => {
         const arr = linq([1,2,3,4,5]).toArray();
 

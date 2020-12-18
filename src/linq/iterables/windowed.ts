@@ -1,10 +1,14 @@
 import { elementsSymbol, ElementsWrapper } from "../element-wrapper"
 
 export class Windowed<TSource> implements ElementsWrapper {
-    constructor(private source: Iterable<TSource>, 
-                private size: number, 
-                private step: number,
-                private dropRemainder: boolean = false) {
+    constructor(private source: Iterable<TSource>,
+        private size: number,
+        private step: number,
+        private dropRemainder: boolean = false) {
+
+        if (size > 0 && step <= 0) {
+            throw Error('"step" must be greater than 0.');
+        };
     }
 
     *[Symbol.iterator]() {
@@ -25,7 +29,7 @@ export class Windowed<TSource> implements ElementsWrapper {
         }
 
         current = iterator.next()
-        
+
         if (this.skipWindow(window) && current.done) {
             return
         }
@@ -65,7 +69,7 @@ export class Windowed<TSource> implements ElementsWrapper {
         return window.length < this.size && this.dropRemainder;
     }
 
-    
+
     *[elementsSymbol](): Iterable<Iterable<TSource>> {
         yield this.source;
     }

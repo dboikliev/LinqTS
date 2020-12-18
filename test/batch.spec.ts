@@ -1,7 +1,7 @@
 import * as assert from "assert";
 import { linq } from "../src/linq";
 
-describe("batch tests", () => {
+describe("batch", () => {
     it("should return batches of the specified size", () => {
         const elements = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 

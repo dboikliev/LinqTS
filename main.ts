@@ -1,4 +1,4 @@
-import {  linq, prettyPrint, seq } from './src/linq';
+import {  linq, print, seq } from './src/linq';
 
 var elements = seq(1, 1, 10)
                 .union(seq(1, 1, 15))
@@ -9,4 +9,4 @@ var elements = seq(1, 1, 10)
                 .groupBy(x => x % 2)
                 .zip(seq(1,5))
 
-console.log(prettyPrint(elements));
+console.log(print(elements));

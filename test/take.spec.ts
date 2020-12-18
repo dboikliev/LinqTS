@@ -1,7 +1,7 @@
 import * as assert from "assert";
 import { linq } from "../src/linq";
 
-describe("take tests", () => {
+describe("take", () => {
     it("should take the specified number of elements from the sequence", () => {
         const take1 = linq([1, 2, 3, 4, 5])
             .take(1)
