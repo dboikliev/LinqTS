@@ -31,11 +31,11 @@ export function id<T>(element: T): T {
     return element
 }
 
-export function prettyPrint<T>(linqable: Linqable<T>) {
-    return print(linqable);
+export function print<T>(linqable: Linqable<T>) {
+    return printTree(linqable);
 }
 
-function print<T>(linqable: ElementsWrapper | Iterable<T>, indent = '', isLast = true) {
+function printTree<T>(linqable: ElementsWrapper | Iterable<T>, indent = '', isLast = true) {
     if (!linqable) {
         return;
     }
@@ -46,7 +46,7 @@ function print<T>(linqable: ElementsWrapper | Iterable<T>, indent = '', isLast =
 
         for (let i = 0; i < sources.length; i++) {
             const source = sources[i];
-            print(source, indent + (isLast ? '    ' : '|   '), i == sources.length - 1);
+            printTree(source, indent + (isLast ? '    ' : '|   '), i == sources.length - 1);
         }
     }
 }
