@@ -5,11 +5,12 @@
 
 An api for lazy querying of iterables, implemented in TypeScript and inspired by .NET's LINQ methods.
 
-## Motivation:
+## Motivation
 
 To implement a lazy API similar by using iterators in order to simplify data-oriented workflows greatly and to provide an API for C# developers familiar with the LINQ extension methods.
 
-## Supported operations:
+## Supported operations
+
 1. [where](#where)
 1. [select](#select)
 1. [selectMany](#selectMany)
@@ -49,7 +50,7 @@ To implement a lazy API similar by using iterators in order to simplify data-ori
 1. [seq](#seq)
 1. [id](#id)
 
-## Examples:
+## Examples
 
 #### Building and executing a query:
 
@@ -81,7 +82,7 @@ Ivan
 Deyan
 ```
 
-## Operations:
+## Operations
 
 #### Where<a id="where"></a>
 
