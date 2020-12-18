@@ -80,7 +80,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper {
         rightSelector: (element: TRight) => any,
         resultSelector: (left: TSource, right: TRight) => TResult): Linqable<TResult> {
         return new Linqable(new Join(this.elements,
-            right,
+            unwrap(right),
             leftSelector,
             rightSelector,
             resultSelector
