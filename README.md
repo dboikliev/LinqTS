@@ -50,7 +50,7 @@ To implement a lazy API similar by using iterators in order to simplify data-ori
 1. [seq](#seq)
 1. [id](#id)
 
-In order to visualize the resulting structre a function `prettyPrint` is provided which prints a tree-like representatio nof the operators to the console.
+In order to visualize the resulting structre a function `prettyPrint` is provided which prints a tree-like representation of the operators to the console.
 
 ```typescript
 import {  linq, prettyPrint, seq } from './src/linq';
