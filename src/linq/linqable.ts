@@ -338,11 +338,19 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
   }
 
   /**
+     * Gets the max element in the sequence. Suitable for sequences of numbers|strings.
+     * @returns TSource The max element of the sequence.
+     */
+  max(this: Linqable<number | string>) {
+    return this.maxBy(id)
+  }
+
+  /**
      * Gets the max element in a sequence according to a transform function.
      * @param  {function} transform A function returning a primitive value used for copmaring elements in the sequence.
      * @returns TSource The max element of the sequence.
      */
-  max(transform: (element: TSource) => number | string): TSource {
+  maxBy(transform: (element: TSource) => number | string): TSource {
     const iterator = this[Symbol.iterator]()
     let iteratorResult = iterator.next()
 
@@ -367,11 +375,19 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
   }
 
   /**
-     * Gets the min element in a sequence according to a transform function.
+     * Gets the min element in the sequence. Suitable for sequences of numbers|strings.
+     * @returns TSource The min element of the sequence.
+     */
+  min(this: Linqable<string | number>) {
+    return this.minBy(id)
+  }
+
+  /**
+     * Gets the min element in the sequence according to a transform function.
      * @param  {function} transform A function returning a primitive value used for copmaring elements in the sequence.
      * @returns TSource The min element of the sequence.
      */
-  min(transform: (element: TSource) => number | string): TSource {
+  minBy(transform: (element: TSource) => number | string): TSource {
     const iterator = this[Symbol.iterator]()
     let iteratorResult = iterator.next()
 
@@ -396,20 +412,37 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
   }
 
   /**
-     *
-     * @param  {function} transform A function returning a number value used for summing elements in the sequence.
-     * @returns TSource The average value of the sequence.
+     * Calculates the sum of the values in the sequence.
+     * @returns {number} The sum of the values in the sequence.
      */
-  sum(selector: (element: TSource) => number): number {
+  sum(this: Linqable<number>): number {
+    return this.sumBy(id);
+  }
+
+  /**
+     * Calculates the sum of the values returned by the selector function.
+     * @param  {function} transform A function returning a number value used for summing elements in the sequence.
+     * @returns {number} The sum of the values returned by the selector function.
+     */
+  sumBy(selector: (element: TSource) => number): number {
     return this.aggregate(0, (acc, current) => acc + selector(current))
+  }
+
+
+  /**
+     * Calculates the average of the values in the sequence.
+     * @returns {number} The average value of the sequence.
+     */
+  average(this: Linqable<number>): number {
+    return this.averageBy(id);
   }
 
   /**
      * Gets the averege value for a sequence.
      * @param  {function} transform A function returning a number value used for summing elements in the sequence.
-     * @returns TSource The average value of the sequence.
+     * @returns {number} The average value of the sequence.
      */
-  average(transform: (element: TSource) => number): number {
+  averageBy(transform: (element: TSource) => number): number {
     let sum = 0
     let count = 0
 
@@ -418,8 +451,10 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
       count++
     }
 
-    const avg = sum / count
-    return avg
+    if (count > 0) {
+      const avg = sum / count
+      return avg
+    }
   }
 
   /**
