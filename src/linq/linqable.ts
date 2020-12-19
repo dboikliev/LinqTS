@@ -136,7 +136,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
      * @param  {function} selector A function which transforms an element into another value.
      * @returns An iterable of the transformed elements.
      */
-  select<TResult>(selector: (element: TSource) => TResult): Linqable<TResult> {
+  select<TResult>(selector: (element: TSource, index: number) => TResult): Linqable<TResult> {
     return new Linqable(new Select(this.elements, selector))
   }
 
