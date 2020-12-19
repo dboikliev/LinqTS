@@ -76,7 +76,7 @@ console.log(print(elements));
 ```
 
 ```text
-└──Linqable
+Linqable
     └──Zip (selector: (a, b) => [a, b])
         ├──Group (selector: x => x % 2)
         |   └──SkipWhile (predicate: x => x < 3)
