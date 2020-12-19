@@ -116,8 +116,6 @@ linq(people)
     .forEach(name => console.log(name))
 ```
 
-#### Result
-
 ```text
 Ivan
 Deyan
@@ -141,8 +139,6 @@ for (let number of evenNumbers) {
 }
 ```
 
-#### Result
-
 ```text
 2
 4
@@ -165,8 +161,6 @@ for (let number of numbersTimes10) {
     console.log(number)
 }
 ```
-
-#### Result
 
 ```text
 10
@@ -197,8 +191,6 @@ for (let number of flattened) {
 }
 ```
 
-#### Result
-
 ```text
 1
 2
@@ -224,8 +216,6 @@ for (let number of distinct) {
 }
 ```
 
-#### Result
-
 ```text
 { value: 1 }
 { value: 2 }
@@ -250,8 +240,6 @@ for (let element of oddEvenPairs) {
 }
 ```
 
-#### Result
-
 ```text
 { odd: 1, even: 2 }
 { odd: 3, even: 4 }
@@ -272,8 +260,6 @@ for (let group of groups) {
     console.log(group);
 }
 ```
-
-#### Result
 
 ```text
 [ 1, [ 1, 3, 5, 7, 9 ] ]
@@ -296,8 +282,6 @@ for (let group of joined) {
     console.log(group);
 }
 ```
-
-#### Result
 
 ```text
 { name: 'Ivan', age: 21, phone: '0123456789' }
@@ -326,8 +310,6 @@ for (let element of ordered) {
     console.log(element);
 }
 ```
-
-#### Result
 
 ```text
 { id: 7, age: 5 }
@@ -360,8 +342,6 @@ for (let element of reversed) {
     console.log(element);
 }
 ```
-
-#### Result
 
 ```text
 8
@@ -398,8 +378,6 @@ for (let element of elements) {
 }
 ```
 
-#### Result
-
 ```text
 { id: 4, age: 20 }
 { id: 5, age: 18 }
@@ -430,8 +408,6 @@ for (let element of elements) {
     console.log(element);
 }
 ```
-
-#### Result
 
 ```text
 { id: 4, age: 25 }
@@ -464,8 +440,6 @@ for (let element of elements) {
 }
 ```
 
-#### Result
-
 ```text
 { id: 1, age: 18 },
 { id: 2, age: 20 },
@@ -497,8 +471,6 @@ for (let element of elements) {
 }
 ```
 
-#### Result
-
 ```text
 { id: 1, age: 18 },
 { id: 2, age: 20 },
@@ -518,8 +490,6 @@ for (let element of elements) {
     console.log(element);
 }
 ```
-
-#### Result
 
 ```text
 1
@@ -541,8 +511,6 @@ for (let element of elements) {
 }
 ```
 
-#### Result
-
 ```text
 3
 5
@@ -562,8 +530,6 @@ for (let element of elements) {
     console.log(element);
 }
 ```
-
-#### Result
 
 ```text
 1
@@ -587,8 +553,6 @@ for (let element of elements) {
     console.log(element);
 }
 ```
-
-#### Result
 
 ```text
 1
@@ -616,8 +580,6 @@ let sumOfAges = linq(people).aggregate(0, (total, person) => total += person.age
 console.log(sumOfAges);
 ```
 
-#### Result
-
 ```text
 42
 ```
@@ -636,8 +598,6 @@ for (let window of windows) {
     console.log(window);
 }
 ```
-
-#### Result
 
 ```text
 [ 1, 2, 3 ]
@@ -659,8 +619,6 @@ for (let batch of batches) {
 }
 ```
 
-#### Result
-
 ```text
 [ 1, 2, 3 ]
 [ 4, 5, 6 ]
@@ -679,8 +637,6 @@ let containsEven = linq([1, 2, 4, 6]).any(n => n % 2 === 0);
 console.log(containsEven);
 ```
 
-#### Result
-
 ```text
 true
 ```
@@ -694,8 +650,6 @@ let areAllEvent = linq([1, 2, 4, 6]).all(n => n % 2 === 0);
 
 console.log(areAllEvent);
 ```
-
-#### Result
 
 ```text
 false
@@ -718,8 +672,6 @@ let youngest = linq(people).min(p => p.age);
 console.log(youngest);
 ```
 
-#### Result
-
 ```text
 { name: 'Deyan', age: 22 }
 ```
@@ -740,8 +692,6 @@ let oldest = linq(people).max(p => p.age);
 
 console.log(oldest);
 ```
-
-#### Result
 
 ```text
 { name: "Ivan", age: 25 }
@@ -764,8 +714,6 @@ let averageAge = linq(people).average(p => p.age);
 console.log(averageAge);
 ```
 
-#### Result
-
 ```text
 23.5
 ```
@@ -786,8 +734,6 @@ let areEqual = linq(first).sequenceEquals(second);
 console.log(areEqual);
 ```
 
-#### Result
-
 ```text
 true
 ```
@@ -806,8 +752,6 @@ let indexOfTwo = linq(numbers).indexOf(2);
 console.log(indexOfTwo);
 ```
 
-#### Result
-
 ```text
 1
 ```
@@ -823,8 +767,6 @@ let elementAtIndexOne = linq(numbers).elementAt(1);
 
 console.log(elementAtIndexOne);
 ```
-
-#### Result
 
 ```text
 2
@@ -843,8 +785,6 @@ let firstElement = linq(numbers).first();
 
 console.log(firstElement);
 ```
-
-#### Result
 
 ```text
 1
@@ -865,8 +805,6 @@ console.log(firstEvenElement);
 console.log(firstElementLargerThanFive);
 ```
 
-#### Result
-
 ```text
 2
 -1
@@ -885,8 +823,6 @@ let lastElement = linq(numbers).last();
 
 console.log(lastElement);
 ```
-
-#### Result
 
 ```text
 3
@@ -909,8 +845,6 @@ console.log(lastEvenElement);
 console.log(lastElementLargerThanFive);
 ```
 
-#### Result
-
 ```text
 4
 -1
@@ -926,8 +860,6 @@ The function receives the element and its index in the seqeunce as parameters.
 ```typescript
 linq([1, 2, 3, 4]).forEach(console.log);
 ```
-
-#### Result
 
 ```text
 1 0
@@ -950,8 +882,6 @@ let array = linq([1, 2, 3, 4])
 console.log(array);
 ```
 
-#### Result
-
 ```text
 [ 1, 2, 3, 4, 5, 6, 7 ]
 ```
@@ -967,8 +897,6 @@ let count = linq([1, 2, 3, 4]).count();
 
 console.log(count);
 ```
-
-#### Result
 
 ```text
 4
@@ -988,8 +916,6 @@ let unlimited = seq(1, 2).take(15).toArray();
 console.log(unlimited);
 ```
 
-#### Result
-
 ```text
 [ 1, 3, 5, 7, 9 ]
 [ 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29 ]
@@ -1007,8 +933,6 @@ let average = linq([1, 2, 3, 4, 5, 6]).average(id);
 
 console.log(average);
 ```
-
-#### Result
 
 ```text
 3.5
@@ -1030,8 +954,6 @@ const elements = linq([1,2,3,4,5]).toMap(id, x => x * 10);
 console.log(elements);
 ```
 
-#### Result
-
 ```text
 Map { 1 => 10, 2 => 20, 3 => 30, 4 => 40, 5 => 50 }
 ```
@@ -1051,8 +973,6 @@ const elements = linq([1,1,2,3,3,4,5]).toMapMany(id, x => x * 10);
     
 console.log(elements);
 ```
-
-#### Result
 
 ```text
 Map {
@@ -1076,8 +996,6 @@ const elements = linq([1,2,3,4,5]).append(6,7,8,9);
 console.log(elements);
 ```
 
-#### Result
-
 ```text
 [ 1, 2, 3, 4, 5, 6, 7, 8, 9 ]
 ```
@@ -1093,8 +1011,6 @@ const elements = linq([6,7,8,9]).prepend(1,2,3,4,5);
     
 console.log(elements);
 ```
-
-#### Result
 
 ```text
 [ 1, 2, 3, 4, 5, 6, 7, 8, 9 ]
