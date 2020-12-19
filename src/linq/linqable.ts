@@ -341,7 +341,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
      * Gets the max element in the sequence. Suitable for sequences of numbers|strings.
      * @returns TSource The max element of the sequence.
      */
-  max(this: Linqable<number | string>) {
+  max(this: Linqable<TSource extends number ? TSource : TSource extends string ? TSource : never>): TSource {
     return this.maxBy(id)
   }
 
@@ -378,7 +378,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
      * Gets the min element in the sequence. Suitable for sequences of numbers|strings.
      * @returns TSource The min element of the sequence.
      */
-  min(this: Linqable<string | number>) {
+  min(this: Linqable<TSource extends number ? TSource : TSource extends string ? TSource : never>): TSource {
     return this.minBy(id)
   }
 

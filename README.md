@@ -36,8 +36,11 @@ To implement a lazy API similar by using iterators in order to simplify data-ori
 1. [any](#any)
 1. [all](#all)
 1. [min](#min)
+1. [minBy](#minBy)
 1. [max](#max)
+1. [maxBy](#maxBy)
 1. [average](#average)
+1. [averageBy](#averageBy)
 1. [sequenceEquals](#sequenceEquals)
 1. [indexOf](#indexOf)
 1. [elementAt](#elementAt)
@@ -683,6 +686,22 @@ ___
 
 ### Min
 
+Gets the min element in a sequence. Applicable when the elements are of type `string` or `number`.
+
+```typescript
+let people = [1,5,-10,8];
+
+console.log(linq(people).min());
+```
+
+```text
+-10
+```
+
+___
+
+### MinBy
+
 Gets the min element in a sequence according to a transform function.
 
 ```typescript
@@ -703,6 +722,22 @@ console.log(youngest);
 ___
 
 ### Max
+
+Gets the max element in a sequence. Applicable when the elements are of type `string` or `number`.
+
+```typescript
+let people = [1,5,-10,8];
+
+console.log(linq(people).max());
+```
+
+```text
+8
+```
+
+___
+
+### MaxBy
 
 Gets the max element in a sequence according to a transform function.
 
@@ -725,7 +760,23 @@ ___
 
 ### Average
 
-Gets the averege value for a sequence.
+Gets the averege value for a sequence. Applicable when the elements are of type `number`.
+
+```typescript
+let people = [25, 22];
+
+console.log(linq(people).average(p => p.age));
+```
+
+```text
+23.5
+```
+
+___
+
+### AverageBy
+
+Gets the averege of the values provided by a selector function.
 
 ```typescript
 let people = [
