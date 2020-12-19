@@ -15,6 +15,7 @@ To implement a lazy API similar by using iterators in order to simplify data-ori
 1. [select](#select)
 1. [selectMany](#selectMany)
 1. [distinct](#distinct)
+1. [distinctBy](#distinctBy)
 1. [zip](#zip)
 1. [groupBy](#groupBy)
 1. [join](#join)
