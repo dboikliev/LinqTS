@@ -51,6 +51,8 @@ To implement a lazy API similar by using iterators in order to simplify data-ori
 1. [id](#id)
 1. [toMap](#toMap)
 1. [toMapMany](#toMapMany)
+1. [append](#append)
+1. [prepend](#prepend)
 
 The function `print` is provided can be used to display tree-like representation of the operators in the console.
 
@@ -89,7 +91,7 @@ console.log(print(elements));
 
 ## Examples
 
-#### Building and executing a query:
+### Building and executing a query
 
 The API any objects which are iterable in JavaScript. In order to use the method it is required to call `linq` with the object that we want to iterate as a parameter. The result of `linq` is `Linqable` object which supports the api. The linq module exports `linq`, `seq` and `id`.
 
@@ -112,16 +114,16 @@ linq(people)
     .forEach(name => console.log(name))
 ```
 
-#### Result:
+#### Result
 
-```
+```text
 Ivan
 Deyan
 ```
 
 ## Operations
 
-#### Where
+### Where
 
 Where filters the iterable based on a predicate function.
 A sequence of the elements for which the predicate returns `true` will be returned.
@@ -135,9 +137,9 @@ for (let number of evenNumbers) {
 }
 ```
 
-#### Result:
+#### Result
 
-```
+```text
 2
 4
 6
@@ -145,7 +147,7 @@ for (let number of evenNumbers) {
 10
 ```
 
-#### Select
+### Select
 
 Each element of an iterable is trasnformed into another value - the return value of the function passed to `select`.
 
@@ -158,9 +160,9 @@ for (let number of numbersTimes10) {
 }
 ```
 
-#### Result:
+#### Result
 
-```
+```text
 10
 20
 30
@@ -168,7 +170,7 @@ for (let number of numbersTimes10) {
 50
 ```
 
-#### SelectMany
+### SelectMany
 
 Flattens iterable elements into a single iterable sequence.
 `selectMany` expects a function which takes an element from the sequence returns an iterable. All of the results are flattent into a single sequence.
@@ -187,9 +189,9 @@ for (let number of flattened) {
 }
 ```
 
-#### Result:
+#### Result
 
-```
+```text
 1
 2
 3
@@ -198,7 +200,7 @@ for (let number of flattened) {
 6
 ```
 
-#### Distinct
+### Distinct
 
 Gets the distinct elements of a sequence based on a selector function. If a selector function is not passed, it will get the distinct elements by reference.
 
@@ -212,15 +214,15 @@ for (let number of distinct) {
 }
 ```
 
-#### Result:
+#### Result
 
-```
+```text
 { value: 1 }
 { value: 2 }
 { value: 3 }
 ```
 
-#### Zip
+### Zip
 
 Applies a transformation function to each corresponding pair of elements from the iterables. The paring ends when the shorter sequence ends, the remaining elements of the other sequence are ignored.
 
@@ -236,16 +238,16 @@ for (let element of oddEvenPairs) {
 }
 ```
 
-#### Result:
+#### Result
 
-```
+```text
 { odd: 1, even: 2 }
 { odd: 3, even: 4 }
 { odd: 5, even: 6 }
 { odd: 7, even: 8 }
 ```
 
-#### GroupBy
+### GroupBy
 
 Groups elements based on a selector function. The function returns a sequence of arrays with the group key as the first element and an array of the group elements as the second element.
 
@@ -257,14 +259,14 @@ for (let group of groups) {
 }
 ```
 
-#### Result:
+#### Result
 
-```
+```text
 [ 1, [ 1, 3, 5, 7, 9 ] ]
 [ 0, [ 2, 4, 6, 8, 10 ] ]
 ```
 
-#### Join
+### Join
 
 Performs a join on objects matching property values according to the provided leftSelector and rightSelector. The matching objects are merged into another value by resultSelector.
 
@@ -279,13 +281,13 @@ for (let group of joined) {
 }
 ```
 
-#### Result:
+#### Result
 
-```
+```text
 { name: 'Ivan', age: 21, phone: '0123456789' }
 ```
 
-#### OrderBy
+### OrderBy
 
 Orders elements in asceding order based on a selector function.
 
@@ -307,9 +309,9 @@ for (let element of ordered) {
 }
 ```
 
-#### Result:
+#### Result
 
-```
+```text
 { id: 7, age: 5 }
 { id: 3, age: 8 }
 { id: 1, age: 18 }
@@ -319,12 +321,12 @@ for (let element of ordered) {
 { id: 6, age: 32 }
 ```
 
-#### OrderByDescending
+### OrderByDescending
 
 Equivalent of `orderBy`.
 Orders elements in descending order based on a selector function.
 
-#### Reverse
+### Reverse
 
 Reverses the order of the sequence, e.g. reverse (1, 2, 3) -> (3, 2, 1)
 
@@ -337,9 +339,9 @@ for (let element of reversed) {
 }
 ```
 
-#### Result:
+#### Result
 
-```
+```text
 8
 7
 6
@@ -350,7 +352,7 @@ for (let element of reversed) {
 1
 ```
 
-#### Skip
+### Skip
 
 Skips a specific number of elements.
 
@@ -372,16 +374,16 @@ for (let element of elements) {
 }
 ```
 
-#### Result:
+#### Result
 
-```
+```text
 { id: 4, age: 20 }
 { id: 5, age: 18 }
 { id: 6, age: 32 }
 { id: 7, age: 5 }
 ```
 
-#### SkipWhile
+### SkipWhile
 
 Skips the elements in the sequence while the predicate returns `true`.
 
@@ -403,16 +405,16 @@ for (let element of elements) {
 }
 ```
 
-#### Result:
+#### Result
 
-```
+```text
 { id: 4, age: 25 }
 { id: 5, age: 18 }
 { id: 6, age: 32 }
 { id: 7, age: 5 }
 ```
 
-#### Take
+### Take
 
 Takes a specific number of elements.
 
@@ -434,16 +436,16 @@ for (let element of elements) {
 }
 ```
 
-#### Result:
+#### Result
 
-```
+```text
 { id: 1, age: 18 },
 { id: 2, age: 20 },
 { id: 3, age: 30 },
 { id: 4, age: 25 }
 ```
 
-#### TakeWhile
+### TakeWhile
 
 Takes elements from the sequence while the predicate returns `true`.
 
@@ -465,15 +467,15 @@ for (let element of elements) {
 }
 ```
 
-#### Result:
+#### Result
 
-```
+```text
 { id: 1, age: 18 },
 { id: 2, age: 20 },
 { id: 3, age: 30 }
 ```
 
-#### Except
+### Except
 
 Returns a sequence of elements which are not present in the sequence passed to `except`.
 
@@ -485,15 +487,15 @@ for (let element of elements) {
 }
 ```
 
-#### Result:
+#### Result
 
-```
+```text
 1
 2
 4
 ```
 
-#### Intersect
+### Intersect
 
 Returns a sequence representing the intersection of the sequences - elements present in both sequences.
 
@@ -505,15 +507,15 @@ for (let element of elements) {
 }
 ```
 
-#### Result:
+#### Result
 
-```
+```text
 3
 5
 6
 ```
 
-#### Concat
+### Concat
 
 Concatenates the sequences together.
 
@@ -525,9 +527,9 @@ for (let element of elements) {
 }
 ```
 
-#### Result:
+#### Result
 
-```
+```text
 1
 2
 3
@@ -536,7 +538,7 @@ for (let element of elements) {
 6
 ```
 
-#### Union
+### Union
 
 Performs a union operation on the current sequence and the provided sequence and returns a sequence of unique elements present in the both sequences.
 
@@ -548,9 +550,9 @@ for (let element of elements) {
 }
 ```
 
-#### Result:
+#### Result
 
-```
+```text
 1
 2
 3
@@ -559,7 +561,7 @@ for (let element of elements) {
 6
 ```
 
-#### Aggregate
+### Aggregate
 
 Reduces the sequence into a value using an accumulator function.
 
@@ -574,13 +576,13 @@ let sumOfAges = linq(people).aggregate(0, (total, person) => total += person.age
 console.log(sumOfAges);
 ```
 
-#### Result:
+#### Result
 
-```
+```text
 42
 ```
 
-#### Windowed
+### Windowed
 
 Provides a sliding window of elements from the sequence. By default the windows slides 1 element over.
 A second parameter may be provided to change the number of elements being skipped.
@@ -593,15 +595,15 @@ for (let window of windows) {
 }
 ```
 
-#### Result:
+#### Result
 
-```
+```text
 [ 1, 2, 3 ]
 [ 3, 4, 5 ]
 [ 5, 6 ]
 ```
 
-#### Batch
+### Batch
 
 Splits the sequence into batches/cunks of the specified size.
 
@@ -613,15 +615,15 @@ for (let batch of batches) {
 }
 ```
 
-#### Result:
+#### Result
 
-```
+```text
 [ 1, 2, 3 ]
 [ 4, 5, 6 ]
 [ 7, 8 ]
 ```
 
-#### Any
+### Any
 
 Checks if any of the elements match the provided predicate.
 
@@ -631,9 +633,9 @@ let containsEven = linq([1, 2, 4, 6]).any(n => n % 2 === 0);
 console.log(containsEven);
 ```
 
-#### Result:
+#### Result
 
-```
+```text
 true
 ```
 
@@ -647,13 +649,13 @@ let areAllEvent = linq([1, 2, 4, 6]).all(n => n % 2 === 0);
 console.log(areAllEvent);
 ```
 
-#### Result:
+#### Result
 
-```
+```text
 false
 ```
 
-#### Min
+### Min
 
 Gets the min element in a sequence according to a transform function.
 
@@ -668,13 +670,13 @@ let youngest = linq(people).min(p => p.age);
 console.log(youngest);
 ```
 
-#### Result:
+#### Result
 
-```
+```text
 { name: 'Deyan', age: 22 }
 ```
 
-#### Max
+### Max
 
 Gets the max element in a sequence according to a transform function.
 
@@ -689,13 +691,13 @@ let oldest = linq(people).max(p => p.age);
 console.log(oldest);
 ```
 
-#### Result:
+#### Result
 
-```
+```text
 { name: "Ivan", age: 25 }
 ```
 
-#### Average
+### Average
 
 Gets the averege value for a sequence.
 
@@ -710,13 +712,13 @@ let averageAge = linq(people).average(p => p.age);
 console.log(averageAge);
 ```
 
-#### Result:
+#### Result
 
-```
+```text
 23.5
 ```
 
-#### SequenceEquals
+### SequenceEquals
 
 Tests the equality of two seuqneces by checking each corresponding pair of elements against the provided predicate.
 If a predicate is not provided the elements will be compared using the strict equality (===) operator.
@@ -730,13 +732,13 @@ let areEqual = linq(first).sequenceEquals(second);
 console.log(areEqual);
 ```
 
-#### Result:
+#### Result
 
-```
+```text
 true
 ```
 
-#### IndexOf
+### IndexOf
 
 Gets the index of the element in the sequence.
 
@@ -748,9 +750,9 @@ let indexOfTwo = linq(numbers).indexOf(2);
 console.log(indexOfTwo);
 ```
 
-#### Result:
+#### Result
 
-```
+```text
 1
 ```
 
@@ -766,13 +768,13 @@ let elementAtIndexOne = linq(numbers).elementAt(1);
 console.log(elementAtIndexOne);
 ```
 
-#### Result:
+#### Result
 
-```
+```text
 2
 ```
 
-#### First
+### First
 
 Gets the first element of the iterable.
 
@@ -784,9 +786,9 @@ let firstElement = linq(numbers).first();
 console.log(firstElement);
 ```
 
-#### Result:
+#### Result
 
-```
+```text
 1
 ```
 
@@ -805,14 +807,14 @@ console.log(firstEvenElement);
 console.log(firstElementLargerThanFive);
 ```
 
-#### Result:
+#### Result
 
-```
+```text
 2
 -1
 ```
 
-#### Last
+### Last
 
 Gets the last element of the iterable.
 
@@ -824,13 +826,13 @@ let lastElement = linq(numbers).last();
 console.log(lastElement);
 ```
 
-#### Result:
+#### Result
 
-```
+```text
 3
 ```
 
-#### LastOrDefault
+### LastOrDefault
 
 Gets the last element of the sequence. If a predicate is provided the last element matching the predicated will be returned.
 If there aren't any matching elements or if the sequence is empty a default value provided by the defaultInitializer will be returned.
@@ -845,14 +847,14 @@ console.log(lastEvenElement);
 console.log(lastElementLargerThanFive);
 ```
 
-#### Result:
+#### Result
 
-```
+```text
 4
 -1
 ```
 
-#### ForEach
+### ForEach
 
 Calls a function for each element of the sequence.
 The function receives the element and its index in the seqeunce as parameters.
@@ -861,16 +863,16 @@ The function receives the element and its index in the seqeunce as parameters.
 linq([1, 2, 3, 4]).forEach(console.log);
 ```
 
-#### Result:
+#### Result
 
-```
+```text
 1 0
 2 1
 3 2
 4 3
 ```
 
-#### ToArray
+### ToArray
 
 Turns the sequence to an array.
 
@@ -882,13 +884,13 @@ let array = linq([1, 2, 3, 4])
 console.log(array);
 ```
 
-#### Result:
+#### Result
 
-```
+```text
 [ 1, 2, 3, 4, 5, 6, 7 ]
 ```
 
-#### Count
+### Count
 
 Counts the number of elements in the sequence.
 
@@ -898,13 +900,13 @@ let count = linq([1, 2, 3, 4]).count();
 console.log(count);
 ```
 
-#### Result:
+#### Result
 
-```
+```text
 4
 ```
 
-#### Seq
+### Seq
 
 Generates a sequence of numbers from start to end (if specified), increasing by the speficied step.
 
@@ -916,14 +918,14 @@ let unlimited = seq(1, 2).take(15).toArray();
 console.log(unlimited);
 ```
 
-#### Result:
+#### Result
 
-```
+```text
 [ 1, 3, 5, 7, 9 ]
 [ 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29 ]
 ```
 
-#### Id
+### Id
 
 The identity function (x => x). It takes an element and returns it.
 It can be useful for operaions like min, max, average, and in general in cases where we want the transform function to return the same element.
@@ -934,13 +936,13 @@ let average = linq([1, 2, 3, 4, 5, 6]).average(id);
 console.log(average);
 ```
 
-#### Result:
+#### Result
 
-```
+```text
 3.5
 ```
 
-#### ToMap
+### ToMap
 
 Turns the sequence into a map.
 
@@ -954,13 +956,13 @@ const elements = linq([1,2,3,4,5]).toMap(id, x => x * 10);
 console.log(elements);
 ```
 
-#### Result:
+#### Result
 
 ```text
 Map { 1 => 10, 2 => 20, 3 => 30, 4 => 40, 5 => 50 }
 ```
 
-#### ToMapMany
+### ToMapMany
 
 Turns the sequence into a map.
 
@@ -974,7 +976,7 @@ const elements = linq([1,1,2,3,3,4,5]).toMapMany(id, x => x * 10);
 console.log(elements);
 ```
 
-#### Result:
+#### Result
 
 ```text
 Map {
@@ -984,4 +986,36 @@ Map {
   4 => [ 40 ],
   5 => [ 50 ]
 }
+```
+
+### Append
+
+Append the provided elements at the end of the sequence.
+
+```typescript
+const elements = linq([1,2,3,4,5]).append(6,7,8,9);
+    
+console.log(elements);
+```
+
+#### Result
+
+```text
+[ 1, 2, 3, 4, 5, 6, 7, 8, 9 ]
+```
+
+### Prepend
+
+Prepends the provided elements at the beginning of the sequence.
+
+```typescript
+const elements = linq([6,7,8,9]).prepend(1,2,3,4,5);
+    
+console.log(elements);
+```
+
+#### Result
+
+```text
+[ 1, 2, 3, 4, 5, 6, 7, 8, 9 ]
 ```
