@@ -257,11 +257,12 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
      * @param  {TResult} seed A starting value.
      * @param  {function} accumulator An accumulator function.
      */
-  aggregate<TResult>(seed: TResult, accumulator: (accumulated: TResult, element: TSource) => TResult): TResult {
+  aggregate<TResult>(seed: TResult, accumulator: (accumulated: TResult, element: TSource, index: number) => TResult): TResult {
     let accumulated = seed
+    let index = 0
 
     for (const element of this) {
-      accumulated = accumulator(accumulated, element)
+      accumulated = accumulator(accumulated, element, index++)
     }
 
     return accumulated
@@ -490,8 +491,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
   forEach(action: (element: TSource, index: number) => void): void {
     let index = 0
     for (const element of this) {
-      action(element, index)
-      index++
+      action(element, index++)
     }
   }
 
@@ -529,7 +529,8 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
       if (map.has(key)) {
         throw Error(`An element with key "${key}" has already been added.`)
       }
-      return map.set(key, valueSelector ? valueSelector(current) : current as never);
+
+      return map.set(key, typeof valueSelector === 'function' ? valueSelector(current) : current as never);
     })
   }
 
@@ -543,7 +544,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
     return this.aggregate(new Map<TKey, TValue[]>(), (map, current) => {
       const key = keySelector(current);
       const value = map.get(key) || [];
-      value.push(valueSelector ? valueSelector(current) : current as never);
+      value.push(typeof valueSelector === 'function' ? valueSelector(current) : current as never);
       return map.set(key, value);
     })
   }
