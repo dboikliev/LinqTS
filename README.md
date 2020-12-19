@@ -233,7 +233,7 @@ Gets the distinct elements of a sequence based on a selector function. If a sele
 ```typescript
 let numbers = [{ value: 1 }, { value: 1 }, { value: 2 }, { value: 2 }, { value: 3 }, { value: 3 }];
 
-let distinct = linq(numbers).distinct(el => el.value);
+let distinct = linq(numbers).distinctBy(el => el.value);
 
 for (let number of distinct) {
     console.log(number)
