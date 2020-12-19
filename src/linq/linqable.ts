@@ -19,7 +19,6 @@ import {
   Zip
 } from './iterables'
 import { elementsSymbol, ElementsWrapper, unwrap } from './element-wrapper'
-import { id } from '.'
 
 export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSource> {
   constructor(protected elements: Iterable<TSource>) {
@@ -211,8 +210,33 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
      * @returns An iterable of the concatenated elements.
      */
   concat(other: Iterable<TSource>): Linqable<TSource> {
-    return new Linqable(new Concat(this.elements, other))
+    return new Linqable(new Concat(this.elements, unwrap(other)))
   }
+
+  /**
+   * Appends values to the end of the sequence.
+   * @param  {...TSource[]} values The values that will be appended to the current sequence.
+   * @returns An iterable with the appended elements at the end.
+   */
+  append(...values: TSource[]): Linqable<TSource> {
+    if (values.length === 0) {
+      return this
+    }
+    return new Linqable(new Concat(this.elements, unwrap(values)))
+  }
+
+  /**
+   * Prepends values to the beginning of the sequence.
+   * @param  {...TSource[]} values The values that will be prepended to the current sequence.
+   * @returns An iterable with the prepended elements at the beginning.
+   */
+  prepend(...values: TSource[]): Linqable<TSource> {
+    if (values.length === 0) {
+      return this
+    }
+    return new Linqable(new Concat(unwrap(values), this.elements))
+  }
+
 
   /**
      * Reduces the sequence into a value.
