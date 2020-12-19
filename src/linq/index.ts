@@ -31,16 +31,21 @@ export function id<T>(element: T): T {
   return element
 }
 
-export function print<T>(linqable: Linqable<T>): string {
-  return printTree<T>(linqable)
+/**
+ * Prints a tree-like representation of the linqable structure to the console.
+ * @param linqable The linqble a object to print.
+ */
+export function print<T>(linqable: Linqable<T>): void {
+  printTree<T>(linqable)
 }
 
-function printTree<T>(linqable: ElementsWrapper<T> | Iterable<T>, indent = '', isLast = true) {
+function printTree<T>(linqable: ElementsWrapper<T> | Iterable<T>, indent = '', isLast = true): void {
   if (!linqable) {
-    return ''
+    return
   }
   const childSymbol = isLast ? '└──' : '├──'
-  console.log(indent + childSymbol + linqable.toString().replace(/(\r?\n|\r)\s*/g, ''))
+  const prefix = indent.length === 0 ? '' : indent + childSymbol
+  console.log(prefix + linqable.toString().replace(/(\r?\n|\r)\s*/g, ''))
   if (isWrapper(linqable)) {
     const sources = Array.from(linqable[elementsSymbol]())
 
