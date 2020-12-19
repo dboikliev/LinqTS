@@ -1,6 +1,7 @@
 import {
   Concat,
   Distinct,
+  DistinctBy,
   Except,
   Group,
   Intersect,
@@ -19,6 +20,7 @@ import {
   Zip
 } from './iterables'
 import { elementsSymbol, ElementsWrapper, unwrap } from './element-wrapper'
+import { id } from '.'
 
 export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSource> {
   constructor(protected elements: Iterable<TSource>) {
@@ -161,12 +163,24 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
   }
 
   /**
+      * Takes the distinct elements based on the result of a selector function.
+      * @param  {function} selector A function the result of which is used for comparing the elements in the iterable.
+      * @returns An iterable of the distinct elements.
+      */
+  distinct(equalityComparer?: (first: TSource, second: TSource) => boolean): Linqable<TSource> {
+    if (equalityComparer) {
+      return new Linqable(new Distinct(this.elements, equalityComparer))
+    }
+    return this.distinctBy(id);
+  }
+
+  /**
      * Takes the distinct elements based on the result of a selector function.
      * @param  {function} selector A function the result of which is used for comparing the elements in the iterable.
      * @returns An iterable of the distinct elements.
      */
-  distinct(selector: (element: TSource) => unknown = (element: TSource) => element): Linqable<TSource> {
-    return new Linqable(new Distinct(this.elements, selector))
+  distinctBy(selector: (element: TSource) => unknown): Linqable<TSource> {
+    return new Linqable(new DistinctBy(this.elements, selector))
   }
 
   /**

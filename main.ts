@@ -1,7 +1,9 @@
-import { id, linq, print, seq } from './src/linq';
-import { elementsSymbol } from './src/linq/element-wrapper';
+import { linq } from './src/linq';
 
-const elements = linq([1, 2]).select((a, i) => a + " " + i);
+const numbers = [{ value: 1 }, { value: 1 }, { value: 2 }, { value: 2 }, { value: 3 }, { value: 3 }];
 
-console.log(print(elements));
-console.log((elements.toArray()));
+const distinct = linq(numbers).distinct((first, second) => first.value === second.value);
+
+for (const number of distinct) {
+    console.log(number)
+}

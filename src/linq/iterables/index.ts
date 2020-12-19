@@ -1,4 +1,5 @@
 export { Concat } from './concat'
+export { DistinctBy } from './distinctBy'
 export { Distinct } from './distinct'
 export { Except } from './except'
 export { Group } from './group'

@@ -204,6 +204,29 @@ ___
 
 ### Distinct
 
+Gets the distinct elements of a sequence based on an equality comparer function.
+The function comapres the objects in the sequence and should return 'true' when they are considered equal.
+
+```typescript
+let numbers = [{ value: 1 }, { value: 1 }, { value: 2 }, { value: 2 }, { value: 3 }, { value: 3 }];
+
+let distinct = linq(numbers).distinct((first, second) => first.value === second.value);
+
+for (let number of distinct) {
+    console.log(number)
+}
+```
+
+```text
+{ value: 1 }
+{ value: 2 }
+{ value: 3 }
+```
+
+___
+
+### DistinctBy
+
 Gets the distinct elements of a sequence based on a selector function. If a selector function is not passed, it will get the distinct elements by reference.
 
 ```typescript

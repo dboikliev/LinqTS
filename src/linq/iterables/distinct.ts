@@ -2,19 +2,17 @@ import { elementsSymbol, ElementsWrapper } from '../element-wrapper'
 
 export class Distinct<TSource> implements ElementsWrapper<TSource> {
   constructor(private elements: Iterable<TSource>,
-    private selector?: (element: TSource) => unknown) {
+    private equalityComparer: (first: TSource, second: TSource) => boolean) {
   }
 
   *[Symbol.iterator](): IterableIterator<TSource> {
-    const map = new Map()
+    const set = [];
     for (const element of this.elements) {
-      const key = this.selector(element)
-
-      if (!map.has(key)) {
-        map.set(key, element)
-        yield element
+      if (!set.some(el => this.equalityComparer(element, el))) {
+        set.push(element)
       }
     }
+    yield* set
   }
 
   *[elementsSymbol](): IterableIterator<Iterable<TSource>> {
@@ -22,6 +20,6 @@ export class Distinct<TSource> implements ElementsWrapper<TSource> {
   }
 
   toString(): string {
-    return `${Distinct.name}${this.selector ? ` (selector: ${this.selector})` : ''}`
+    return `${Distinct.name} (comparer: ${this.equalityComparer})}`
   }
 }
