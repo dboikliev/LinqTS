@@ -18,11 +18,13 @@
     "istanbul": "^0.4.5",
     "mocha": "^8.2.1",
     "mocha-lcov-reporter": "^1.3.0",
+    "rimraf": "^3.0.2",
     "typescript": "^4.1.3"
   },
   "scripts": {
-    "build": "rm -rf ./build && tsc -p .",
-    "test": "tsc -p . && mocha ./build/test/**/*.spec.js",
+    "build": "rimraf ./build && tsc -p .",
+    "test-mocha": "mocha ./build/test/**/*.spec.js",
+    "test": "npm run build && npm run test-mocha",
     "cover": "./node_modules/.bin/istanbul cover _mocha build/test/**/*.spec.js",
     "coveralls": "npm run cover -- --report lcovonly && cat ./coverage/lcov.info | coveralls",
     "lint": "eslint \"./src/**/*.ts\"",

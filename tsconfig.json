@@ -2,8 +2,11 @@
     "compilerOptions": {
         "module": "commonjs",
         "target": "es6",
+        "allowUnreachableCode": false,
         "noImplicitAny": false,
+        "declaration": true,
         "sourceMap": true,
-        "outDir": "./build"
-    }
+        "outDir": "./build",
+    },
+    "exclude": ["./build/**/*"]
 }

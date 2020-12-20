@@ -150,6 +150,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
   selectMany<TResult>(selector: (element: TSource) => Iterable<TResult>): Linqable<TResult> {
     return new Linqable(new SelectMany(this.elements, selector))
   }
+
   /**
      * Applies a transformation function to each corresponding pair of elements from the
      * The paring ends when the shorter sequence ends, the remaining elements of the other sequence are ignored.
@@ -168,7 +169,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
       * @returns An iterable of the distinct elements.
       */
   distinct(equalityComparer?: (first: TSource, second: TSource) => boolean): Linqable<TSource> {
-    if (equalityComparer) {
+    if (typeof equalityComparer === 'function') {
       return new Linqable(new Distinct(this.elements, equalityComparer))
     }
     return this.distinctBy(id);
@@ -567,7 +568,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
   /**
      * Excludes all elements of the provided sequence from the current sequence.
      * @param  {Iterable<TSource>} right The sequence of elements that will be excluded.
-     * @returns {number} A sequence of the elements which are not present in the provided sequence.
+     * @returns {Iterable<TSource>} A sequence of the elements which are not present in the provided sequence.
      */
   except(right: Iterable<TSource>): Linqable<TSource> {
     return new Linqable(new Except(this.elements, unwrap(right)))
@@ -576,7 +577,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
   /**
      * Intersects the current sequence with the provided sequence.
      * @param  {Iterable<TSource>} right The sequence of elements that will be intersected with the current seqeunce.
-     * @returns {number} A sequence of the elements which are present in both the provided sequences.
+     * @returns {Iterable<TSource>} A sequence of the elements which are present in both the provided sequences.
      */
   intersect(right: Iterable<TSource>): Linqable<TSource> {
     return new Linqable(new Intersect(this.elements, unwrap(right)))
@@ -585,10 +586,19 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
   /**
      * Performs a union operation on the current sequence and the provided sequence.
      * @param  {Iterable<TSource>} right The other sequence with which a union will be performed.
-     * @returns {number} A sequence of the unique elements of both sequences.
+     * @returns {Iterable<TSource>} A sequence of the unique elements of both sequences.
      */
   union(right: Iterable<TSource>): Linqable<TSource> {
     return new Linqable(new Union(this.elements, unwrap(right)))
+  }
+
+  /**
+    * Returns the symmetric difference of both sequences.
+    * @param  {Iterable<TSource>} right The other sequence.
+    * @returns Linqable<TSource> The elements which are present in only sequences.
+    */
+  xOr(right: Iterable<TSource>): Linqable<TSource> {
+    return this.except(right).union(new Linqable(right).except(this));
   }
 
   /**

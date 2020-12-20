@@ -30,6 +30,7 @@ To implement a lazy API similar by using iterators in order to simplify data-ori
 1. [intersect](#intersect)
 1. [concat](#concat)
 1. [union](#union)
+1. [xOr](#xOr)
 1. [aggregate](#aggregate)
 1. [windowed](#windowed)
 1. [batch](#batch)
@@ -95,8 +96,6 @@ Linqable
 
 ## Examples
 
-___
-
 ### Building and executing a query
 
 The API any objects which are iterable in JavaScript. In order to use the method it is required to call `linq` with the object that we want to iterate as a parameter. The result of `linq` is `Linqable` object which supports the api. The linq module exports `linq`, `seq` and `id`.
@@ -126,8 +125,6 @@ Deyan
 ```
 
 ## Operations
-
-___
 
 ### Where
 
@@ -588,6 +585,26 @@ for (let element of elements) {
 4
 5
 6
+```
+
+___
+
+### xOr
+
+Returns a sequence of the elements which are present in only one of the iterables.
+
+```typescript
+let elements = linq([1, 2, 3, 4]).xOr([2, 4, 5]);
+
+for (let element of elements) {
+    console.log(element);
+}
+```
+
+```text
+1
+3
+5
 ```
 
 ___
