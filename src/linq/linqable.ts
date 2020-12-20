@@ -624,21 +624,57 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
   }
 
   /**
-     * Gets the index of the element in the sequence.
-     * @param  {TSource} element
+     * Gets the index of the first matching element in the sequence.
+     * @param  {TSource} element The element to look for.
      * @returns {number} The index of the element.
      */
   indexOf(element: TSource): number {
+    return this.findIndex(el => el === element);
+  }
+
+  /**
+     * Gets the index of the element in the sequence matching the predicate.
+     * @param  {Function} predicate A function which checks if the element is a match.
+     * @returns {number} The index of the element.
+     */
+  findIndex(predicate: (element: TSource) => boolean): number {
     let index = 0
 
     for (const el of this) {
-      if (el === element) {
+      if (predicate(el)) {
         return index
       }
       index++
     }
 
     return -1
+  }
+
+  /**
+   * Gets the last index of the element in the sequence.
+   * @param  {TSource} element
+   * @returns {number} The index of the element.
+   */
+  lastIndexOf(element: TSource): number {
+    return this.findLastIndex(el => el === element)
+  }
+
+  /**
+     * Gets the index of the last element in the sequence matching the predicate.
+     * @param  {Function} predicate A function which checks if the element is a match.
+     * @returns {number} The index of the element.
+     */
+  findLastIndex(predicate: (element: TSource) => boolean): number {
+    let index = 0;
+    let lastIndex = -1;
+    for (const el of this) {
+      if (predicate(el)) {
+        lastIndex = index
+      }
+      index++
+    }
+
+    return lastIndex
   }
 
   toString(): string {
