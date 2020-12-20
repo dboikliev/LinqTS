@@ -65,6 +65,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
         return false
       }
     }
+    return true
   }
 
   /**
