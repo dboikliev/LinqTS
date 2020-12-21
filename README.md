@@ -689,7 +689,7 @@ console.log(containsEven);
 true
 ```
 
-#### All
+### All
 
 Checks if all of the elements match the provided predicate.
 
