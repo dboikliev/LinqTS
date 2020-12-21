@@ -109,6 +109,15 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
   }
 
   /**
+   * Skips elements until some element satisfies the provided predicate.
+   * @param {function} predicate - A predicate which the elements will be checked against.
+   * @returns An iterable with a beginning after the skipped values.
+   */
+  skipUntil(predicate: (element: TSource) => boolean): Linqable<TSource> {
+    return new Linqable(new SkipWhile(this.elements, el => !predicate(el)))
+  }
+
+  /**
      * Takes a specific number of elements.
      * @param {number} count - The number of elements to take.
      * @returns An iterable for the taken elements.
@@ -124,6 +133,15 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
      */
   takeWhile(predicate: (element: TSource) => boolean): Linqable<TSource> {
     return new Linqable(new TakeWhile(this.elements, predicate))
+  }
+
+  /**
+     * Takes elements until some element satisfies the provided predicate.
+     * @param {function} predicate - A predicate which the elements will be checked against.
+     * @returns An iterable of the taken elements.
+     */
+  takeUntil(predicate: (element: TSource) => boolean): Linqable<TSource> {
+    return new Linqable(new TakeWhile(this.elements, el => !predicate(el)))
   }
 
   /**

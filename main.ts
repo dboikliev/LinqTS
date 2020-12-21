@@ -1,7 +1,7 @@
 import { id, linq, print } from './src/linq';
 
-const distinct = linq(['1', '2']).zip([1, 2]).zip([true, false]).selectMany(el => el);
+const els = linq([-5,-8, -15, 10, -13, 5, -8]).skipUntil(x => x > 0)
 
-print(distinct);
+print(els);
 
-console.log(linq([6,7,8,9]).tap(el => console.log(el - 5)).toArray())
+console.log(els.toArray())
