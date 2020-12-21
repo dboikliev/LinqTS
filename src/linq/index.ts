@@ -23,6 +23,17 @@ export function seq(start = 0, step = 1, end = Infinity): Linqable<number> {
 }
 
 /**
+ * Generates a sequence of the repeated element.
+ * Will repeat the element infinitetly if called withouth a count.
+ * @param element - The element to repeat.
+ * @param count - The number of times to repeat the element.
+ */
+export function repeat<T>(element: T, count = Infinity): Linqable<T> {
+  return linq([element]).repeat(count);
+}
+
+
+/**
  * The identity function (x => x). It takes an element and returns it.
  * @param  {T} element - The element to return.
  * @returns {T} The element which was passed as a parameter.

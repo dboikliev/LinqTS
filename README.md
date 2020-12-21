@@ -62,6 +62,7 @@ To implement a lazy API similar by using iterators in order to simplify data-ori
 1. [append](#append)
 1. [prepend](#prepend)
 1. [tap](#tap)
+1. [repeat](#repeat)
 
 The function `print` can be used to display а tree-like representation of the operators in the console.
 
@@ -102,7 +103,7 @@ Linqable
 
 ### Building and executing a query
 
-The API any objects which are iterable in JavaScript. In order to use the method it is required to call `linq` with the object that we want to iterate as a parameter. The result of `linq` is `Linqable` object which supports the api. The linq module exports `linq`, `seq` and `id`.
+The API any objects which are iterable in JavaScript. In order to use the method it is required to call `linq` with the object that we want to iterate as a parameter. The result of `linq` is `Linqable` object which supports the api. The linq module exports `linq`, `seq`, `repeat` and `id`.
 
 ```typescript
 import { linq } from "./linq";
@@ -1160,4 +1161,22 @@ linq([6,7,8,9]).tap(el => console.log(el - 5)).toArray();
 3
 4
 [ 6, 7, 8, 9 ]
+```
+
+___
+
+### Repeat
+
+Repeats the sequence when provided with a positive value, infinitely when provided with a negative value or without a count parameter.
+
+Available also as a top-level function which repeats the provided element.
+
+```typescript
+linq([1,2,3]).repeat(3).toArray();
+repeat(1, 3).toArray();
+```
+
+```text
+[1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3]
+[1, 1, 1]
 ```

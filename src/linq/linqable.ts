@@ -18,7 +18,8 @@ import {
   Where,
   Windowed,
   Zip,
-  Tap
+  Tap,
+  Repeat
 } from './iterables'
 import { elementsSymbol, ElementsWrapper, unwrap } from './element-wrapper'
 import { id } from '.'
@@ -696,8 +697,21 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
     return lastIndex
   }
 
-  tap(action: (element: TSource) => void) {
+  /**
+   * Executes an action on each element of the sequence and yields the element.
+   * @param action - The action to execute on each element.
+   */
+  tap(action: (element: TSource) => void): Linqable<TSource> {
     return new Linqable(new Tap(this.elements, action));
+  }
+
+  /**
+   * Repeats the sequence. Will repeat the sequence infinitely if called withouth a parameter.
+   * @param count - The number of times to repeat the sequence.
+   * @returns The repeated sequence.
+   */
+  repeat(count = Infinity): Linqable<TSource> {
+    return new Linqable(new Repeat(this.elements, count))
   }
 
   toString(): string {
@@ -715,10 +729,18 @@ export class OrderedLinqable<TSource> extends Linqable<TSource> {
     return new OrderedLinqable(ordered.from(selector, isAscending))
   }
 
+  /**
+   * Chains an additional ascending ordering based on the key returned by the selector function.
+   * @param selector - A function which returns a key which will be used for comparisons.
+   */
   thenBy(this: OrderedLinqable<TSource>, selector: (element: TSource) => string | number): OrderedLinqable<TSource> {
     return this.from(selector, true)
   }
 
+  /**
+    * Chains an additional descending ordering based on the key returned by the selector function.
+    * @param selector - A function which returns a key which will be used for comparisons.
+    */
   thenByDescending(this: OrderedLinqable<TSource>, selector: (element: TSource) => string | number): OrderedLinqable<TSource> {
     return this.from(selector, false)
   }
