@@ -652,7 +652,8 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
 
   /**
    * Gets the last index of the element in the sequence.
-   * @param {TSource} element - * @returns {number} The index of the element.
+   * @param {TSource} element - 
+   * @returns {number} The index of the element.
    */
   lastIndexOf(element: TSource): number {
     return this.findLastIndex(el => el === element)
