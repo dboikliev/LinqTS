@@ -77,7 +77,7 @@ var elements = seq(1, 1, 10)
                 .groupBy(x => x % 2)
                 .zip(seq(1,5))
 
-console.log(print(elements));
+print(elements);
 ```
 
 ```text
