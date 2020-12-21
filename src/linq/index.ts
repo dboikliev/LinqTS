@@ -4,7 +4,7 @@ import { elementsSymbol, ElementsWrapper, isWrapper, unwrap } from './element-wr
 
 /**
  * Wraps an interable into an object which supports queries.
- * @param {Iterable<T>} iterable The sequence which will be queried.
+ * @param {Iterable<T>} iterable - The sequence which will be queried.
  * @returns {Linqable<number>} An object with support for queries.
  */
 export function linq<T>(iterable: Iterable<T>): Linqable<T> {
@@ -13,9 +13,9 @@ export function linq<T>(iterable: Iterable<T>): Linqable<T> {
 
 /**
  * Generates a sequence of numbers from start to end (if specified), increasing by the speficied step.
- * @param  {number} start The beginning of the sequence. 0 by default.
- * @param  {number} step The ammount to increment by on each iteration. 1 by default.
- * @param  {number} end The end of the sequence. Infinity by default.
+ * @param  {number} start - The beginning of the sequence. 0 by default.
+ * @param  {number} step - The ammount to increment by on each iteration. 1 by default.
+ * @param  {number} end - The end of the sequence. Infinity by default.
  * @returns {Linqable<number>}
  */
 export function seq(start = 0, step = 1, end = Infinity): Linqable<number> {
@@ -24,7 +24,7 @@ export function seq(start = 0, step = 1, end = Infinity): Linqable<number> {
 
 /**
  * The identity function (x => x). It takes an element and returns it.
- * @param  {T} element The element to return.
+ * @param  {T} element - The element to return.
  * @returns {T} The element which was passed as a parameter.
  */
 export function id<T>(element: T): T {
@@ -33,7 +33,7 @@ export function id<T>(element: T): T {
 
 /**
  * Prints a tree-like representation of the linqable structure to the console.
- * @param linqable The linqble a object to print.
+ * @param linqable - The linqable a object to print.
  */
 export function print<T>(linqable: Linqable<T>): void {
   printTree<T>(linqable)
