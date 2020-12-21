@@ -17,7 +17,8 @@ import {
   Union,
   Where,
   Windowed,
-  Zip
+  Zip,
+  Tap
 } from './iterables'
 import { elementsSymbol, ElementsWrapper, unwrap } from './element-wrapper'
 import { id } from '.'
@@ -652,7 +653,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
 
   /**
    * Gets the last index of the element in the sequence.
-   * @param {TSource} element - 
+   * @param {TSource} element - The element to look for.
    * @returns {number} The index of the element.
    */
   lastIndexOf(element: TSource): number {
@@ -675,6 +676,10 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
     }
 
     return lastIndex
+  }
+
+  tap(action: (element: TSource) => void) {
+    return new Linqable(new Tap(this.elements, action));
   }
 
   toString(): string {

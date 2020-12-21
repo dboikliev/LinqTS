@@ -44,6 +44,9 @@ To implement a lazy API similar by using iterators in order to simplify data-ori
 1. [averageBy](#averageBy)
 1. [sequenceEquals](#sequenceEquals)
 1. [indexOf](#indexOf)
+1. [lastIndexOf](#lastIndexOf)
+1. [findIndex](#findIndex)
+1. [findLastIndex](#findLastIndex)
 1. [elementAt](#elementAt)
 1. [first](#first)
 1. [firstOrDefault](#firstOrDefault)
@@ -58,6 +61,7 @@ To implement a lazy API similar by using iterators in order to simplify data-ori
 1. [toMapMany](#toMapMany)
 1. [append](#append)
 1. [prepend](#prepend)
+1. [tap](#tap)
 
 The function `print` is provided can be used to display tree-like representation of the operators in the console.
 
@@ -834,21 +838,59 @@ ___
 
 ### IndexOf
 
-Gets the index of the element in the sequence.
+Gets the index of the first matching element in the sequence.
 
 ```typescript
-let numbers = [1, 2, 3];
-
-let indexOfTwo = linq(numbers).indexOf(2);
-
-console.log(indexOfTwo);
+linq([1, 2, 2, 2, 3]).indexOf(2);
 ```
 
 ```text
 1
 ```
 
-#### ElementAt
+___
+
+### LastIndexOf
+
+Gets the index of the last matching element in the sequence.
+
+```typescript
+linq([1, 2, 2, 2, 3]).indexOf(2);
+```
+
+```text
+1
+```
+
+___
+
+### FindIndex
+
+Gets the index of the first matching element in the sequence according to the predicate.
+
+```typescript
+linq([-1, -2, 2, 2, 3]).findIndex(x => x > 0);
+```
+
+```text
+2
+```
+___
+
+### FindLastIndex
+
+Gets the index of the last matching element in the sequence according to the predicate.
+
+```typescript
+linq([-1, -2, 2, 2, 3]).findIndex(x => x > 0);
+```
+
+```text
+4
+```
+___
+
+### ElementAt
 
 Gets the element at an index.
 
@@ -882,7 +924,7 @@ console.log(firstElement);
 1
 ```
 
-#### FirstOrDefault
+### FirstOrDefault
 
 Gets the first element of the sequence. If a predicate is provided the first element matching the predicated will be returned.
 If there aren't any matching elements or if the sequence is empty a default value provided by the defaultInitializer will be returned.
@@ -1061,9 +1103,7 @@ The key is provided by a function which takes an element as a parameter and retu
 The values for each key will be aggregated into arrays.
 
 ```typescript
-const elements = linq([1,1,2,3,3,4,5]).toMapMany(id, x => x * 10);
-    
-console.log(elements);
+linq([1,1,2,3,3,4,5]).toMapMany(id, x => x * 10);
 ```
 
 ```text
@@ -1083,9 +1123,7 @@ ___
 Append the provided elements at the end of the sequence.
 
 ```typescript
-const elements = linq([1,2,3,4,5]).append(6,7,8,9);
-    
-console.log(elements);
+linq([1,2,3,4,5]).append(6,7,8,9).toArray();
 ```
 
 ```text
@@ -1099,11 +1137,27 @@ ___
 Prepends the provided elements at the beginning of the sequence.
 
 ```typescript
-const elements = linq([6,7,8,9]).prepend(1,2,3,4,5);
-    
-console.log(elements);
+linq([6,7,8,9]).prepend(1,2,3,4,5).toArray();
 ```
 
 ```text
 [ 1, 2, 3, 4, 5, 6, 7, 8, 9 ]
+```
+
+___
+
+### Tap
+
+Executes an action on each element of the sequence and yields the element.
+
+```typescript
+linq([6,7,8,9]).tap(el => console.log(el - 5)).toArray();
+```
+
+```text
+1
+2
+3
+4
+[ 6, 7, 8, 9 ]
 ```
