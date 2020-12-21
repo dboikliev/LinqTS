@@ -36,7 +36,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
 
   /**
      * Checks if any of the elements match the provided predicate.
-     * @param  {function} predicate A predicate which the elements will be checked against.
+     * @param {function} predicate - A predicate which the elements will be checked against.
      * @return {boolean} Whether an element matching the predicate is found or not.
      */
   any(predicate?: (element: TSource) => boolean): boolean {
@@ -56,7 +56,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
 
   /**
      * Checks if all of the elements match the provided predicate.
-     * @param  {function} predicate A predicate which the elements will be checked against.
+     * @param {function} predicate - A predicate which the elements will be checked against.
      * @return {boolean} Whether an element matching the predicate is found or not.
      */
   all(predicate: (element: TSource) => boolean): boolean {
@@ -71,10 +71,10 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
   /**
      * Performs a join on objects matching property values according to the provided leftSelector and rightSelector.
      * The matching objects are merged into another value by resultSelector.
-     * @param  {Iterable<TRight>} right The collection being to which the join is performed
-     * @param  {function} leftSelector A property selector for objects from the left collection
-     * @param  {function} rightSelector A property selector for objects from the right collection
-     * @param  {function} resultSelector A function merging the matching objects into a result
+     * @param {Iterable<TRight>} right - The collection being to which the join is performed
+     * @param {function} leftSelector - A property selector for objects from the left collection
+     * @param {function} rightSelector - A property selector for objects from the right collection
+     * @param {function} resultSelector - A function merging the matching objects into a result
      * @returns {Linqable} An iterable of values produced by resultSelector
      */
   join<TRight, TResult>(right: Iterable<TRight>,
@@ -91,7 +91,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
 
   /**
      * Skips a specific number of elements.
-     * @param  {number} count The number of elements to skip.
+     * @param {number} count - The number of elements to skip.
      * @returns An iterable with a beginning after the skipped values.
      */
   skip(count: number): Linqable<TSource> {
@@ -100,7 +100,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
 
   /**
      * Skips elements while they satisfy the provided predicate.
-     * @param  {function} predicate A predicate which the elements will be checked against.
+     * @param {function} predicate - A predicate which the elements will be checked against.
      * @returns An iterable with a beginning after the skipped values.
      */
   skipWhile(predicate: (element: TSource) => boolean): Linqable<TSource> {
@@ -109,7 +109,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
 
   /**
      * Takes a specific number of elements.
-     * @param  {number} count The number of elements to take.
+     * @param {number} count - The number of elements to take.
      * @returns An iterable for the taken elements.
      */
   take(count: number): Linqable<TSource> {
@@ -118,7 +118,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
 
   /**
      * Takes elements while they satisfy the provided predicate.
-     * @param {function} predicate A predicate which the elements will be checked against.
+     * @param {function} predicate - A predicate which the elements will be checked against.
      * @returns An iterable of the taken elements.
      */
   takeWhile(predicate: (element: TSource) => boolean): Linqable<TSource> {
@@ -127,7 +127,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
 
   /**
      * Filters the elements based on a predicate.
-     * @param  {function} predicate A predicate which the elements will be checked against.
+     * @param {function} predicate - A predicate which the elements will be checked against.
      * @returns An iterable of the filtered elements.
      */
   where(predicate: (element: TSource) => boolean): Linqable<TSource> {
@@ -136,7 +136,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
 
   /**
      * Transforms the elements of the iterable into another value.
-     * @param  {function} selector A function which transforms an element into another value.
+     * @param {function} selector - A function which transforms an element into another value.
      * @returns An iterable of the transformed elements.
      */
   select<TResult>(selector: (element: TSource, index: number) => TResult): Linqable<TResult> {
@@ -145,7 +145,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
 
   /**
      * Flattens iterable elements into a single iterable sequence.
-     * @param  {function} selector A function which transforms an element into another value.
+     * @param {function} selector - A function which transforms an element into another value.
      * @returns An iterable of the transformed elements.
      */
   selectMany<TResult>(selector: (element: TSource) => Iterable<TResult>): Linqable<TResult> {
@@ -156,8 +156,8 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
      * Applies a transformation function to each corresponding pair of elements from the
      * The paring ends when the shorter sequence ends, the remaining elements of the other sequence are ignored.
      * If a selector is not proviced the result will be an array of [left, right] array pairs.
-     * @param  {Iterable<TRight>} right The second iterable.
-     * @param  {function} selector A function witch transforms a pair of elements into another value.
+     * @param {Iterable<TRight>} right - The second iterable.
+     * @param {function} selector - A function witch transforms a pair of elements into another value.
      * @returns An iterable of the trasnformed values.
      */
   zip<TRight, TResult = [TSource, TRight]>(right: Iterable<TRight>, selector?: (left: TSource, right: TRight) => TResult): Linqable<TResult> {
@@ -166,7 +166,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
 
   /**
       * Takes the distinct elements based on the result of a selector function.
-      * @param  {function} selector A function the result of which is used for comparing the elements in the iterable.
+      * @param {function} selector - A function the result of which is used for comparing the elements in the iterable.
       * @returns An iterable of the distinct elements.
       */
   distinct(equalityComparer?: (first: TSource, second: TSource) => boolean): Linqable<TSource> {
@@ -178,7 +178,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
 
   /**
      * Takes the distinct elements based on the result of a selector function.
-     * @param  {function} selector A function the result of which is used for comparing the elements in the iterable.
+     * @param {function} selector - A function the result of which is used for comparing the elements in the iterable.
      * @returns An iterable of the distinct elements.
      */
   distinctBy(selector: (element: TSource) => unknown): Linqable<TSource> {
@@ -187,7 +187,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
 
   /**
      * Groups elements based on a selector function.
-     * @param  {function} selector A function providing the key for the group.
+     * @param {function} selector - A function providing the key for the group.
      * @returns An iterable of groups.
      */
   groupBy<TKey>(selector: (element: TSource) => TKey): Linqable<[TKey, TSource[]]> {
@@ -196,7 +196,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
 
   /**
      * Orders elements based on a selector function.
-     * @param  {function} selector A function or a selector used for comparing the elements.
+     * @param {function} selector - A function or a selector used for comparing the elements.
      * @returns An iterable of the ordered elements.
      */
   orderBy(selector: (element: TSource) => number | string): OrderedLinqable<TSource> {
@@ -205,7 +205,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
 
   /**
      * Orders elements based on a selector function in desceding order.
-     * @param  {function} selector A function or a selector used for comparing the elements.
+     * @param {function} selector - A function or a selector used for comparing the elements.
      * @returns An iterable of the ordered elements.
      */
   orderByDescending(selector: (element: TSource) => number | string): OrderedLinqable<TSource> {
@@ -222,7 +222,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
 
   /**
      * Concatenates the sequences together.
-     * @param  {Iterable<TSourse>} other The sequence that will be concatenated to the current sequence.
+     * @param {Iterable<TSourse>} other - The sequence that will be concatenated to the current sequence.
      * @returns An iterable of the concatenated elements.
      */
   concat(other: Iterable<TSource>): Linqable<TSource> {
@@ -231,7 +231,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
 
   /**
    * Appends values to the end of the sequence.
-   * @param  {...TSource[]} values The values that will be appended to the current sequence.
+   * @param {...TSource[]} values - The values that will be appended to the current sequence.
    * @returns An iterable with the appended elements at the end.
    */
   append(...values: TSource[]): Linqable<TSource> {
@@ -243,7 +243,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
 
   /**
    * Prepends values to the beginning of the sequence.
-   * @param  {...TSource[]} values The values that will be prepended to the current sequence.
+   * @param {...TSource[]} values - The values that will be prepended to the current sequence.
    * @returns An iterable with the prepended elements at the beginning.
    */
   prepend(...values: TSource[]): Linqable<TSource> {
@@ -256,8 +256,8 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
 
   /**
      * Reduces the sequence into a value.
-     * @param  {TResult} seed A starting value.
-     * @param  {function} accumulator An accumulator function.
+     * @param {TResult} seed - A starting value.
+     * @param {function} accumulator - An accumulator function.
      */
   aggregate<TResult>(seed: TResult, accumulator: (accumulated: TResult, element: TSource, index: number) => TResult): TResult {
     let accumulated = seed
@@ -282,8 +282,8 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
   /**
      * Gets the first element of the sequence. If a predicate is provided the first element matching the predicated will be returned.
      * If there aren't any matching elements or if the sequence is empty a default value provided by the defaultInitializer will be returned.
-     * @param  {function} predicate A predicate used for finding a matching element.
-     * @param  {function} defaultInitializer A function returning default value if there aren't any matching elements.
+     * @param {function} predicate - A predicate used for finding a matching element.
+     * @param {function} defaultInitializer - A function returning default value if there aren't any matching elements.
      * @returns The first matching element or a default value.
      */
   firstOrDefault<TDefault>(predicate?: (element: TSource) => boolean, defaultInitializer: () => TDefault = () => undefined): TSource | TDefault {
@@ -318,8 +318,8 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
   /**
      * Gets the last element of the sequence. If a predicate is provided the last element matching the predicated will be returned.
      * If there aren't any matching elements or if the sequence is empty a default value provided by the defaultInitializer will be returned.
-     * @param  {function} predicate A predicate used for finding a matching element.
-     * @param  {function} defaultInitializer A function returning default value if there aren't any matching elements.
+     * @param {function} predicate - A predicate used for finding a matching element.
+     * @param {function} defaultInitializer - A function returning default value if there aren't any matching elements.
      * @returns The last matching element or a default value.
      */
   lastOrDefault<TDefault>(predicate?: (element: TSource) => boolean, defaultInitializer: () => TDefault = () => undefined): TSource | TDefault {
@@ -350,7 +350,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
 
   /**
      * Gets the max element in a sequence according to a transform function.
-     * @param  {function} transform A function returning a primitive value used for copmaring elements in the sequence.
+     * @param {function} transform - A function returning a primitive value used for copmaring elements in the sequence.
      * @returns TSource The max element of the sequence.
      */
   maxBy(transform: (element: TSource) => number | string): TSource {
@@ -387,7 +387,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
 
   /**
      * Gets the min element in the sequence according to a transform function.
-     * @param  {function} transform A function returning a primitive value used for copmaring elements in the sequence.
+     * @param {function} transform - A function returning a primitive value used for copmaring elements in the sequence.
      * @returns TSource The min element of the sequence.
      */
   minBy(transform: (element: TSource) => number | string): TSource {
@@ -424,7 +424,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
 
   /**
      * Calculates the sum of the values returned by the selector function.
-     * @param  {function} transform A function returning a number value used for summing elements in the sequence.
+     * @param {function} transform - A function returning a number value used for summing elements in the sequence.
      * @returns {number} The sum of the values returned by the selector function.
      */
   sumBy(selector: (element: TSource) => number): number {
@@ -442,7 +442,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
 
   /**
      * Gets the averege value for a sequence.
-     * @param  {function} transform A function returning a number value used for summing elements in the sequence.
+     * @param {function} transform - A function returning a number value used for summing elements in the sequence.
      * @returns {number} The average value of the sequence.
      */
   averageBy(transform: (element: TSource) => number): number {
@@ -463,8 +463,8 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
   /**
      * Tests the equality of two seuqneces by checking each corresponding pair of elements against the provided predicate.
      * If a predicate is not provided the elements will be compared using the strict equality (===) operator.
-     * @param {Iterable<TRight>} right The sequence which will be compared to the current sequence.
-     * @param {function} predicate A function that takes an element of each sequence compares them and returns a boolean depeneding whether they are considered equal or not.
+     * @param {Iterable<TRight>} right - The sequence which will be compared to the current sequence.
+     * @param {function} predicate - A function that takes an element of each sequence compares them and returns a boolean depeneding whether they are considered equal or not.
      * @returns {boolean} True if both sequences are of the same length and all corresponding pairs of elements are equal according to the predicate function. False otherwise.
      */
   sequenceEquals<TRight>(right: Iterable<TRight>, predicate: (left: TSource, right: TRight) => boolean = (left: unknown, right: unknown) => left === right): boolean {
@@ -488,7 +488,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
   /**
      * Calls a function for each element of the sequence.
      * The function receives the element and its index in the seqeunce as parameters.
-     * @param  {function} action A function called for each element of the sequence.
+     * @param {function} action - A function called for each element of the sequence.
      */
   forEach(action: (element: TSource, index: number) => void): void {
     let index = 0
@@ -499,7 +499,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
 
   /**
      * Gets the element at an index.
-     * @param  {number} index The index of the element.
+     * @param {number} index - The index of the element.
      */
   elementAt(index: number): TSource {
     return this.skip(index).take(1).first()
@@ -521,8 +521,8 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
   /**
    * Turns the sequence into a map.
    * Throws an error if there are multiple elements with the same key.
-   * @param {Function} keySelector A function which returns the key for an element in the sequence.
-   * @param {Function} valueSelector An optional function which returns the value for the key. Will use the source value if not
+   * @param {Function} keySelector - A function which returns the key for an element in the sequence.
+   * @param {Function} valueSelector - An optional function which returns the value for the key. Will use the source value if not
    * @returns {Map<TKey, TValue>} A map of elements in the sequence.
    */
   toMap<TKey, TValue = TSource>(keySelector: (element: TSource) => TKey, valueSelector?: (element: TSource) => TValue): Map<TKey, TValue> {
@@ -538,8 +538,8 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
 
   /**
    * Turns the sequence into a map.
-   * @param {Function} keySelector A function which returns the key for an element in the sequence.
-   * @param {Function} valueSelector An optional function which returns the value for the key. Will use the source value if not
+   * @param {Function} keySelector - A function which returns the key for an element in the sequence.
+   * @param {Function} valueSelector - An optional function which returns the value for the key. Will use the source value if not
    * @returns {Map<TKey, TValue>} A map of elements in the sequence.
    */
   toMapMany<TKey, TValue = TSource>(keySelector: (element: TSource) => TKey, valueSelector?: (element: TSource) => TValue): Map<TKey, TValue[]> {
@@ -568,7 +568,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
 
   /**
      * Excludes all elements of the provided sequence from the current sequence.
-     * @param  {Iterable<TSource>} right The sequence of elements that will be excluded.
+     * @param {Iterable<TSource>} right - The sequence of elements that will be excluded.
      * @returns {Iterable<TSource>} A sequence of the elements which are not present in the provided sequence.
      */
   except(right: Iterable<TSource>): Linqable<TSource> {
@@ -577,7 +577,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
 
   /**
      * Intersects the current sequence with the provided sequence.
-     * @param  {Iterable<TSource>} right The sequence of elements that will be intersected with the current seqeunce.
+     * @param {Iterable<TSource>} right - The sequence of elements that will be intersected with the current seqeunce.
      * @returns {Iterable<TSource>} A sequence of the elements which are present in both the provided sequences.
      */
   intersect(right: Iterable<TSource>): Linqable<TSource> {
@@ -586,7 +586,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
 
   /**
      * Performs a union operation on the current sequence and the provided sequence.
-     * @param  {Iterable<TSource>} right The other sequence with which a union will be performed.
+     * @param {Iterable<TSource>} right - The other sequence with which a union will be performed.
      * @returns {Iterable<TSource>} A sequence of the unique elements of both sequences.
      */
   union(right: Iterable<TSource>): Linqable<TSource> {
@@ -595,7 +595,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
 
   /**
     * Returns the symmetric difference of both sequences.
-    * @param  {Iterable<TSource>} right The other sequence.
+    * @param {Iterable<TSource>} right - The other sequence.
     * @returns Linqable<TSource> The elements which are present in only sequences.
     */
   xOr(right: Iterable<TSource>): Linqable<TSource> {
@@ -604,8 +604,8 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
 
   /**
      * Provides batches of elements from the sequence.
-     * @param  {number} size The size of the batch.
-     * @param  {boolean} dropRemainder Indicates whether to drop the last batch if it is not of full size.
+     * @param {number} size - The size of the batch.
+     * @param {boolean} dropRemainder - Indicates whether to drop the last batch if it is not of full size.
      * @returns {Iterable<TSource[]>} A sequence of batches.
      */
   batch(size: number, dropRemainder = false): Linqable<TSource[]> {
@@ -615,8 +615,8 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
 
   /**
      * Provides a sliding window of elements from the sequence.
-     * @param  {number} size The size of the window.
-     * @param  {number} step The number of elements to skip when sliding.
+     * @param {number} size - The size of the window.
+     * @param {number} step - The number of elements to skip when sliding.
      * @returns {Iterable<TSource[]>} A sequence of windows.
      */
   windowed(size: number, step = 1): Linqable<TSource[]> {
@@ -625,7 +625,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
 
   /**
      * Gets the index of the first matching element in the sequence.
-     * @param  {TSource} element The element to look for.
+     * @param {TSource} element - The element to look for.
      * @returns {number} The index of the element.
      */
   indexOf(element: TSource): number {
@@ -634,7 +634,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
 
   /**
      * Gets the index of the element in the sequence matching the predicate.
-     * @param  {Function} predicate A function which checks if the element is a match.
+     * @param {Function} predicate - A function which checks if the element is a match.
      * @returns {number} The index of the element.
      */
   findIndex(predicate: (element: TSource) => boolean): number {
@@ -652,8 +652,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
 
   /**
    * Gets the last index of the element in the sequence.
-   * @param  {TSource} element
-   * @returns {number} The index of the element.
+   * @param {TSource} element - * @returns {number} The index of the element.
    */
   lastIndexOf(element: TSource): number {
     return this.findLastIndex(el => el === element)
@@ -661,7 +660,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
 
   /**
      * Gets the index of the last element in the sequence matching the predicate.
-     * @param  {Function} predicate A function which checks if the element is a match.
+     * @param {Function} predicate - A function which checks if the element is a match.
      * @returns {number} The index of the element.
      */
   findLastIndex(predicate: (element: TSource) => boolean): number {
