@@ -63,7 +63,7 @@ To implement a lazy API similar by using iterators in order to simplify data-ori
 1. [prepend](#prepend)
 1. [tap](#tap)
 
-The function `print` is provided can be used to display tree-like representation of the operators in the console.
+The function `print` can be used to display а tree-like representation of the operators in the console.
 
 ```typescript
 import {  linq, print, seq } from './src/linq';
