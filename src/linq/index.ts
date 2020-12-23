@@ -29,7 +29,7 @@ export function seq(start = 0, step = 1, end = Infinity): Linqable<number> {
  * @param count - The number of times to repeat the element.
  */
 export function repeat<T>(element: T, count = Infinity): Linqable<T> {
-  return linq([element]).repeat(count);
+  return linq([element]).repeat(count)
 }
 
 

@@ -6,7 +6,7 @@ export class Distinct<TSource> implements ElementsWrapper<TSource> {
   }
 
   *[Symbol.iterator](): IterableIterator<TSource> {
-    const set = [];
+    const set = []
     for (const element of this.elements) {
       if (!set.some(el => this.equalityComparer(element, el))) {
         set.push(element)

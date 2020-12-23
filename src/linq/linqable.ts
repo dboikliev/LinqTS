@@ -193,7 +193,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
     if (typeof equalityComparer === 'function') {
       return new Linqable(new Distinct(this.elements, equalityComparer))
     }
-    return this.distinctBy(id);
+    return this.distinctBy(id)
   }
 
   /**
@@ -245,7 +245,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
      * @param {Iterable<TSourse>} other - The sequence that will be concatenated to the current sequence.
      * @returns An iterable of the concatenated elements.
      */
-  concat(other: Iterable<TSource>): Linqable<TSource> {
+  concat<TOther>(other: Iterable<TOther>): Linqable<TSource | TOther> {
     return new Linqable(new Concat(this.elements, unwrap(other)))
   }
 
@@ -439,7 +439,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
      * @returns {number} The sum of the values in the sequence.
      */
   sum(this: Linqable<number>): number {
-    return this.sumBy(id);
+    return this.sumBy(id)
   }
 
   /**
@@ -457,7 +457,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
      * @returns {number} The average value of the sequence.
      */
   average(this: Linqable<number>): number {
-    return this.averageBy(id);
+    return this.averageBy(id)
   }
 
   /**
@@ -547,12 +547,12 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
    */
   toMap<TKey, TValue = TSource>(keySelector: (element: TSource) => TKey, valueSelector?: (element: TSource) => TValue): Map<TKey, TValue> {
     return this.aggregate(new Map<TKey, TValue>(), (map, current) => {
-      const key = keySelector(current);
+      const key = keySelector(current)
       if (map.has(key)) {
         throw Error(`An element with key "${key}" has already been added.`)
       }
 
-      return map.set(key, typeof valueSelector === 'function' ? valueSelector(current) : current as never);
+      return map.set(key, typeof valueSelector === 'function' ? valueSelector(current) : current as never)
     })
   }
 
@@ -564,10 +564,10 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
    */
   toMapMany<TKey, TValue = TSource>(keySelector: (element: TSource) => TKey, valueSelector?: (element: TSource) => TValue): Map<TKey, TValue[]> {
     return this.aggregate(new Map<TKey, TValue[]>(), (map, current) => {
-      const key = keySelector(current);
-      const value = map.get(key) || [];
-      value.push(typeof valueSelector === 'function' ? valueSelector(current) : current as never);
-      return map.set(key, value);
+      const key = keySelector(current)
+      const value = map.get(key) || []
+      value.push(typeof valueSelector === 'function' ? valueSelector(current) : current as never)
+      return map.set(key, value)
     })
   }
 
@@ -577,10 +577,10 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
      */
   count(): number {
     let current = 0
-    const iterator = this[Symbol.iterator]();
+    const iterator = this[Symbol.iterator]()
 
     while (iterator.next()) {
-      current++;
+      current++
     }
 
     return current
@@ -619,7 +619,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
     * @returns Linqable<TSource> The elements which are present in only sequences.
     */
   xOr(right: Iterable<TSource>): Linqable<TSource> {
-    return this.except(right).union(new Linqable(right).except(this));
+    return this.except(right).union(new Linqable(right).except(this))
   }
 
   /**
@@ -649,7 +649,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
      * @returns {number} The index of the element.
      */
   indexOf(element: TSource): number {
-    return this.findIndex(el => el === element);
+    return this.findIndex(el => el === element)
   }
 
   /**
@@ -685,8 +685,8 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
      * @returns {number} The index of the element.
      */
   findLastIndex(predicate: (element: TSource) => boolean): number {
-    let index = 0;
-    let lastIndex = -1;
+    let index = 0
+    let lastIndex = -1
     for (const el of this) {
       if (predicate(el)) {
         lastIndex = index
@@ -702,7 +702,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
    * @param action - The action to execute on each element.
    */
   tap(action: (element: TSource) => void): Linqable<TSource> {
-    return new Linqable(new Tap(this.elements, action));
+    return new Linqable(new Tap(this.elements, action))
   }
 
   /**

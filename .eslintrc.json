@@ -18,6 +18,10 @@
         "@typescript-eslint"
     ],
     "rules": {
-        "space-before-function-paren": "off"
-    }
+        "space-before-function-paren": "off",
+        "semi": ["error", "never"],
+        "indent": ["error", 2],
+        "quotes": ["error", "single"]
+    },
+    "ignorePatterns": "./build/**/*"
 }

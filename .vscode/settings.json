@@ -9,5 +9,6 @@
         "**/*.js.map": true,
         "node_modules": true,
         "coverage": false
-    }
+    },
+    "editor.tabSize": 2
 }

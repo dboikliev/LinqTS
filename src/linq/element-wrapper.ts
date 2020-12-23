@@ -10,8 +10,8 @@ export function isWrapper<T>(obj: ElementsWrapper<T> | Iterable<T>): obj is Elem
 
 export function unwrap<T>(obj: ElementsWrapper<T> | Iterable<T>): Iterable<T> {
   if (isWrapper(obj)) {
-    const sources = obj[elementsSymbol]();
-    return sources.next().value;
+    const sources = obj[elementsSymbol]()
+    return sources.next().value
   }
   return obj as Iterable<T>
 }
