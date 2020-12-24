@@ -23,6 +23,7 @@ import {
 } from './iterables'
 import { elementsSymbol, ElementsWrapper, unwrap } from './element-wrapper'
 import { id } from '.'
+import { EqualityComparer } from './linq-map/comparers'
 
 export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSource> {
   constructor(protected elements: Iterable<TSource>) {
@@ -185,24 +186,23 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
   }
 
   /**
-      * Takes the distinct elements based on the result of a selector function.
-      * @param {function} selector - A function the result of which is used for comparing the elements in the iterable.
+      * Returns an unorder sequence of distinct elements based on an equality comparer.
+      * When a comparer is not provided a '===' comparison is used.
+      * @param {EqualityComparer<TSource>} equalityComparer - An object providing a hash and equals function.
       * @returns An iterable of the distinct elements.
       */
-  distinct(equalityComparer?: (first: TSource, second: TSource) => boolean): Linqable<TSource> {
-    if (typeof equalityComparer === 'function') {
-      return new Linqable(new Distinct(this.elements, equalityComparer))
-    }
-    return this.distinctBy(id)
+  distinct(equalityComparer?: EqualityComparer<TSource>): Linqable<TSource> {
+    return new Linqable(new Distinct(this.elements, equalityComparer))
   }
 
   /**
      * Takes the distinct elements based on the result of a selector function.
-     * @param {function} selector - A function the result of which is used for comparing the elements in the iterable.
+     * @param {function} projection - A function the result of which is used for comparing the elements in the iterable.
+     * @param {EqualityComparer<TSource>} equalityComparer - An object providing a hash and equals function.
      * @returns An iterable of the distinct elements.
      */
-  distinctBy(selector: (element: TSource) => unknown): Linqable<TSource> {
-    return new Linqable(new DistinctBy(this.elements, selector))
+  distinctBy<TKey>(projection: (element: TSource) => TKey, equalityComparer?: EqualityComparer<TKey>): Linqable<TSource> {
+    return new Linqable(new DistinctBy(this.elements, projection, equalityComparer))
   }
 
   /**

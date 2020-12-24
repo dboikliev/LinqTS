@@ -1,5 +1,4 @@
 
-const view = new DataView(new ArrayBuffer(8))
 export const hashSymbol: unique symbol = Symbol()
 export const equalsSymbol: unique symbol = Symbol()
 
@@ -18,20 +17,24 @@ export interface EqualityComparer<TKey> {
   equals: EqualsFunction<TKey>
 }
 
-export const numberComparer: EqualityComparer<number> = {
+class NumberComparer implements EqualityComparer<number> {
+  #view = new DataView(new ArrayBuffer(8))
   hash(key: number): number {
     if (Number.isInteger(key)) {
       return key
     }
 
-    view.setFloat64(0, key)
-    return Math.abs(view.getInt32(0) ^ view.getInt32(4)) | 0
-  },
+    this.#view.setFloat64(0, key)
+    return (this.#view.getInt32(0) ^ this.#view.getInt32(4) | 0) >>> 0
+  }
 
   equals(first: number, second: number): boolean {
     return first === second
   }
 }
+
+export const numberComparer: EqualityComparer<number> = new NumberComparer()
+
 
 export const booleanComparer: EqualityComparer<boolean> = {
   hash(key: boolean): number {
@@ -49,7 +52,7 @@ export const stringComparer: EqualityComparer<string> = {
     let hash = 212984747
 
     for (let i = 0, length = key.length; i < length; i++) {
-      hash = Math.imul(33, hash) ^ key.charCodeAt(i)
+      hash = Math.imul(31, hash) + key.charCodeAt(i) | 0
     }
 
     return hash >>> 0
@@ -87,7 +90,7 @@ export const objectComparer: EqualityComparer<unknown> = {
       break
     }
 
-    return Math.abs(hash | 0)
+    return hash >>> 0
   },
 
   equals(first: unknown, second: unknown): boolean {
@@ -136,10 +139,10 @@ export const iterableComparer: EqualityComparer<IterableIterator<unknown>> = {
     let hash = 0
 
     for (const element of key) {
-      hash ^= objectComparer.hash(element)
+      hash = Math.imul(objectComparer.hash(element), hash)
     }
 
-    return Math.abs(hash | 0)
+    return hash >>> 0
   },
 
   equals(first: IterableIterator<unknown>, second: IterableIterator<unknown>): boolean {

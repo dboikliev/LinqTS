@@ -24,24 +24,24 @@ class Key<TKey> implements Equatable<Key<TKey>> {
   }
 }
 
-const count = 20000
+const count = 2000000
 
-const map = new LinqMap<string, { value: number }>(stringComparer)
-const jsMap = new Map<string, { value: number }>()
+const map = new LinqMap<number, { value: number }>(numberComparer, count * 1.5)
+const jsMap = new Map<number, { value: number }>()
 
 
-// const keys: any[] = []
+const keys: number[] = []
 let total = 0
-// let key: string
-// for (let i = 0; i < count; i++) {
-//   key = 'a'.repeat(i)
-//   // console.log(key)
-//   keys.push(key)
-// }
+let key: number
+for (let i = 0; i < count; i++) {
+  key = i
+  // console.log(key)
+  keys.push(key)
+}
 console.time('jsMap set')
 
 for (let i = 0; i < count; i++) {
-  jsMap.set('a' + i, { value: i * 10 })
+  jsMap.set(keys[i], { value: i * 10 })
 }
 
 console.timeEnd('jsMap set')
@@ -49,10 +49,19 @@ console.timeEnd('jsMap set')
 console.time('jsMap get')
 total = 0
 for (let i = 0; i < count; i++) {
-  total += jsMap.get('a' + i)?.value || 0
+  total += jsMap.get(keys[i])?.value || 0
 }
 console.timeEnd('jsMap get')
 
+function makeid(length) {
+  let result = ''
+  const characters = 'АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЬЮЯABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  const charactersLength = characters.length
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength))
+  }
+  return result
+}
 console.log(total)
 
 console.log('-'.repeat(50))
@@ -62,25 +71,19 @@ console.time('map set')
 
 
 for (let i = 0; i < count; i++) {
-  map.set('a' + i, { value: i * 10 })
+  map.set(keys[i], { value: i * 10 })
 }
 
 console.timeEnd('map set')
+
+// console.log(Array.from(map.entries()))
+
+
 console.time('map get')
 total = 0
 for (let i = 0; i < count; i++) {
-  total += map.get('a' + i)?.value || 0
+  total += map.get(keys[i])?.value || 0
 }
 
 console.timeEnd('map get')
 console.log(total)
-
-function makeid(length) {
-  let result = ''
-  const characters = 'АБВГДЕЖЗИЙКЛМНОПРУСТФХЦЧШЩЪЬЮЯABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-  const charactersLength = characters.length
-  for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength))
-  }
-  return result
-}
