@@ -5,10 +5,10 @@ class Entry<TKey, TValue> {
   }
 }
 
-type Buckets<TKey, TValue> = (Entry<TKey, TValue>[] | Entry<TKey, TValue>)[]
+type Buckets<TKey, TValue> = Entry<TKey, TValue>[]
 
 export class LinqMap<TKey, TValue> implements Map<TKey, TValue> {
-  #loadFactor = 0.7
+  #loadFactor = 0.75
   #size = 0
   #capacity = 2
   buckets: Buckets<TKey, TValue> = Array(this.#capacity)
@@ -42,30 +42,22 @@ export class LinqMap<TKey, TValue> implements Map<TKey, TValue> {
 
   has(key: TKey): boolean {
     const hash = this.#hash(key)
-    const bucketIndex = hash % this.#capacity
+    let bucketIndex = hash % this.#capacity
 
-    const bucket = this.buckets[bucketIndex]
-    if (Array.isArray(bucket)) {
-      return bucket.some(p => p.hash === hash && this.#equals(p.key, key))
-    } else if (bucket instanceof Entry) {
-      return bucket.hash === hash && this.#equals(bucket.key, key)
+    let entry = this.buckets[bucketIndex]
+    while (entry && (entry.hash !== hash || this.#equals(entry.key, key))) {
+      entry = this.buckets[bucketIndex++]
     }
     return false
   }
 
-  *[Symbol.iterator](): IterableIterator<[TKey, TValue]> {
+  * [Symbol.iterator](): IterableIterator<[TKey, TValue]> {
     yield* this.entries()
   }
 
   * entries(): IterableIterator<[TKey, TValue]> {
     for (const bucket of this.buckets) {
-      if (Array.isArray(bucket)) {
-        for (const entry of bucket) {
-          yield [entry.key, entry.value]
-        }
-      } else if (isEntry(bucket)) {
-        yield [bucket.key, bucket.value]
-      }
+      yield [bucket.key, bucket.value]
     }
   }
 
@@ -89,21 +81,14 @@ export class LinqMap<TKey, TValue> implements Map<TKey, TValue> {
       throw Error(`The hash for "${key}" cannot be undefined`)
     }
 
-    const bucketIndex = hash % this.#capacity
-    const bucket = this.buckets[bucketIndex]
-    if (isEntry(bucket)) {
-      if (bucket.hash === hash && this.#equals(bucket.key, key)) {
-        bucket.value = value
-      } else {
-        this.buckets[bucketIndex] = [bucket, new Entry(key, value, hash)]
-      }
-    } else if (Array.isArray(bucket)) {
-      const index = bucket.findIndex(p => p.hash === hash && this.#equals(p.key, key))
-      if (index < 0) {
-        bucket.push(new Entry(key, value, hash))
-      } else {
-        bucket[index].value = value
-      }
+    let bucketIndex = hash % this.#capacity
+    let bucket = this.buckets[bucketIndex]
+    while (bucket && (bucket.hash !== hash || !this.#equals(bucket.key, key))) {
+      bucket = this.buckets[++bucketIndex]
+    }
+    
+    if (bucket) {
+      bucket.value = value
     } else {
       this.buckets[bucketIndex] = new Entry(key, value, hash)
     }
@@ -119,35 +104,32 @@ export class LinqMap<TKey, TValue> implements Map<TKey, TValue> {
   }
 
   #set = function (this: void, entry: Entry<TKey, TValue>, buckets: Buckets<TKey, TValue>): void {
-    const hash = entry.hash
-    const bucketIndex = hash % buckets.length
-
-    const bucket = buckets[bucketIndex]
-    if (isEntry(bucket)) {
-      buckets[bucketIndex] = [bucket, entry]
-    } else if (Array.isArray(bucket)) {
-      bucket.push(entry)
-    } else {
-      buckets[bucketIndex] = entry
+    if (!entry) {
+      return
     }
+
+    const hash = entry.hash
+    let bucketIndex = hash % buckets.length
+
+    let bucket = buckets[bucketIndex]
+    while (isEntry(bucket)) {
+      bucket = buckets[++bucketIndex]
+    }
+    buckets[bucketIndex] = entry
   }
 
   delete(key: TKey): boolean {
     const hash = this.#hash(key)
-    const bucketIndex = hash % this.#capacity
+    let bucketIndex = hash % this.#capacity
 
-    const bucket = this.buckets[bucketIndex]
-    if (Array.isArray(bucket)) {
-      const pairIndex = bucket.findIndex(p => p.hash === hash && this.#equals(p.key, key))
-      if (pairIndex >= 0) {
-        this.buckets[bucketIndex] = bucket.splice(pairIndex, 1)
-        this.#size--
+    let bucket = this.buckets[bucketIndex]
+    while (isEntry(bucket)) {
+      if (bucket.hash === hash && this.#equals(bucket.key, key)) {
+        this.buckets[bucketIndex] = undefined
         return true
       }
-    } else if (bucket instanceof Entry) {
-      this.buckets[bucketIndex] = undefined
-      this.#size--
-      return true
+
+      bucket = this.buckets[bucketIndex++]
     }
     return false
   }
@@ -161,34 +143,29 @@ export class LinqMap<TKey, TValue> implements Map<TKey, TValue> {
     }
     // console.timeEnd('hash')
 
-    const bucketIndex = hash % this.#capacity
-    const bucket = this.buckets[bucketIndex]
+    let bucketIndex = hash % this.#capacity
 
-    if (Array.isArray(bucket)) {
-      return bucket.find(p => p.hash === hash && this.#equals(p.key, key))?.value
-    } else if (isEntry(bucket) && bucket.hash === hash && this.#equals(bucket.key, key)) {
-      return bucket.value
+    let bucket = this.buckets[bucketIndex]
+    while (isEntry(bucket)) {
+      if (bucket.hash === hash && this.#equals(bucket.key, key)) {
+        return bucket.value
+      }
+
+      bucket = this.buckets[++bucketIndex]
     }
   }
 
   private resize(newCapacity: number): void {
-    console.time()
-    console.log("resize")
+    // console.time()
+    // console.log("resize")
     const newArr = Array(newCapacity) 
     for (const key in this.buckets) {
       const bucket = this.buckets[key]
-      if (isEntry(bucket)) {
-        this.#set(bucket, newArr)
-      } else if (Array.isArray(bucket)) {
-        for (let i = 0, length = bucket.length; i < length; i++) {
-          const entry = bucket[i]
-          this.#set(entry, newArr)
-        }
-      }
+      this.#set(bucket, newArr)
     }
     this.buckets = newArr
     this.#capacity = newCapacity
-    console.timeEnd()
+    // console.timeEnd()
 
   }
 }

@@ -25,7 +25,7 @@ class NumberComparer implements EqualityComparer<number> {
     }
 
     this.#view.setFloat64(0, key)
-    return (this.#view.getInt32(0) ^ this.#view.getInt32(4) | 0) >>> 0
+    return ((this.#view.getInt32(0) + this.#view.getInt32(4) * 31) | 0) >>> 0
   }
 
   equals(first: number, second: number): boolean {
@@ -49,10 +49,14 @@ export const booleanComparer: EqualityComparer<boolean> = {
 export const stringComparer: EqualityComparer<string> = {
 
   hash(key: string): number {
+    if (Number.isNaN(key)) {
+      return numberComparer.hash(Number(key))
+    }
+
     let hash = 212984747
 
     for (let i = 0, length = key.length; i < length; i++) {
-      hash = Math.imul(31, hash) + key.charCodeAt(i) | 0
+      hash = 31 * hash + key.charCodeAt(i) | 0
     }
 
     return hash >>> 0

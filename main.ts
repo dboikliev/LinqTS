@@ -24,17 +24,17 @@ class Key<TKey> implements Equatable<Key<TKey>> {
   }
 }
 
-const count = 2000000
+const count = 1000000
 
-const map = new LinqMap<number, { value: number }>(numberComparer, count * 1.5)
-const jsMap = new Map<number, { value: number }>()
+const map = new LinqMap<unknown, { value: number }>(stringComparer)
+const jsMap = new Map<unknown, { value: number }>()
 
 
-const keys: number[] = []
+const keys: unknown[] = []
 let total = 0
-let key: number
+let key: unknown
 for (let i = 0; i < count; i++) {
-  key = i
+  key = Math.random().toString() + '1'.repeat(10)
   // console.log(key)
   keys.push(key)
 }
