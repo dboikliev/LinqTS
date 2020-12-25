@@ -21,11 +21,12 @@ class NumberComparer implements EqualityComparer<number> {
   #view = new DataView(new ArrayBuffer(8))
   hash(key: number): number {
     if (Number.isInteger(key)) {
-      return key
+      return key >>> 0
     }
 
     this.#view.setFloat64(0, key)
-    return ((this.#view.getInt32(0) + this.#view.getInt32(4) * 31) | 0) >>> 0
+    const hash = ((this.#view.getUint32(0) * 397 + this.#view.getUint32(4))) >>> 0
+    return hash
   }
 
   equals(first: number, second: number): boolean {
@@ -49,16 +50,13 @@ export const booleanComparer: EqualityComparer<boolean> = {
 export const stringComparer: EqualityComparer<string> = {
 
   hash(key: string): number {
-    if (Number.isNaN(key)) {
-      return numberComparer.hash(Number(key))
-    }
-
-    let hash = 212984747
+    let hash = 0
 
     for (let i = 0, length = key.length; i < length; i++) {
-      hash = 31 * hash + key.charCodeAt(i) | 0
-    }
 
+      //
+      hash = 397 * hash + key.charCodeAt(i) | 0
+    }
     return hash >>> 0
   },
 
@@ -76,20 +74,20 @@ export const objectComparer: EqualityComparer<unknown> = {
     let hash = 0
     switch (typeof key) {
     case 'number':
-      hash ^= numberComparer.hash(key)
+      hash += numberComparer.hash(key) * 31
       break
     case 'string':
-      hash ^= stringComparer.hash(key)
+      hash += stringComparer.hash(key) * 33
       break
     case 'boolean':
-      hash ^= booleanComparer.hash(key)
+      hash += booleanComparer.hash(key) * 397
       break
     case 'object':
       for (const prop in key) {
-        hash ^= objectComparer.hash(key[prop])
+        hash += objectComparer.hash(key[prop]) * 3
       }
       if (key[Symbol.iterator]) {
-        hash ^= iterableComparer.hash(key as IterableIterator<unknown>)
+        hash += iterableComparer.hash(key as IterableIterator<unknown>) * 7
       }
       break
     }
@@ -143,7 +141,7 @@ export const iterableComparer: EqualityComparer<IterableIterator<unknown>> = {
     let hash = 0
 
     for (const element of key) {
-      hash = Math.imul(objectComparer.hash(element), hash)
+      hash = objectComparer.hash(element) * hash | 0
     }
 
     return hash >>> 0

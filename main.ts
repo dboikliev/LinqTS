@@ -26,7 +26,7 @@ class Key<TKey> implements Equatable<Key<TKey>> {
 
 const count = 1000000
 
-const map = new LinqMap<unknown, { value: number }>(stringComparer)
+const map = new LinqMap<unknown, { value: number }>(numberComparer)
 const jsMap = new Map<unknown, { value: number }>()
 
 
@@ -34,7 +34,7 @@ const keys: unknown[] = []
 let total = 0
 let key: unknown
 for (let i = 0; i < count; i++) {
-  key = Math.random().toString() + '1'.repeat(10)
+  key =  Math.random()
   // console.log(key)
   keys.push(key)
 }
@@ -49,7 +49,7 @@ console.timeEnd('jsMap set')
 console.time('jsMap get')
 total = 0
 for (let i = 0; i < count; i++) {
-  total += jsMap.get(keys[i])?.value || 0
+  total += jsMap.get(keys[i]).value
 }
 console.timeEnd('jsMap get')
 
@@ -82,7 +82,7 @@ console.timeEnd('map set')
 console.time('map get')
 total = 0
 for (let i = 0; i < count; i++) {
-  total += map.get(keys[i])?.value || 0
+  total += map.get(keys[i]).value
 }
 
 console.timeEnd('map get')
