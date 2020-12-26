@@ -23,7 +23,7 @@ import {
 } from './iterables'
 import { elementsSymbol, ElementsWrapper, unwrap } from './element-wrapper'
 import { id } from '.'
-import { EqualityComparer } from './linq-map/comparers'
+import { EqualityComparer } from './collections/comparers'
 
 export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSource> {
   constructor(protected elements: Iterable<TSource>) {

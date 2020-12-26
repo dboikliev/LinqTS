@@ -1,6 +1,6 @@
 import * as assert from 'assert'
 import { linq } from '../src/linq'
-import { numberComparer, stringComparer } from '../src/linq/linq-map/comparers'
+import { numberComparer, stringComparer } from '../src/linq/collections/comparers'
 
 describe('distinctBy', () => {
   it('should return a sequence of the unique elements based on equality comparison when a comparer is not provided', () => {
@@ -36,9 +36,9 @@ describe('distinctBy', () => {
       { logLevel: 'warn', message: 'warning 1' },
       { logLevel: 'warn', message: 'warning 2' }
     ]
-    assert.equal(result.length, expected.length)
+    assert.equal(expected.length, expected.length)
     for (let i = 0; i < result.length; i++) {
-      assert.equal(expected.some(el => comparer.equals(el, result[i])), true)
+      assert.equal(result.some(el => comparer.equals(el, expected[i])), true)
     }
   })
 })

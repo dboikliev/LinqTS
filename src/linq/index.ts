@@ -1,6 +1,7 @@
 import { Linqable } from './linqable'
 import { Sequence } from './iterables/sequence'
 import { elementsSymbol, ElementsWrapper, isWrapper, unwrap } from './element-wrapper'
+export * from './collections'
 
 /**
  * Wraps an interable into an object which supports queries.

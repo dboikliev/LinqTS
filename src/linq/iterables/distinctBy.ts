@@ -1,6 +1,6 @@
 import { elementsSymbol, ElementsWrapper } from '../element-wrapper'
-import { EqualityComparer } from '../linq-map/comparers'
-import { LinqMap } from '../linq-map/map'
+import { EqualityComparer } from '../collections/comparers'
+import { LinqMap } from '../collections/map'
 
 export class DistinctBy<TSource, TKey> implements ElementsWrapper<TSource> {
   constructor(private elements: Iterable<TSource>,

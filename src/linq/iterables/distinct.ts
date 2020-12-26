@@ -1,9 +1,8 @@
 import { elementsSymbol, ElementsWrapper } from '../element-wrapper'
-import { EqualityComparer, Equatable } from '../linq-map/comparers'
-import { LinqSet } from '../linq-map/set'
+import { EqualityComparer } from '../collections/comparers'
+import { LinqSet } from '../collections/set'
 
 export class Distinct<TSource> implements ElementsWrapper<TSource> {
-
   constructor(private elements: Iterable<TSource>,
     private equalityComparer?: EqualityComparer<TSource>) {
   }

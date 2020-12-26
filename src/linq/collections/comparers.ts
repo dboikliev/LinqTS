@@ -2,7 +2,6 @@
 export const hashSymbol: unique symbol = Symbol()
 export const equalsSymbol: unique symbol = Symbol()
 
-
 export interface Equatable<T> {
   [hashSymbol](): number
   [equalsSymbol](other: T): boolean
@@ -11,31 +10,28 @@ export interface Equatable<T> {
 export type HashFunction<T> = (key: T) => number
 export type EqualsFunction<T> = (first: T, second: T) => boolean
 
-
 export interface EqualityComparer<TKey> {
   hash: HashFunction<TKey>
   equals: EqualsFunction<TKey>
 }
 
-class NumberComparer implements EqualityComparer<number> {
-  #view = new DataView(new ArrayBuffer(8))
+const _view = new DataView(new ArrayBuffer(8))
+
+export const numberComparer: EqualityComparer<number> = {
   hash(key: number): number {
     if (Number.isInteger(key)) {
       return key >>> 0
     }
 
-    this.#view.setFloat64(0, key)
-    const hash = ((this.#view.getUint32(0) * 397 + this.#view.getUint32(4))) >>> 0
+    _view.setFloat64(0, key)
+    const hash = ((_view.getUint32(0) * 397 + _view.getUint32(4))) >>> 0
     return hash
-  }
+  },
 
   equals(first: number, second: number): boolean {
     return first === second
   }
 }
-
-export const numberComparer: EqualityComparer<number> = new NumberComparer()
-
 
 export const booleanComparer: EqualityComparer<boolean> = {
   hash(key: boolean): number {
@@ -48,13 +44,10 @@ export const booleanComparer: EqualityComparer<boolean> = {
 }
 
 export const stringComparer: EqualityComparer<string> = {
-
   hash(key: string): number {
     let hash = 0
 
     for (let i = 0, length = key.length; i < length; i++) {
-
-      //
       hash = 397 * hash + key.charCodeAt(i) | 0
     }
     return hash >>> 0
@@ -70,7 +63,7 @@ export const objectComparer: EqualityComparer<unknown> = {
     if (isEquatable(key)) {
       return key[hashSymbol]()
     }
-
+    // TODO: add handling for Symbol and Function
     let hash = 0
     switch (typeof key) {
     case 'number':
@@ -96,8 +89,6 @@ export const objectComparer: EqualityComparer<unknown> = {
   },
 
   equals(first: unknown, second: unknown): boolean {
-
-
     if (isEquatable(first)) {
       return first[equalsSymbol](second)
     }
@@ -110,6 +101,7 @@ export const objectComparer: EqualityComparer<unknown> = {
       return false
     }
 
+    // TODO: add handling for Symbol and Function
     let equal = true
     switch (typeof first) {
     case 'number':
@@ -122,6 +114,7 @@ export const objectComparer: EqualityComparer<unknown> = {
       equal &&= booleanComparer.equals(first, second as boolean)
       break
     case 'object':
+      // TODO: handle properies from second missing in first
       for (const prop in first) {
         equal &&= objectComparer.equals(first[prop], second[prop])
       }
@@ -135,13 +128,12 @@ export const objectComparer: EqualityComparer<unknown> = {
   }
 }
 
-
 export const iterableComparer: EqualityComparer<IterableIterator<unknown>> = {
   hash(key: Iterable<unknown>): number {
     let hash = 0
 
     for (const element of key) {
-      hash = objectComparer.hash(element) * hash | 0
+      hash = 31 * objectComparer.hash(element) * hash | 0
     }
 
     return hash >>> 0
@@ -169,11 +161,8 @@ export const iterableComparer: EqualityComparer<IterableIterator<unknown>> = {
   }
 }
 
-function isEquatable(obj: unknown): obj is Equatable<unknown> {
-  return typeof obj[hashSymbol] === 'function' && typeof obj[equalsSymbol] === 'function'
-}
-
 export function getComparer<T>(key: T): EqualityComparer<T> {
+  // TODO: handle Symbol and Function
   switch (typeof key) {
   case 'number':
     return numberComparer as never
@@ -184,4 +173,26 @@ export function getComparer<T>(key: T): EqualityComparer<T> {
   case 'object':
     return objectComparer
   }
+  throw Error(`Type "${typeof key}" is not supported.`)
+}
+
+export class CachedKey<TKey> implements Equatable<CachedKey<TKey>> {
+  readonly hash: number
+  readonly comparer: EqualityComparer<TKey>
+
+  constructor(public readonly key: TKey) {
+    this.comparer = getComparer(key)
+    this.hash = this.comparer.hash(this.key)
+  }
+
+  [hashSymbol](): number {
+    return this.hash
+  }
+  [equalsSymbol](other: CachedKey<TKey>): boolean {
+    return this.comparer.equals(this.key, other.key)
+  }
+}
+
+function isEquatable(obj: unknown): obj is Equatable<unknown> {
+  return typeof obj[hashSymbol] === 'function' && typeof obj[equalsSymbol] === 'function'
 }

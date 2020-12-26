@@ -1,40 +1,21 @@
-// import { id, linq, numberComparer, print, repeat, stringComparer } from './src/linq';
-// import { comparerSymbol, EqualityComparer, Equtable as Equatable, Hashable } from './src/linq/linq-map/comparers';
-// import { LinqMap } from './src/linq/linq-map/map';
-
-import { linq } from './src/linq'
-import { EqualityComparer, equalsSymbol, Equatable, getComparer, hashSymbol, numberComparer, objectComparer, stringComparer } from './src/linq/linq-map/comparers'
-import { LinqMap } from './src/linq/linq-map/map'
+import { CachedKey, numberComparer } from './src/linq/collections/comparers'
+import { LinqMap } from './src/linq/collections/map'
 
 
-class Key<TKey> implements Equatable<Key<TKey>> {
-  private readonly _hash: number
-  private readonly _comparer: EqualityComparer<TKey>
 
-  constructor(public readonly key: TKey) {
-    this._comparer = getComparer(key)
-    this._hash = this._comparer.hash(this.key)
-  }
+const count = 2000000
 
-  [hashSymbol](): number {
-    return this._hash
-  }
-  [equalsSymbol](other: Key<TKey>): boolean {
-    return this._comparer.equals(this.key, other.key)
-  }
-}
-
-const count = 1000000
-
-const map = new LinqMap<unknown, { value: number }>(numberComparer)
-const jsMap = new Map<unknown, { value: number }>()
+type TKey = number
+type StripCache<T> = T extends CachedKey<infer U> ? U : T
+const map = new LinqMap<TKey, { value: number }>(numberComparer)
+const jsMap = new Map<StripCache<TKey>, { value: number }>()
 
 
-const keys: unknown[] = []
+const keys: TKey[] = []
 let total = 0
-let key: unknown
+let key: TKey
 for (let i = 0; i < count; i++) {
-  key =  Math.random()
+  key = Math.random()
   // console.log(key)
   keys.push(key)
 }
