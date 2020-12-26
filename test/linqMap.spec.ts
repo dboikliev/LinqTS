@@ -2,74 +2,73 @@ import { assert, expect } from 'chai'
 import { LinqMap, numberComparer } from '../src/linq/collections'
 
 describe('LinqMap', () => {
-  it('should have an initial capacity of 2', () => {
-    const map = new LinqMap()
-    expect(map.capacity).to.equal(2)
-  })
+  describe('capacity', () => {
+    it('should have an initial value of 2', () => {
+      const map = new LinqMap()
+      expect(map.capacity).to.equal(2)
+    })
 
-  it('should have an initial size of 0', () => {
-    const map = new LinqMap()
-    expect(map.size).to.equal(0)
-  })
-
-  it('should have string tag of "LinqMap"', () => {
-    const map = new LinqMap()
-    expect(map[Symbol.toStringTag]).to.equal(LinqMap.name)
-  })
-
-  it('should should grow the size when setting an element', () => {
-    const map = new LinqMap()
-    for (let i = 0; i < 100; i++) {
-      map.set(i, i)
-      expect(map.size).to.equal(i + 1)
-    }
-  })
-
-  it('should should shrink the size when deleting an element', () => {
-    const map = new LinqMap()
-    for (let i = 0; i < 100; i++) {
-      map.set(i, i)
-    }
-
-    for (let i = 0; i < 100; i++) {
-      map.delete(i)
-      assert.equal(map.size, 99 - i)
-    }
-  })
-
-  it('should increase the capacity by a factor of 2 when growing', () => {
-    const map = new LinqMap()
-    const total = 1000
-    let prevCapacity = map.capacity
-    for (let i = 0; i < total; i++) {
-      map.set(i, i)
-      expect(map.capacity).to.be.above(map.size)
-      if (map.capacity != prevCapacity) {
-        expect(map.capacity).to.equal(prevCapacity * 2)
-        prevCapacity = map.capacity
-      }
-    }
-  });
-
-  it('should preserve the capacity after subsequence sets and deletes', () => {
-    const map = new LinqMap()
-    const total = 100;
-    for (let i = 0; i < total; i++) {
-      map.set(i, i)
-    }
-    const capacity = map.capacity
-
-    for (let j = 0; j < 10; j++) {
-      for (let i = 0; i < total; i++) {
-        map.delete(i)
-        expect(map.capacity).to.equal(capacity)
-      }
-
+    it('should increase by a factor of 2 when elements are added', () => {
+      const map = new LinqMap()
+      const total = 1000
+      let prevCapacity = map.capacity
       for (let i = 0; i < total; i++) {
         map.set(i, i)
-        expect(map.capacity).to.equal(capacity)
+        expect(map.capacity).to.be.above(map.size)
+        if (map.capacity != prevCapacity) {
+          expect(map.capacity).to.equal(prevCapacity * 2)
+          prevCapacity = map.capacity
+        }
       }
-    }
+    });
+
+    it('should be preserved after subsequent sets and deletes', () => {
+      const map = new LinqMap()
+      const total = 100;
+      for (let i = 0; i < total; i++) {
+        map.set(i, i)
+      }
+      const capacity = map.capacity
+  
+      for (let j = 0; j < 10; j++) {
+        for (let i = 0; i < total; i++) {
+          map.delete(i)
+          expect(map.capacity).to.equal(capacity)
+        }
+  
+        for (let i = 0; i < total; i++) {
+          map.set(i, i)
+          expect(map.capacity).to.equal(capacity)
+        }
+      }
+    })
+  })
+  
+  describe('size', () => {
+    it('should have an initial size of 0', () => {
+      const map = new LinqMap()
+      expect(map.size).to.equal(0)
+    })
+
+    it('should should grow the size when an element is set', () => {
+      const map = new LinqMap()
+      for (let i = 0; i < 100; i++) {
+        map.set(i, i)
+        expect(map.size).to.equal(i + 1)
+      }
+    })
+
+    it('should should shrink size when an element is deleted', () => {
+      const map = new LinqMap()
+      for (let i = 0; i < 100; i++) {
+        map.set(i, i)
+      }
+  
+      for (let i = 0; i < 100; i++) {
+        map.delete(i)
+        assert.equal(map.size, 99 - i)
+      }
+    })
   })
 
   describe('delete', () => {
