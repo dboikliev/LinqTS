@@ -28,7 +28,7 @@
     "cover": "./node_modules/.bin/istanbul cover _mocha build/test/**/*.spec.js",
     "coveralls": "npm run cover -- --report lcovonly && cat ./coverage/lcov.info | coveralls",
     "lint": "eslint \"./src/**/*.ts\"",
-    "lint-fix": "eslint ./src/**/*.ts --fix"
+    "lint-fix": "eslint ./**/*.ts --fix"
   },
   "author": "Deyan Boikliev",
   "license": "ISC",

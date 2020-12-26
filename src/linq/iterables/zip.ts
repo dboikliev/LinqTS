@@ -14,7 +14,7 @@ export class Zip<TLeft, TRight, TResult> implements ElementsWrapper<TLeft | TRig
     let iterationRight = iterRight.next()
 
     while (!iterationLeft.done && !iterationRight.done) {
-      yield this.selector(iterationLeft.value, iterationRight.value);
+      yield this.selector(iterationLeft.value, iterationRight.value)
       iterationLeft = iterLeft.next()
       iterationRight = iterRight.next()
     }

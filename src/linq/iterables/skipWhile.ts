@@ -14,8 +14,8 @@ export class SkipWhile<TSource> implements ElementsWrapper<TSource> {
     } while (this.predicate(lastResult.value))
 
     while (!lastResult.done) {
-      yield lastResult.value;
-      lastResult = iterator.next();
+      yield lastResult.value
+      lastResult = iterator.next()
     }
   }
 

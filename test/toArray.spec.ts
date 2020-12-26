@@ -1,17 +1,17 @@
-import * as assert from "assert";
-import { linq } from "../src/linq";
+import * as assert from 'assert'
+import { linq } from '../src/linq'
 
-describe("toArray", () => {
-    it("should convert the linqble into an array", () => {
-        const arr = linq([1,2,3,4,5]).toArray();
+describe('toArray', () => {
+  it('should convert the linqble into an array', () => {
+    const arr = linq([1,2,3,4,5]).toArray()
 
-        assert(Array.isArray(arr));
-    })
+    assert(Array.isArray(arr))
+  })
 
-    it("should convert empty linqable into an empty array", () => {
-        const arr = linq([]).toArray();
+  it('should convert empty linqable into an empty array', () => {
+    const arr = linq([]).toArray()
 
-        assert(Array.isArray(arr));
-        assert.equal(arr.length, 0);
-    });
-});
+    assert(Array.isArray(arr))
+    assert.equal(arr.length, 0)
+  })
+})

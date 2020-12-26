@@ -1,16 +1,16 @@
 import { elementsSymbol, ElementsWrapper } from '../element-wrapper'
+import { EqualityComparer } from '../collections/comparers'
+import { LinqSet } from '../collections/set'
 
 export class Distinct<TSource> implements ElementsWrapper<TSource> {
   constructor(private elements: Iterable<TSource>,
-    private equalityComparer: (first: TSource, second: TSource) => boolean) {
+    private equalityComparer?: EqualityComparer<TSource>) {
   }
 
   *[Symbol.iterator](): IterableIterator<TSource> {
-    const set = [];
+    const set = this.equalityComparer ? new LinqSet(this.equalityComparer) : new Set<TSource>()
     for (const element of this.elements) {
-      if (!set.some(el => this.equalityComparer(element, el))) {
-        set.push(element)
-      }
+      set.add(element)
     }
     yield* set
   }

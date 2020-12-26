@@ -1,6 +1,7 @@
 import { Linqable } from './linqable'
 import { Sequence } from './iterables/sequence'
 import { elementsSymbol, ElementsWrapper, isWrapper, unwrap } from './element-wrapper'
+export * from './collections'
 
 /**
  * Wraps an interable into an object which supports queries.
@@ -29,7 +30,7 @@ export function seq(start = 0, step = 1, end = Infinity): Linqable<number> {
  * @param count - The number of times to repeat the element.
  */
 export function repeat<T>(element: T, count = Infinity): Linqable<T> {
-  return linq([element]).repeat(count);
+  return linq([element]).repeat(count)
 }
 
 

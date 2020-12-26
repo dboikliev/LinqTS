@@ -1,12 +1,13 @@
 {
     "compilerOptions": {
         "module": "commonjs",
-        "target": "es6",
+        "target": "ES6",
         "allowUnreachableCode": false,
         "noImplicitAny": false,
         "declaration": true,
         "sourceMap": true,
         "outDir": "./build",
+        "experimentalDecorators": true
     },
     "exclude": ["./build/**/*"]
 }
