@@ -24,7 +24,7 @@ export const numberComparer: EqualityComparer<number> = {
     }
 
     _view.setFloat64(0, key)
-    const hash = ((_view.getUint32(0) * 397 + _view.getUint32(4))) >>> 0
+    const hash = (_view.getUint32(0) * 397 + _view.getUint32(4)) >>> 0
     return hash
   },
 

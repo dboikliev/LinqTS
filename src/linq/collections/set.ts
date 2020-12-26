@@ -1,4 +1,4 @@
-import { EqualityComparer } from './comparers'
+import { EqualityComparer, objectComparer } from './comparers'
 import { LinqMap } from './map'
 
 export class LinqSet<TValue> implements Set<TValue> {
@@ -12,12 +12,12 @@ export class LinqSet<TValue> implements Set<TValue> {
     return LinqSet.name
   } 
 
-  constructor(equalityComparer: EqualityComparer<TValue>) {
+  constructor(equalityComparer: EqualityComparer<TValue> = objectComparer) {
     this.map = new LinqMap(equalityComparer)
   }
 
   add(value: TValue): this {
-    this.map.set(value, value)
+    this.map.set(value, undefined)
     return this
   }
 
@@ -31,19 +31,22 @@ export class LinqSet<TValue> implements Set<TValue> {
 
   forEach(callbackfn: (value: TValue, value2: TValue, set: Set<TValue>) => void, thisArg?: unknown): void {
     for (const entry of this.entries()) {
-      callbackfn.call(thisArg, entry[0], entry[1], this)
+      callbackfn.call(thisArg, entry[0], entry[0], this)
     }
   }
 
   has(value: TValue): boolean {
     return this.map.has(value)
   }
+
   *[Symbol.iterator](): IterableIterator<TValue> {
-    yield* this.values()
+    yield* this.keys()
   }
 
-  *entries(): IterableIterator<[TValue, TValue]> {
-    yield* this.entries()
+  * entries(): IterableIterator<[TValue, TValue]> {
+    for (const key of this.keys()) {
+      yield [key, key]
+    }
   }
 
   * keys(): IterableIterator<TValue> {

@@ -3,7 +3,7 @@ import { LinqMap } from './src/linq/collections/map'
 
 
 
-const count = 2000000
+const count = 1000000
 
 type TKey = number
 type StripCache<T> = T extends CachedKey<infer U> ? U : T

@@ -5,7 +5,8 @@ type Entries<TKey, TValue> = Entry<TKey, TValue>[]
 class Entry<TKey, TValue> {
   constructor(public key: TKey,
     public value: TValue,
-    public hash: number) {
+    public hash: number,
+    public deleted: boolean = false) {
   }
 }
 export class LinqMap<TKey, TValue> implements Map<TKey, TValue> {
@@ -13,22 +14,30 @@ export class LinqMap<TKey, TValue> implements Map<TKey, TValue> {
   private readonly hash: HashFunction<TKey> = key => this.equalityComparer.hash(key)
   private readonly equals: EqualsFunction<TKey> = (first, second) => this.equalityComparer.equals(first, second)
 
-  size = 0
-  capacity = 2
-  data: Entries<TKey, TValue> = Array(this.capacity)
+  private _capacity = 2
+  private _size = 0
+  private data: Entries<TKey, TValue> = Array(this._capacity)
 
   get [Symbol.toStringTag](): string {
     return LinqMap.name
   } 
+
+  get size(): number {
+    return this._size
+  }
+
+  get capacity(): number {
+    return this._capacity
+  }
   
   constructor(private readonly equalityComparer: EqualityComparer<TKey> = objectComparer, capacity = nextCapacity(0)) {
-    this.capacity = capacity
+    this._capacity = capacity
   }
 
   clear(): void {
     this.data = Array(nextCapacity(0))
-    this.size = 0
-    this.capacity = this.data.length
+    this._size = 0
+    this._capacity = this.data.length
   }
 
   forEach(callbackfn: (value: TValue, key: TKey, map: Map<TKey, TValue>) => void, thisArg?: unknown): void {
@@ -66,53 +75,47 @@ export class LinqMap<TKey, TValue> implements Map<TKey, TValue> {
 
   set(key: TKey, value: TValue): this {
     // console.time('hash')
-    const hash = this.hash(key)
+    const hash = this.hash(key) >>> 0
     // console.timeEnd('hash')
 
     let collisions = 0
-    let slotIndex = hash % this.capacity
+    let slotIndex = hash % this._capacity
     let entry = this.data[slotIndex]
-    while (isEntry(entry)) {
+    while (isEntry(entry) && !entry.deleted) {
       if (entry.hash === hash && this.equals(entry.key, key)) {
         entry.value = value
         return this
       }
       collisions++
-      slotIndex = (hash + collisions) % this.capacity
+      slotIndex = (hash + collisions) % this._capacity
       entry = this.data[slotIndex]
     }
 
-    this.data[slotIndex] = new Entry(key, value, hash)
+    if (entry) {
+      this.data[slotIndex].key = key
+      this.data[slotIndex].value = value
+      this.data[slotIndex].hash = hash
+      this.data[slotIndex].deleted = false
+    } else {
+      this.data[slotIndex] = new Entry(key, value, hash)
+    }
 
-    this.size++
-    if (this.size / this.capacity >= this.loadFactor) {
-      this.resize(nextCapacity(this.capacity))
+    this._size++
+    if (this._size / this._capacity >= this.loadFactor) {
+      this.resize(nextCapacity(this._capacity))
     }
 
     return this
   }
 
-  _set(this: void, entry: Entry<TKey, TValue>, data: Entries<TKey, TValue>): void {
-    if (!entry) {
-      return
-    }
-
-    const hash = entry.hash
-    let collisions = 0
-    let slotIndex = hash % data.length
-    let slot = data[slotIndex]
-    while (isEntry(slot)) {
-      collisions++
-      slotIndex = (hash + collisions) % data.length
-      slot = data[slotIndex]
-    }
-    data[slotIndex] = entry
-  }
-
   delete(key: TKey): boolean {
     const index = this.findEntryIndex(key)
     if (index >= 0) {
-      this.data[index] = undefined
+      this.data[index].key = undefined
+      this.data[index].value = undefined
+      this.data[index].hash = undefined
+      this.data[index].deleted = true
+      this._size--
       return true
     }
     return false
@@ -126,9 +129,9 @@ export class LinqMap<TKey, TValue> implements Map<TKey, TValue> {
   }
 
   private findEntryIndex(key: TKey): number {
-    const hash = this.hash(key)
+    const hash = this.hash(key) >>> 0
 
-    let slotIndex = hash % this.capacity
+    let slotIndex = hash % this._capacity
 
     let entry = this.data[slotIndex]
     let collisions = 0
@@ -137,10 +140,9 @@ export class LinqMap<TKey, TValue> implements Map<TKey, TValue> {
         return slotIndex
       }
       collisions++
-      slotIndex = (hash + collisions) % this.capacity
+      slotIndex = (hash + collisions) % this._capacity
       entry = this.data[slotIndex]
     }
-
 
     return -1
   }
@@ -152,7 +154,24 @@ export class LinqMap<TKey, TValue> implements Map<TKey, TValue> {
       this._set(entry, newData)
     }
     this.data = newData
-    this.capacity = newCapacity
+    this._capacity = newCapacity
+  }
+
+  private _set(this: void, entry: Entry<TKey, TValue>, data: Entries<TKey, TValue>): void {
+    if (!isEntry(entry) || entry.deleted) {
+      return
+    }
+
+    const hash = entry.hash
+    let collisions = 0
+    let slotIndex = hash % data.length
+    let slot = data[slotIndex]
+    while (isEntry(slot)) {
+      collisions++
+      slotIndex = (hash + collisions) % data.length
+      slot = data[slotIndex]
+    }
+    data[slotIndex] = entry
   }
 }
 
