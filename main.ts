@@ -15,7 +15,7 @@ const keys: TKey[] = []
 let total = 0
 let key: TKey
 for (let i = 0; i < count; i++) {
-  key = Math.random()
+  key = i
   // console.log(key)
   keys.push(key)
 }

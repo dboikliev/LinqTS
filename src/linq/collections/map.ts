@@ -78,26 +78,24 @@ export class LinqMap<TKey, TValue> implements Map<TKey, TValue> {
     const hash = this.hash(key) >>> 0
     // console.timeEnd('hash')
 
-    let collisions = 0
-    let slotIndex = hash % this._capacity
-    let entry = this.data[slotIndex]
+    let slot = hash % this._capacity
+    let entry = this.data[slot]
     while (isEntry(entry) && !entry.deleted) {
       if (entry.hash === hash && this.equals(entry.key, key)) {
         entry.value = value
         return this
       }
-      collisions++
-      slotIndex = (hash + collisions) % this._capacity
-      entry = this.data[slotIndex]
+      slot = ++slot % this._capacity
+      entry = this.data[slot]
     }
 
     if (entry) {
-      this.data[slotIndex].key = key
-      this.data[slotIndex].value = value
-      this.data[slotIndex].hash = hash
-      this.data[slotIndex].deleted = false
+      this.data[slot].key = key
+      this.data[slot].value = value
+      this.data[slot].hash = hash
+      this.data[slot].deleted = false
     } else {
-      this.data[slotIndex] = new Entry(key, value, hash)
+      this.data[slot] = new Entry(key, value, hash)
     }
 
     this._size++
@@ -131,17 +129,15 @@ export class LinqMap<TKey, TValue> implements Map<TKey, TValue> {
   private findEntryIndex(key: TKey): number {
     const hash = this.hash(key) >>> 0
 
-    let slotIndex = hash % this._capacity
+    let slot = hash % this._capacity
 
-    let entry = this.data[slotIndex]
-    let collisions = 0
+    let entry = this.data[slot]
     while (isEntry(entry)) {
       if (entry.hash === hash && this.equals(entry.key, key)) {
-        return slotIndex
+        return slot
       }
-      collisions++
-      slotIndex = (hash + collisions) % this._capacity
-      entry = this.data[slotIndex]
+      slot = ++slot % this._capacity
+      entry = this.data[slot]
     }
 
     return -1
@@ -163,15 +159,13 @@ export class LinqMap<TKey, TValue> implements Map<TKey, TValue> {
     }
 
     const hash = entry.hash
-    let collisions = 0
-    let slotIndex = hash % data.length
-    let slot = data[slotIndex]
-    while (isEntry(slot)) {
-      collisions++
-      slotIndex = (hash + collisions) % data.length
-      slot = data[slotIndex]
+    let slot = hash % data.length
+    let found = data[slot]
+    while (isEntry(found)) {
+      slot = ++slot % data.length
+      found = data[slot]
     }
-    data[slotIndex] = entry
+    data[slot] = entry
   }
 }
 
