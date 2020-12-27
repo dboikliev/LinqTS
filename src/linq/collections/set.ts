@@ -1,4 +1,3 @@
-import { elementsSymbol } from '../element-wrapper'
 import { EqualityComparer, objectComparer } from './comparers'
 import { LinqMap } from './map'
 
@@ -45,7 +44,7 @@ export class LinqSet<TValue> implements Set<TValue> {
     return this.map.has(value)
   }
 
-  *[Symbol.iterator](): IterableIterator<TValue> {
+  * [Symbol.iterator](): IterableIterator<TValue> {
     yield* this.values()
   }
 
