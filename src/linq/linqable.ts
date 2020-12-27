@@ -24,7 +24,13 @@ import {
 } from './iterables'
 import { elementsSymbol, ElementsWrapper, isWrapper } from './element-wrapper'
 import { id } from '.'
-import { EqualityComparer } from './collections/comparers'
+import { LinqMap, EqualityComparer } from './collections'
+
+type ToMapArgs<TSource, TKey, TValue> = {
+  keySelector: (element: TSource) => TKey,
+  valueSelector?: (element: TSource) => TValue,
+  equalityComparer?: EqualityComparer<TKey>
+}
 
 export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSource> {
   constructor(protected elements: Iterable<TSource>) {
@@ -542,15 +548,19 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
     return array
   }
 
+
+
   /**
    * Turns the sequence into a map.
    * Throws an error if there are multiple elements with the same key.
    * @param {Function} keySelector - A function which returns the key for an element in the sequence.
    * @param {Function} valueSelector - An optional function which returns the value for the key. Will use the source value if not
-   * @returns {Map<TKey, TValue>} A map of elements in the sequence.
+   * @param {EqualityComparer<TSource>} equalityComparer - An object providing a hash and equals function.
+   * @returns {Map<TKey, TValue>} A map of elements in the sequence. When an equality comparer is provided the instance will be of type LinqMap.
    */
-  toMap<TKey, TValue = TSource>(keySelector: (element: TSource) => TKey, valueSelector?: (element: TSource) => TValue): Map<TKey, TValue> {
-    return this.aggregate(new Map<TKey, TValue>(), (map, current) => {
+  toMap<TKey, TValue = TSource>({ keySelector, valueSelector, equalityComparer }: ToMapArgs<TSource, TKey, TValue>): Map<TKey, TValue> {
+    const seed = equalityComparer ? new LinqMap(equalityComparer) : new Map()
+    return this.aggregate(seed, (map, current) => {
       const key = keySelector(current)
       if (map.has(key)) {
         throw Error(`An element with key "${key}" has already been added.`)
@@ -564,10 +574,12 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
    * Turns the sequence into a map.
    * @param {Function} keySelector - A function which returns the key for an element in the sequence.
    * @param {Function} valueSelector - An optional function which returns the value for the key. Will use the source value if not
-   * @returns {Map<TKey, TValue>} A map of elements in the sequence.
+   * @param {EqualityComparer<TSource>} equalityComparer - An object providing a hash and equals function.
+   * @returns {Map<TKey, TValue>} A map of elements in the sequence. When an equality comparer is provided the instance will be of type LinqMap.
    */
-  toMapMany<TKey, TValue = TSource>(keySelector: (element: TSource) => TKey, valueSelector?: (element: TSource) => TValue): Map<TKey, TValue[]> {
-    return this.aggregate(new Map<TKey, TValue[]>(), (map, current) => {
+  toMapMany<TKey, TValue = TSource>({ keySelector, valueSelector, equalityComparer }: ToMapArgs<TSource, TKey, TValue>): Map<TKey, TValue[]> {
+    const seed = equalityComparer ? new LinqMap(equalityComparer) : new Map()
+    return this.aggregate(seed, (map, current) => {
       const key = keySelector(current)
       const value = map.get(key) || []
       value.push(typeof valueSelector === 'function' ? valueSelector(current) : current as never)
