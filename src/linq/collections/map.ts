@@ -9,6 +9,7 @@ class Entry<TKey, TValue> {
     public deleted: boolean = false) {
   }
 }
+
 export class LinqMap<TKey, TValue> implements Map<TKey, TValue> {
   private readonly loadFactor = 0.8
   private readonly hash: HashFunction<TKey> = key => this.equalityComparer.hash(key)
@@ -67,6 +68,7 @@ export class LinqMap<TKey, TValue> implements Map<TKey, TValue> {
       yield entry[0]
     }
   }
+
   * values(): IterableIterator<TValue> {
     for (const entry of this.entries()) {
       yield entry[1]

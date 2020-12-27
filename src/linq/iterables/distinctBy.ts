@@ -2,7 +2,7 @@ import { elementsSymbol, ElementsWrapper } from '../element-wrapper'
 import { EqualityComparer } from '../collections/comparers'
 import { LinqMap } from '../collections/map'
 
-export class DistinctBy<TSource, TKey> implements ElementsWrapper<TSource> {
+export class DistinctBy<TSource, TKey> implements ElementsWrapper<TSource>, Iterable<TSource> {
   constructor(private elements: Iterable<TSource>,
     private projection?: (element: TSource) => TKey,
     private equalityComparer?: EqualityComparer<TKey>) {

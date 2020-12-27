@@ -2,7 +2,7 @@ import { elementsSymbol, ElementsWrapper } from '../element-wrapper'
 import { EqualityComparer } from '../collections/comparers'
 import { LinqSet } from '../collections/set'
 
-export class Distinct<TSource> implements ElementsWrapper<TSource> {
+export class Distinct<TSource> implements ElementsWrapper<TSource>, Iterable<TSource> {
   constructor(private elements: Iterable<TSource>,
     private equalityComparer?: EqualityComparer<TSource>) {
   }

@@ -3,7 +3,7 @@ import {
   Distinct,
   DistinctBy,
   Except,
-  Group,
+  GroupBy,
   Intersect,
   Join,
   Ordered,
@@ -19,7 +19,8 @@ import {
   Windowed,
   Zip,
   Tap,
-  Repeat
+  Repeat,
+  Grouping
 } from './iterables'
 import { elementsSymbol, ElementsWrapper, unwrap } from './element-wrapper'
 import { id } from '.'
@@ -210,8 +211,8 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
      * @param {function} selector - A function providing the key for the group.
      * @returns An iterable of groups.
      */
-  groupBy<TKey>(selector: (element: TSource) => TKey): Linqable<[TKey, TSource[]]> {
-    return new Linqable(new Group(this.elements, selector))
+  groupBy<TKey>(selector: (element: TSource) => TKey, equalityComparer?: EqualityComparer<TKey>): Linqable<Grouping<TKey, TSource>> {
+    return new Linqable(new GroupBy(this.elements, selector, equalityComparer))
   }
 
   /**

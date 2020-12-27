@@ -1,6 +1,6 @@
 import { elementsSymbol, ElementsWrapper } from '../element-wrapper'
 
-export class Except<TSource> implements ElementsWrapper<TSource> {
+export class Except<TSource> implements ElementsWrapper<TSource>, Iterable<TSource> {
   constructor(private left: Iterable<TSource>,
     private right: Iterable<TSource>) {
   }
