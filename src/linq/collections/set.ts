@@ -32,7 +32,7 @@ export class LinqSet<TValue> implements Set<TValue> {
   }
 
   delete(value: TValue): boolean {
-    return this.delete(value)
+    return this.map.delete(value)
   }
 
   forEach(callbackfn: (value: TValue, value2: TValue, set: Set<TValue>) => void, thisArg?: unknown): void {
@@ -46,7 +46,7 @@ export class LinqSet<TValue> implements Set<TValue> {
   }
 
   *[Symbol.iterator](): IterableIterator<TValue> {
-    yield* this.keys()
+    yield* this.values()
   }
 
   * entries(): IterableIterator<[TValue, TValue]> {
@@ -60,6 +60,6 @@ export class LinqSet<TValue> implements Set<TValue> {
   }
 
   * values(): IterableIterator<TValue> {
-    yield* this.map.values()
+    yield* this.map.keys()
   }
 }
