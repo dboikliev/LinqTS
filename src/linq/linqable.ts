@@ -194,7 +194,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
 
   /**
       * Returns an unordered sequence of distinct elements based on an equality comparer.
-      * When a comparer is not provided a string equality comparison is used.
+      * When a comparer is not provided a strict equality comparison is used.
       * @param {EqualityComparer<TSource>} equalityComparer - An object providing a hash and equals function.
       * @returns {Linqable<TSource>} An iterable of the distinct elements.
       */
