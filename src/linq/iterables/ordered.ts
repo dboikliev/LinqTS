@@ -2,9 +2,7 @@ import { elementsSymbol, ElementsWrapper } from '../element-wrapper'
 
 export class Ordered<TSource> implements ElementsWrapper<TSource> {
   constructor(private elements: Iterable<TSource>,
-    private comparer: (left: TSource, right: TSource) => number,
-    private selector: (element: TSource) => number | string,
-    private isAscending: boolean) {
+    private comparer: (left: TSource, right: TSource) => number) {
   }
 
   *[Symbol.iterator](): IterableIterator<TSource> {
@@ -20,11 +18,11 @@ export class Ordered<TSource> implements ElementsWrapper<TSource> {
   }
 
   static from<T>(elements: Iterable<T>, selector: (elemment: T) => number | string, isAscending: boolean): Ordered<T> {
-    return new Ordered(elements, (left, right) => this.compareWithSelector(left, right, selector, isAscending), selector, isAscending)
+    return new Ordered(elements, (left, right) => this.compareWithSelector(left, right, selector, isAscending))
   }
 
   from(selector: (elemment: TSource) => number | string, isAscending: boolean): Ordered<TSource> {
-    return new Ordered(this.elements, this.nestComparisons(selector, isAscending), selector, isAscending)
+    return new Ordered(this.elements, this.nestComparisons(selector, isAscending))
   }
 
   private nestComparisons(selector: (elemment: TSource) => number | string, isAscending: boolean) {
@@ -54,6 +52,6 @@ export class Ordered<TSource> implements ElementsWrapper<TSource> {
   }
 
   toString(): string {
-    return `${Ordered.name} (selector: ${this.selector}, direction: ${this.isAscending ? 'ascending' : 'descending'})`
+    return `${Ordered.name}`
   }
 }

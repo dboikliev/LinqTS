@@ -1,12 +1,14 @@
+import { EqualityComparer, LinqSet } from '../collections'
 import { elementsSymbol, ElementsWrapper } from '../element-wrapper'
 
 export class Union<TSource> implements ElementsWrapper<TSource> {
   constructor(private left: Iterable<TSource>,
-    private right: Iterable<TSource>) {
+    private right: Iterable<TSource>,
+    private equalityComparer: EqualityComparer<TSource>) {
   }
 
   *[Symbol.iterator](): IterableIterator<TSource> {
-    const set = new Set(this.left)
+    const set = this.equalityComparer ? new LinqSet(this.equalityComparer, this.left) : new Set(this.left)
 
     for (const element of set) {
       yield element

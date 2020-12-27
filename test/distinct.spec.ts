@@ -1,4 +1,4 @@
-import { assert, expect } from 'chai'
+import { assert } from 'chai'
 import { linq } from '../src/linq'
 import { numberComparer, stringComparer } from '../src/linq/collections'
 
@@ -6,7 +6,7 @@ describe('distinctBy', () => {
   it('should return a sequence of the unique elements based on equality comparison when a comparer is not provided', () => {
     const elements = linq([1, 1, 2, 3, 3, 3, 4, 4]).distinct().toArray()
 
-    assert.sameMembers(elements, [1,2,3,4])
+    assert.sameMembers(elements, [1, 2, 3, 4])
   })
 
   it('should return an empty sequence when the provided linqable is empty', () => {

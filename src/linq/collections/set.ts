@@ -1,3 +1,4 @@
+import { elementsSymbol } from '../element-wrapper'
 import { EqualityComparer, objectComparer } from './comparers'
 import { LinqMap } from './map'
 
@@ -10,10 +11,15 @@ export class LinqSet<TValue> implements Set<TValue> {
 
   get [Symbol.toStringTag](): string {
     return LinqSet.name
-  } 
+  }
 
-  constructor(equalityComparer: EqualityComparer<TValue> = objectComparer) {
+  constructor(equalityComparer: EqualityComparer<TValue> = objectComparer, elements?: Iterable<TValue>) {
     this.map = new LinqMap(equalityComparer)
+    if (elements && typeof elements[Symbol.iterator] === 'function') {
+      for (const element of elements) {
+        this.add(element)
+      }
+    }
   }
 
   add(value: TValue): this {
