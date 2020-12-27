@@ -32,6 +32,10 @@ export class LinqMap<TKey, TValue> implements Map<TKey, TValue> {
   }
   
   constructor(private readonly equalityComparer: EqualityComparer<TKey> = objectComparer, capacity = nextCapacity(0)) {
+    if (!Number.isInteger(capacity) || capacity <= 0) {
+      throw Error('capacity must be a positive integer.')
+    }
+
     this._capacity = capacity
   }
 

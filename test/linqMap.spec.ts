@@ -3,6 +3,14 @@ import { LinqMap, numberComparer } from '../src/linq/collections'
 
 describe('LinqMap', () => {
   describe('capacity', () => {
+    it('should be a positive integer', () => {
+      expect(() => new LinqMap(numberComparer, 0)).to.throw(Error, 'capacity must be a positive integer.') 
+      expect(() => new LinqMap(numberComparer, -1)).to.throw(Error, 'capacity must be a positive integer.')
+      expect(() => new LinqMap(numberComparer, -100)).to.throw(Error, 'capacity must be a positive integer.')
+      expect(() => new LinqMap(numberComparer, -3.5)).to.throw(Error, 'capacity must be a positive integer.')
+      expect(() => new LinqMap(numberComparer, 3.5)).to.throw(Error, 'capacity must be a positive integer.')
+    })
+
     it('should have an initial value of 2', () => {
       const map = new LinqMap()
       expect(map.capacity).to.equal(2)
@@ -20,11 +28,11 @@ describe('LinqMap', () => {
           prevCapacity = map.capacity
         }
       }
-    });
+    })
 
     it('should be preserved after subsequent sets and deletes', () => {
       const map = new LinqMap()
-      const total = 100;
+      const total = 100
       for (let i = 0; i < total; i++) {
         map.set(i, i)
       }
@@ -131,7 +139,7 @@ describe('LinqMap', () => {
         map.set(i, 1)
       }
 
-      let total = 0;
+      let total = 0
       for (let i = 0; i < 1000; i++) {
         total += map.get(i)
       }
@@ -142,7 +150,7 @@ describe('LinqMap', () => {
       map.delete(50)
       map.delete(600)
 
-      total = 0;
+      total = 0
       for (let i = 0; i < 1000; i++) {
         total += map.get(i) || 0
       }
