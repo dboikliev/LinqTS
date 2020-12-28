@@ -11,6 +11,17 @@ To implement a lazy API similar by using iterators in order to simplify data-ori
 
 ![Demo](./assets/demo.gif)
 
+## Equality Comparers
+
+Some of the methods (union, except, etc.) accept an optional equality comparer object in the form of `{ hash, equals }`.\
+`hash` - a function that returns hashcode for a key.\
+`equals` - a function that compares two keys for equality.
+
+This is useful for cases where the iterables contain objects and not just primitives. These operations are backed by a custom map implementation which allows for any object to be used as a key.
+
+For ease of use default compareres for `number`, `string`, `boolean`, `object` and `Iterable` are provided OOTB.
+It is advisable that a custom comparer is implemented tailored for the specific use case when a complex object is used a key.
+
 ## Supported operations
 
 1. [where](#where)
@@ -61,6 +72,7 @@ To implement a lazy API similar by using iterators in order to simplify data-ori
 1. [id](#id)
 1. [toMap](#toMap)
 1. [toMapMany](#toMapMany)
+1. [toSet](#toSet)
 1. [append](#append)
 1. [prepend](#prepend)
 1. [tap](#tap)
@@ -1081,12 +1093,14 @@ ___
 
 Turns the sequence into a map.
 
-The key is provided by a function which takes an element as a parameter and returns the value to be used as a key. An optional vlaue selector can be provided to select the value that will be put in the map.
+The key is provided by a function which takes an element as a parameter and returns the value to be used as a key.\
+An optional vlaue selector can be provided to select the value that will be put in the map.\
+An optional equality comparer can be provided for special cases or complex keys. In that case a LinqMap instance will be returned.
 
 An error will be thrown if multiple elements have the same key.
 
 ```typescript
-const elements = linq([1,2,3,4,5]).toMap(id, x => x * 10);
+const elements = linq([1,2,3,4,5]).toMap({ keySelector: id, x => x * 10 });
     
 console.log(elements);
 ```
@@ -1101,12 +1115,14 @@ ___
 
 Turns the sequence into a map.
 
-The key is provided by a function which takes an element as a parameter and returns the value to be used as a key. An optional vlaue selector can be provided to select the value that will be put in the map.
+The key is provided by a function which takes an element as a parameter and returns the value to be used as a key.\
+An optional vlaue selector can be provided to select the value that will be put in the map.\
+An optional equality comparer can be provided for special cases or complex keys. In that case a LinqMap instance will be returned.
 
 The values for each key will be aggregated into arrays.
 
 ```typescript
-linq([1,1,2,3,3,4,5]).toMapMany(id, x => x * 10);
+linq([1,1,2,3,3,4,5]).toMapMany({ keySelector: id, valueSelector: x => x * 10 });
 ```
 
 ```text
@@ -1117,6 +1133,27 @@ Map {
   4 => [ 40 ],
   5 => [ 50 ]
 }
+```
+
+___
+
+### ToSet
+
+Turns the sequence into a set.
+
+The values of the sequence will be aggregated into a Set.\
+An optional equality comparer can be provided for special cases or complex keys. In that case a LinqSet instance will be returned.
+
+An error will be thrown if multiple elements have the same key.
+
+```typescript
+const elements = linq([1,2,3,4,5]).toMap({ keySelector: id, x => x * 10 });
+    
+console.log(elements);
+```
+
+```text
+Map { 1 => 10, 2 => 20, 3 => 30, 4 => 40, 5 => 50 }
 ```
 
 ___
