@@ -10,9 +10,11 @@ export class Distinct<TSource> implements ElementsWrapper<TSource>, Iterable<TSo
   *[Symbol.iterator](): IterableIterator<TSource> {
     const set = this.equalityComparer ? new LinqSet(this.equalityComparer) : new Set<TSource>()
     for (const element of this.elements) {
-      set.add(element)
+      if (!set.has(element)) {
+        set.add(element)
+        yield element
+      }
     }
-    yield* set
   }
 
   *[elementsSymbol](): IterableIterator<Iterable<TSource>> {
