@@ -1,70 +1,27 @@
-import { CachedKey, numberComparer } from './src/linq/collections/comparers'
-import { LinqMap } from './src/linq/collections/map'
+import { alinq } from './src/linq'
 
-
-
-const count = 1000000
-
-type TKey = number
-type StripCache<T> = T extends CachedKey<infer U> ? U : T
-const map = new LinqMap<TKey, { value: number }>(numberComparer)
-const jsMap = new Map<StripCache<TKey>, { value: number }>()
-
-
-const keys: TKey[] = []
-let total = 0
-let key: TKey
-for (let i = 0; i < count; i++) {
-  key = i
-  // console.log(key)
-  keys.push(key)
-}
-console.time('jsMap set')
-
-for (let i = 0; i < count; i++) {
-  jsMap.set(keys[i], { value: i * 10 })
+function getNumEvery(ms: number) {
+  return alinq(async function* () {
+    let i = 0
+    while (true) {
+      await new Promise(resolve => setTimeout(resolve, ms))
+      yield i++
+    }
+  })
 }
 
-console.timeEnd('jsMap set')
 
-console.time('jsMap get')
-total = 0
-for (let i = 0; i < count; i++) {
-  total += jsMap.get(keys[i]).value
-}
-console.timeEnd('jsMap get')
+const squaredPlus100 =
+  getNumEvery(1000)
+    .zip(
+      getNumEvery(1000).select(x => x.toString())
+    )
+    .tap(() => console.log(new Date()))
+    .take(3);
 
-function makeid(length) {
-  let result = ''
-  const characters = 'АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЬЮЯABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-  const charactersLength = characters.length
-  for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength))
+(async function () {
+  for await (const element of squaredPlus100) {
+    console.log(element)
   }
-  return result
-}
-console.log(total)
+})()
 
-console.log('-'.repeat(50))
-
-
-console.time('map set')
-
-
-for (let i = 0; i < count; i++) {
-  map.set(keys[i], { value: i * 10 })
-}
-
-console.timeEnd('map set')
-
-// console.log(Array.from(map.entries()))
-
-
-console.time('map get')
-total = 0
-for (let i = 0; i < count; i++) {
-  total += map.get(keys[i]).value
-}
-
-console.timeEnd('map get')
-console.log(total)

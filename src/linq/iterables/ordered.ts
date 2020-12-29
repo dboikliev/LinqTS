@@ -1,14 +1,18 @@
 import { elementsSymbol, ElementsWrapper } from '../element-wrapper'
 
 export class Ordered<TSource> implements ElementsWrapper<TSource> {
-  constructor(private elements: Iterable<TSource>,
+  constructor(private elements: Iterable<TSource> | AsyncIterable<TSource>,
     private comparer: (left: TSource, right: TSource) => number) {
   }
 
   *[Symbol.iterator](): IterableIterator<TSource> {
+    if (typeof this.elements[Symbol.iterator] !== 'function') {
+      throw Error('Missing @@iterator')
+    }
+
     const sorted = []
 
-    for (const element of this.elements) {
+    for (const element of this.elements as Iterable<TSource>) {
       sorted.push(element)
     }
 
@@ -17,7 +21,19 @@ export class Ordered<TSource> implements ElementsWrapper<TSource> {
     yield* sorted
   }
 
-  static from<T>(elements: Iterable<T>, selector: (elemment: T) => number | string, isAscending: boolean): Ordered<T> {
+  async *[Symbol.asyncIterator](): AsyncIterableIterator<TSource> {
+    const sorted = []
+
+    for await (const element of this.elements) {
+      sorted.push(element)
+    }
+
+    sorted.sort(this.comparer)
+
+    yield* sorted
+  }
+
+  static from<T>(elements: Iterable<T> | AsyncIterable<T>, selector: (elemment: T) => number | string, isAscending: boolean): Ordered<T> {
     return new Ordered(elements, (left, right) => this.compareWithSelector(left, right, selector, isAscending))
   }
 
@@ -47,7 +63,7 @@ export class Ordered<TSource> implements ElementsWrapper<TSource> {
     return 0
   }
 
-  *[elementsSymbol](): IterableIterator<Iterable<TSource>> {
+  *[elementsSymbol](): IterableIterator<Iterable<TSource> | AsyncIterable<TSource>> {
     yield this.elements
   }
 

@@ -1,47 +1,19 @@
-import {
-  Concat,
-  Distinct,
-  DistinctBy,
-  Except,
-  GroupBy,
-  Intersect,
-  Join,
-  Ordered,
-  Reverse,
-  Select,
-  SelectMany,
-  Skip,
-  SkipWhile,
-  Take,
-  TakeWhile,
-  Union,
-  Where,
-  Windowed,
-  Zip,
-  Tap,
-  Repeat,
-  Grouping
-} from './iterables'
-import { elementsSymbol, ElementsWrapper, isWrapper } from './element-wrapper'
 import { AsyncSource, id, SyncSource } from '.'
-import { LinqMap, EqualityComparer, LinqSet } from './collections'
+import { EqualityComparer, LinqMap, LinqSet } from './collections'
+import { elementsSymbol, ElementsWrapper, isWrapper } from './element-wrapper'
+import { Concat, Distinct, DistinctBy, Except, GroupBy, Grouping, Intersect, Join, Ordered, Repeat, Reverse, Select, SelectMany, Skip, SkipWhile, Take, TakeWhile, Tap, Union, Where, Windowed, Zip } from './iterables'
 import { GeneratorFunc } from './iterables/generatorFunc'
+import { Linqable, ToMapArgs } from './linqable'
 
-export type ToMapArgs<TSource, TKey, TValue> = {
-  keySelector: (element: TSource) => TKey,
-  valueSelector?: (element: TSource) => TValue,
-  equalityComparer?: EqualityComparer<TKey>
-}
-
-export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSource> {
-  constructor(protected elements: Iterable<TSource>) {
+export class AsyncLinqable<TSource> implements AsyncIterable<TSource>, ElementsWrapper<TSource> {
+  constructor(protected elements: AsyncIterable<TSource>) {
   }
 
-  *[Symbol.iterator](): IterableIterator<TSource> {
+  async *[Symbol.asyncIterator](): AsyncIterableIterator<TSource> {
     yield* this.elements
   }
 
-  *[elementsSymbol](): IterableIterator<Iterable<TSource>> {
+  *[elementsSymbol](): IterableIterator<AsyncIterable<TSource>> {
     yield this.elements
   }
 
@@ -50,16 +22,16 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
      * @param {function} predicate - A predicate which the elements will be checked against.
      * @return {boolean} Whether an element matching the predicate is found or not.
      */
-  any(predicate?: (element: TSource) => boolean): boolean {
+  async any(predicate?: (element: TSource) => boolean | Promise<boolean>): Promise<boolean> {
     if (predicate) {
-      for (const value of this) {
-        if (predicate(value)) {
+      for await (const value of this) {
+        if (await predicate(value)) {
           return true
         }
       }
     } else {
-      const iter = this[Symbol.iterator]()
-      return !iter.next().done
+      const iter = this[Symbol.asyncIterator]()
+      return !(await iter.next()).done
     }
 
     return false
@@ -70,8 +42,8 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
      * @param {function} predicate - A predicate which the elements will be checked against.
      * @return {boolean} Whether an element matching the predicate is found or not.
      */
-  all(predicate: (element: TSource) => boolean): boolean {
-    for (const value of this) {
+  async all(predicate: (element: TSource) => boolean | Promise<boolean>): Promise<boolean> {
+    for await (const value of this) {
       if (!predicate(value)) {
         return false
       }
@@ -86,14 +58,14 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
      * @param {function} leftSelector - A property selector for objects from the left collection
      * @param {function} rightSelector - A property selector for objects from the right collection
      * @param {function} resultSelector - A function merging the matching objects into a result
-     * @returns {Linqable<TResult>} An iterable of values produced by resultSelector
+     * @returns {AsyncLinqable<TResult>} An iterable of values produced by resultSelector
      */
-  join<TRight, TResult>(right: Iterable<TRight>,
+  join<TRight, TResult>(right: Iterable<TRight> | AsyncIterable<TRight>,
     leftSelector: (element: TSource) => unknown,
     rightSelector: (element: TRight) => unknown,
-    resultSelector: (left: TSource, right: TRight) => TResult): Linqable<TResult> {
-    return new Linqable(new Join(this.elements,
-      extractSync(right),
+    resultSelector: (left: TSource, right: TRight) => TResult | Promise<TResult>): AsyncLinqable<TResult> {
+    return new AsyncLinqable(new Join(this.elements,
+      extractAsync(right),
       leftSelector,
       rightSelector,
       resultSelector
@@ -103,82 +75,82 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
   /**
      * Skips a specific number of elements.
      * @param {number} count - The number of elements to skip.
-     * @returns {Linqable<TSource>} An iterable with a beginning after the skipped values.
+     * @returns {AsyncLinqable<TSource>} An iterable with a beginning after the skipped values.
      */
-  skip(count: number): Linqable<TSource> {
-    return new Linqable(new Skip(this.elements, count))
+  skip(count: number): AsyncLinqable<TSource> {
+    return new AsyncLinqable(new Skip(this.elements, count))
   }
 
   /**
      * Skips elements while they satisfy the provided predicate.
      * @param {function} predicate - A predicate which the elements will be checked against.
-     * @returns {Linqable<TSource>} An iterable with a beginning after the skipped values.
+     * @returns {AsyncLinqable<TSource>} An iterable with a beginning after the skipped values.
      */
-  skipWhile(predicate: (element: TSource) => boolean): Linqable<TSource> {
-    return new Linqable(new SkipWhile(this.elements, predicate))
+  skipWhile(predicate: (element: TSource) => boolean | Promise<boolean>): AsyncLinqable<TSource> {
+    return new AsyncLinqable(new SkipWhile(this.elements, predicate))
   }
 
   /**
    * Skips elements until some element satisfies the provided predicate.
    * @param {function} predicate - A predicate which the elements will be checked against.
-   * @returns {Linqable<TSource>} An iterable with a beginning after the skipped values.
+   * @returns {AsyncLinqable<TSource>} An iterable with a beginning after the skipped values.
    */
-  skipUntil(predicate: (element: TSource) => boolean): Linqable<TSource> {
-    return new Linqable(new SkipWhile(this.elements, el => !predicate(el)))
+  skipUntil(predicate: (element: TSource) => boolean | Promise<boolean>): AsyncLinqable<TSource> {
+    return new AsyncLinqable(new SkipWhile(this.elements, async el => !await predicate(el)))
   }
 
   /**
      * Takes a specific number of elements.
      * @param {number} count - The number of elements to take.
-     * @returns {Linqable<TSource>} An iterable for the taken elements.
+     * @returns {AsyncLinqable<TSource>} An iterable for the taken elements.
      */
-  take(count: number): Linqable<TSource> {
-    return new Linqable(new Take(this.elements, count))
+  take(count: number): AsyncLinqable<TSource> {
+    return new AsyncLinqable(new Take(this.elements, count))
   }
 
   /**
      * Takes elements while they satisfy the provided predicate.
      * @param {function} predicate - A predicate which the elements will be checked against.
-     * @returns {Linqable<TSource>} An iterable of the taken elements.
+     * @returns {AsyncLinqable<TSource>} An iterable of the taken elements.
      */
-  takeWhile(predicate: (element: TSource) => boolean): Linqable<TSource> {
-    return new Linqable(new TakeWhile(this.elements, predicate))
+  takeWhile(predicate: (element: TSource) => boolean | Promise<boolean>): AsyncLinqable<TSource> {
+    return new AsyncLinqable(new TakeWhile(this.elements, predicate))
   }
 
   /**
      * Takes elements until some element satisfies the provided predicate.
      * @param {function} predicate - A predicate which the elements will be checked against.
-     * @returns {Linqable<TSource>} An iterable of the taken elements.
+     * @returns {AsyncLinqable<TSource>} An iterable of the taken elements.
      */
-  takeUntil(predicate: (element: TSource) => boolean): Linqable<TSource> {
-    return new Linqable(new TakeWhile(this.elements, el => !predicate(el)))
+  takeUntil(predicate: (element: TSource) => boolean | Promise<boolean>): AsyncLinqable<TSource> {
+    return new AsyncLinqable(new TakeWhile(this.elements, async el => !await predicate(el)))
   }
 
   /**
      * Filters the elements based on a predicate.
      * @param {function} predicate - A predicate which the elements will be checked against.
-     * @returns {Linqable<TResult>} An iterable of the filtered elements.
+     * @returns {AsyncLinqable<TResult>} An iterable of the filtered elements.
      */
-  where(predicate: (element: TSource) => boolean): Linqable<TSource> {
-    return new Linqable(new Where(this.elements, predicate))
+  where(predicate: (element: TSource) => boolean | Promise<boolean>): AsyncLinqable<TSource> {
+    return new AsyncLinqable(new Where(this.elements, predicate))
   }
 
   /**
      * Transforms the elements of the iterable into another value.
      * @param {function} selector - A function which transforms an element into another value.
-     * @returns {Linqable<TResult>} An iterable of the transformed elements.
+     * @returns {AsyncLinqable<TResult>} An iterable of the transformed elements.
      */
-  select<TResult>(selector: (element: TSource, index: number) => TResult): Linqable<TResult> {
-    return new Linqable(new Select(this.elements, selector))
+  select<TResult>(selector: (element: TSource, index: number) => TResult | Promise<TResult>): AsyncLinqable<TResult> {
+    return new AsyncLinqable(new Select(this.elements, selector))
   }
 
   /**
      * Flattens iterable elements into a single iterable sequence.
      * @param {function} selector - A function which transforms an element into another value.
-     * @returns {Linqable<TResult>} An iterable of the transformed elements.
+     * @returns {AsyncLinqable<TResult>} An iterable of the transformed elements.
      */
-  selectMany<TResult>(selector: (element: TSource) => Iterable<TResult>): Linqable<TResult> {
-    return new Linqable(new SelectMany(this.elements, selector))
+  selectMany<TResult>(selector: (element: TSource) => Iterable<TResult> | AsyncIterable<TResult> | Promise<Iterable<TResult> | AsyncIterable<TResult>>): AsyncLinqable<TResult> {
+    return new AsyncLinqable(new SelectMany(this.elements, selector))
   }
 
   /**
@@ -187,20 +159,20 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
      * If a selector is not proviced the result will be an array of [left, right] array pairs.
      * @param {Iterable<TRight>} right - The second iterable.
      * @param {function} selector - A function witch transforms a pair of elements into another value.
-     * @returns {Linqable<TResult>} An iterable of the trasnformed values.
+     * @returns {AsyncLinqable<TResult>} An iterable of the trasnformed values.
      */
-  zip<TRight, TResult = [TSource, TRight]>(right: Iterable<TRight>, selector?: (left: TSource, right: TRight) => TResult): Linqable<TResult> {
-    return new Linqable(new Zip(this.elements, extractSync(right), (selector || ((a: TSource, b: TRight) => [a, b] as never))))
+  zip<TRight, TResult = [TSource, TRight]>(right: Iterable<TRight> | AsyncIterable<TRight>, selector?: (left: TSource, right: TRight) => TResult): AsyncLinqable<TResult> {
+    return new AsyncLinqable(new Zip(this.elements, extractAsync(right), (selector || ((a: TSource, b: TRight) => [a, b] as never))))
   }
 
   /**
       * Returns an unordered sequence of distinct elements based on an equality comparer.
       * When a comparer is not provided a strict equality comparison is used.
       * @param {EqualityComparer<TSource>} equalityComparer - An object providing a hash and equals function.
-      * @returns {Linqable<TSource>} An iterable of the distinct elements.
+      * @returns {AsyncLinqable<TSource>} An iterable of the distinct elements.
       */
-  distinct(equalityComparer?: EqualityComparer<TSource>): Linqable<TSource> {
-    return new Linqable(new Distinct(this.elements, equalityComparer))
+  distinct(equalityComparer?: EqualityComparer<TSource>): AsyncLinqable<TSource> {
+    return new AsyncLinqable(new Distinct(this.elements, equalityComparer))
   }
 
   /**
@@ -208,19 +180,19 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
     * When a comparer is not provided a '===' comparison is used.
     * @param {function} projection - A function the result of which is used for comparing the elements in the iterable.
     * @param {EqualityComparer<TSource>} equalityComparer - An object providing a hash and equals function.
-    * @returns {Linqable<TSource>} An iterable of the distinct elements.
+    * @returns {AsyncLinqable<TSource>} An iterable of the distinct elements.
     */
-  distinctBy<TKey>(projection: (element: TSource) => TKey, equalityComparer?: EqualityComparer<TKey>): Linqable<TSource> {
-    return new Linqable(new DistinctBy(this.elements, projection, equalityComparer))
+  distinctBy<TKey>(projection: (element: TSource) => TKey | Promise<TKey>, equalityComparer?: EqualityComparer<TKey>): AsyncLinqable<TSource> {
+    return new AsyncLinqable(new DistinctBy(this.elements, projection, equalityComparer))
   }
 
   /**
      * Groups elements based on a selector function.
      * @param {function} selector - A function providing the key for the group.
-     * @returns {Linqable<Grouping<TKey, TSource>>} An iterable of groups.
+     * @returns {AsyncLinqable<Grouping<TKey, TSource>>} An iterable of groups.
      */
-  groupBy<TKey>(selector: (element: TSource) => TKey, equalityComparer?: EqualityComparer<TKey>): Linqable<Grouping<TKey, TSource>> {
-    return new Linqable(new GroupBy(this.elements, selector, equalityComparer))
+  groupBy<TKey>(selector: (element: TSource) => TKey | Promise<TKey>, equalityComparer?: EqualityComparer<TKey>): AsyncLinqable<Grouping<TKey, TSource>> {
+    return new AsyncLinqable(new GroupBy(this.elements, selector, equalityComparer))
   }
 
   /**
@@ -243,43 +215,43 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
 
   /**
      * Reverses the order of the sequence, e.g. reverse (1, 2, 3) -> (3, 2, 1)
-     * @returns {Linqable<TSource>} An iterable of the reversed squence of elements.
+     * @returns {AsyncLinqable<TSource>} An iterable of the reversed squence of elements.
      */
-  reverse(): Linqable<TSource> {
-    return new Linqable(new Reverse(this.elements))
+  reverse(): AsyncLinqable<TSource> {
+    return new AsyncLinqable(new Reverse(this.elements))
   }
 
   /**
      * Concatenates the sequences together.
      * @param {Iterable<TOther>} other - The sequence that will be concatenated to the current sequence.
-     * @returns {Linqable<TSource | TOther>} An iterable of the concatenated elements.
+     * @returns {AsyncLinqable<TSource | TOther>} An iterable of the concatenated elements.
      */
-  concat<TOther>(other: Iterable<TOther>): Linqable<TSource | TOther> {
-    return new Linqable(new Concat(this.elements, extractSync(other)))
+  concat<TOther>(other: Iterable<TOther> | AsyncIterable<TOther>): AsyncLinqable<TSource | TOther> {
+    return new AsyncLinqable(new Concat(this.elements, extractAsync(other)))
   }
 
   /**
    * Appends values to the end of the sequence.
    * @param {...TOther[]} values - The values that will be appended to the current sequence.
-   * @returns {Linqable<TSource | TOther>} An iterable with the appended elements at the end.
+   * @returns {AsyncLinqable<TSource | TOther>} An iterable with the appended elements at the end.
    */
-  append<TOther>(...values: TOther[]): Linqable<TSource | TOther> {
+  append<TOther>(...values: TOther[]): AsyncLinqable<TSource | TOther> {
     if (values.length === 0) {
       return this
     }
-    return new Linqable(new Concat(this.elements, extractSync(values)))
+    return new AsyncLinqable(new Concat(this.elements, extractAsync(values)))
   }
 
   /**
    * Prepends values to the beginning of the sequence.
    * @param {...TOther[]} values - The values that will be prepended to the current sequence.
-   * @returns {Linqable<TSource | TOther>} An iterable with the prepended elements at the beginning.
+   * @returns {AsyncLinqable<TSource | TOther>} An iterable with the prepended elements at the beginning.
    */
-  prepend<TOther>(...values: TOther[]): Linqable<TSource | TOther> {
+  prepend<TOther>(...values: TOther[]): AsyncLinqable<TSource | TOther> {
     if (values.length === 0) {
       return this
     }
-    return new Linqable(new Concat(extractSync(values), this.elements))
+    return new AsyncLinqable(new Concat(extractAsync(values), this.elements))
   }
 
 
@@ -289,12 +261,12 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
      * @param {function} accumulator - An accumulator function.
      * @returns {TResult} An aggregate of the elements.
      */
-  aggregate<TResult>(seed: TResult, accumulator: (accumulated: TResult, element: TSource, index: number) => TResult): TResult {
+  async aggregate<TResult>(seed: TResult, accumulator: (accumulated: TResult, element: TSource, index: number) => TResult | Promise<TResult>): Promise<TResult> {
     let accumulated = seed
     let index = 0
 
-    for (const element of this) {
-      accumulated = accumulator(accumulated, element, index++)
+    for await (const element of this) {
+      accumulated = await accumulator(accumulated, element, index++)
     }
 
     return accumulated
@@ -304,9 +276,9 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
     * Gets the first element of the iterable.
     * @returns {TSource} The first element of the iterable.
     */
-  first(): TSource {
-    const iter = this[Symbol.iterator]()
-    return <TSource>iter.next().value
+  async first(): Promise<TSource> {
+    const iter = this[Symbol.asyncIterator]()
+    return (await iter.next()).value
   }
 
   /**
@@ -316,20 +288,20 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
      * @param {function} defaultInitializer - A function returning default value if there aren't any matching elements.
      * @returns {TSource|TDefault} The first matching element or a default value.
      */
-  firstOrDefault<TDefault>(predicate?: (element: TSource) => boolean, defaultInitializer: () => TDefault = () => undefined): TSource | TDefault {
+  async firstOrDefault<TDefault>(predicate?: (element: TSource) => Promise<boolean>, defaultInitializer: () => Promise<TDefault> = () => undefined): Promise<TSource | TDefault> {
     if (predicate) {
-      for (const value of this) {
-        if (predicate(value)) {
+      for await (const value of this) {
+        if (await predicate(value)) {
           return value
         }
       }
 
-      return defaultInitializer()
+      return await defaultInitializer()
     } else {
-      const iter = this[Symbol.iterator]()
-      const descriptor = iter.next()
+      const iter = this[Symbol.asyncIterator]() as AsyncIterableIterator<TSource>
+      const descriptor = await iter.next()
 
-      return descriptor.done ? defaultInitializer() : <TSource>descriptor.value
+      return descriptor.done ? await defaultInitializer() : <TSource>descriptor.value
     }
   }
 
@@ -337,9 +309,9 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
      * Gets the last element of the iterable.
      * @returns {TSource} The last element of the iterable.
      */
-  last(): TSource {
+  async last(): Promise<TSource> {
     let last
-    for (const element of this) {
+    for await (const element of this) {
       last = element
     }
     return last
@@ -352,12 +324,12 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
      * @param {function} defaultInitializer - A function returning default value if there aren't any matching elements.
      * @returns {TSource|TDefault} The last matching element or a default value.
      */
-  lastOrDefault<TDefault>(predicate?: (element: TSource) => boolean, defaultInitializer: () => TDefault = () => undefined): TSource | TDefault {
+  async lastOrDefault<TDefault>(predicate?: (element: TSource) => Promise<boolean>, defaultInitializer: () => Promise<TDefault> = () => undefined): Promise<TSource | TDefault> {
     let last
     let isFound = false
-    for (const value of this) {
+    for await (const value of this) {
       if (predicate) {
-        if (predicate(value)) {
+        if (await predicate(value)) {
           last = value
           isFound = true
         }
@@ -367,15 +339,15 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
       }
     }
 
-    return isFound ? last : defaultInitializer()
+    return isFound ? last : await defaultInitializer()
   }
 
   /**
      * Gets the max element in the sequence. Suitable for sequences of numbers|strings.
      * @returns {TSource} The max element of the sequence.
      */
-  max(this: Linqable<TSource extends number ? TSource : TSource extends string ? TSource : never>): TSource {
-    return this.maxBy(id)
+  async max(this: AsyncLinqable<TSource extends number ? TSource : TSource extends string ? TSource : never>): Promise<TSource> {
+    return await this.maxBy(id)
   }
 
   /**
@@ -383,25 +355,25 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
      * @param {function} transform - A function returning a primitive value used for copmaring elements in the sequence.
      * @returns {TSource} The max element of the sequence.
      */
-  maxBy(transform: (element: TSource) => number | string): TSource {
-    const iterator = this[Symbol.iterator]()
-    let iteratorResult = iterator.next()
+  async maxBy(transform: (element: TSource) => number | string | Promise<number | string>): Promise<TSource> {
+    const iterator = this[Symbol.asyncIterator]() as AsyncIterableIterator<TSource>
+    let iteratorResult = await iterator.next()
 
     if (iteratorResult.done) {
       return
     }
 
     let bestMax = <TSource>iteratorResult.value
-    let bestMaxPrimitive = transform(bestMax)
+    let bestMaxPrimitive = await transform(bestMax)
 
     while (!iteratorResult.done) {
       const value = <TSource>iteratorResult.value
-      const currentPrimitive = transform(value)
+      const currentPrimitive = await transform(value)
       if (bestMaxPrimitive < currentPrimitive) {
         bestMax = value
         bestMaxPrimitive = currentPrimitive
       }
-      iteratorResult = iterator.next()
+      iteratorResult = await iterator.next()
     }
 
     return bestMax
@@ -411,8 +383,8 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
      * Gets the min element in the sequence. Suitable for sequences of numbers|strings.
      * @returns {TSource} The min element of the sequence.
      */
-  min(this: Linqable<TSource extends number ? TSource : TSource extends string ? TSource : never>): TSource {
-    return this.minBy(id)
+  async min(this: AsyncLinqable<TSource extends number ? TSource : TSource extends string ? TSource : never>): Promise<TSource> {
+    return await this.minBy(id)
   }
 
   /**
@@ -420,25 +392,25 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
      * @param {function} transform - A function returning a primitive value used for copmaring elements in the sequence.
      * @returns TSource The min element of the sequence.
      */
-  minBy(transform: (element: TSource) => number | string): TSource {
-    const iterator = this[Symbol.iterator]()
-    let iteratorResult = iterator.next()
+  async minBy(transform: (element: TSource) => number | string | Promise<number | string>): Promise<TSource> {
+    const iterator = this[Symbol.asyncIterator]()
+    let iteratorResult = await iterator.next()
 
     if (iteratorResult.done) {
       return
     }
 
     let bestMin = <TSource>iteratorResult.value
-    let bestMinPrimivie = transform(bestMin)
+    let bestMinPrimivie = await transform(bestMin)
 
     while (!iteratorResult.done) {
       const value = <TSource>iteratorResult.value
-      const currentPrimivie = transform(value)
+      const currentPrimivie = await transform(value)
       if (bestMinPrimivie > currentPrimivie) {
         bestMin = value
         bestMinPrimivie = currentPrimivie
       }
-      iteratorResult = iterator.next()
+      iteratorResult = await iterator.next()
     }
 
     return bestMin
@@ -448,8 +420,8 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
      * Calculates the sum of the values in the sequence.
      * @returns {number} The sum of the values in the sequence.
      */
-  sum(this: Linqable<number>): number {
-    return this.sumBy(id)
+  async sum(this: AsyncLinqable<number>): Promise<number> {
+    return await this.sumBy(id)
   }
 
   /**
@@ -457,8 +429,8 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
      * @param {function} transform - A function returning a number value used for summing elements in the sequence.
      * @returns {number} The sum of the values returned by the selector function.
      */
-  sumBy(selector: (element: TSource) => number): number {
-    return this.aggregate(0, (acc, current) => acc + selector(current))
+  async sumBy(selector: (element: TSource) => number | Promise<number>): Promise<number> {
+    return await this.aggregate(0, async (acc, current) => acc + await selector(current))
   }
 
 
@@ -466,8 +438,8 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
      * Calculates the average of the values in the sequence.
      * @returns {number} The average value of the sequence.
      */
-  average(this: Linqable<number>): number {
-    return this.averageBy(id)
+  async average(this: AsyncLinqable<number>): Promise<number> {
+    return await this.averageBy(id)
   }
 
   /**
@@ -475,12 +447,12 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
      * @param {function} transform - A function returning a number value used for summing elements in the sequence.
      * @returns {number} The average value of the sequence.
      */
-  averageBy(transform: (element: TSource) => number): number {
+  async averageBy(transform: (element: TSource) => number | Promise<number>): Promise<number> {
     let sum = 0
     let count = 0
 
-    for (const element of this) {
-      sum += transform(element)
+    for await (const element of this) {
+      sum += await transform(element)
       count++
     }
 
@@ -493,23 +465,23 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
   /**
      * Tests the equality of two seuqneces by checking each corresponding pair of elements against the provided predicate.
      * If a predicate is not provided the elements will be compared using the strict equality (===) operator.
-     * @param {Iterable<TRight>} right - The sequence which will be compared to the current sequence.
+     * @param {Iterable<TRight> | AsyncIterable<TRight>} right - The sequence which will be compared to the current sequence.
      * @param {function} predicate - A function that takes an element of each sequence compares them and returns a boolean depeneding whether they are considered equal or not.
      * @returns {boolean} True if both sequences are of the same length and all corresponding pairs of elements are equal according to the predicate function. False otherwise.
      */
-  sequenceEquals<TRight>(right: Iterable<TRight>, predicate: (left: TSource, right: TRight) => boolean = (left: unknown, right: unknown) => left === right): boolean {
-    const sourceIterator = this[Symbol.iterator]()
-    const rightIterator = right[Symbol.iterator]()
+  async sequenceEquals<TRight>(right: Iterable<TRight> | AsyncIterable<TRight>, predicate: (left: TSource, right: TRight) => boolean | Promise<boolean> = (left: unknown, right: unknown) => left === right): Promise<boolean> {
+    const sourceIterator = this[Symbol.asyncIterator]()
+    const rightIterator = right[Symbol.asyncIterator]() as AsyncIterableIterator<TRight>
 
-    let [sourceResult, rightResult] = [sourceIterator.next(), rightIterator.next()]
+    let [sourceResult, rightResult] = [await sourceIterator.next(), await rightIterator.next()]
 
     while (!sourceResult.done && !rightResult.done) {
-      if (!sourceResult.done && !rightResult.done && !predicate(<TSource>sourceResult.value, rightResult.value)) {
+      if (!sourceResult.done && !rightResult.done && !await predicate(<TSource>sourceResult.value, rightResult.value)) {
         return false
       }
 
-      sourceResult = sourceIterator.next()
-      rightResult = rightIterator.next()
+      sourceResult = await sourceIterator.next()
+      rightResult = await rightIterator.next()
     }
 
     return sourceResult.done && rightResult.done
@@ -520,10 +492,10 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
      * The function receives the element and its index in the seqeunce as parameters.
      * @param {function} action - A function called for each element of the sequence.
      */
-  forEach(action: (element: TSource, index: number) => void): void {
+  async forEach(action: (element: TSource, index: number) => void | Promise<void>): Promise<void> {
     let index = 0
-    for (const element of this) {
-      action(element, index++)
+    for await (const element of this) {
+      await action(element, index++)
     }
   }
 
@@ -532,24 +504,22 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
      * @param {number} index - The index of the element.
      * @returns {TSource} The element at the specified index.
      */
-  elementAt(index: number): TSource {
-    return this.skip(index).take(1).first()
+  async elementAt(index: number): Promise<TSource> {
+    return await this.skip(index).take(1).first()
   }
 
   /**
      * Turns the sequence into an array.
      * @returns {TSource[]} An array of the sequence elements.
      */
-  toArray(): TSource[] {
-    const array = this.aggregate([], (acc, el) => {
+  async toArray(): Promise<TSource[]> {
+    const array = await this.aggregate([] as TSource[], (acc, el) => {
       acc.push(el)
       return acc
     })
 
     return array
   }
-
-
 
   /**
    * Turns the sequence into a map.
@@ -559,7 +529,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
    * @param {EqualityComparer<TSource>} equalityComparer - An object providing a hash and equals function.
    * @returns {Map<TKey, TValue>} A map of elements in the sequence. When an equality comparer is provided the instance will be an instance of LinqMap.
    */
-  toMap<TKey, TValue = TSource>({ keySelector, valueSelector, equalityComparer }: ToMapArgs<TSource, TKey, TValue>): Map<TKey, TValue> {
+  async toMap<TKey, TValue = TSource>({ keySelector, valueSelector, equalityComparer }: ToMapArgs<TSource, TKey, TValue>): Promise<Map<TKey, TValue>> {
     const seed = equalityComparer ? new LinqMap(equalityComparer) : new Map()
     return this.aggregate(seed, (map, current) => {
       const key = keySelector(current)
@@ -578,7 +548,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
    * @param {EqualityComparer<TSource>} equalityComparer - An object providing a hash and equals function.
    * @returns {Map<TKey, TValue>} A map of elements in the sequence. When an equality comparer is provided the instance will be an instance of LinqMap.
    */
-  toMapMany<TKey, TValue = TSource>({ keySelector, valueSelector, equalityComparer }: ToMapArgs<TSource, TKey, TValue>): Map<TKey, TValue[]> {
+  async toMapMany<TKey, TValue = TSource>({ keySelector, valueSelector, equalityComparer }: ToMapArgs<TSource, TKey, TValue>): Promise<Map<TKey, TValue[]>> {
     const seed = equalityComparer ? new LinqMap(equalityComparer) : new Map()
     return this.aggregate(seed, (map, current) => {
       const key = keySelector(current)
@@ -593,19 +563,23 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
    * @param {EqualityComparer<TSource>} equalityComparer - An object providing a hash and equals function.
    * @returns {Map<TKey, TValue>} A set of the elements in the sequence. When an equality comparer is provided the instance will be an instance of LinqSet.
    */
-  toSet(equalityComparer?: EqualityComparer<TSource>): Set<TSource> {
-    return equalityComparer ? new LinqSet(equalityComparer, this.elements) : new Set(this.elements)
+  async toSet(equalityComparer?: EqualityComparer<TSource>): Promise<Set<TSource>> {
+    const set = equalityComparer ? new LinqSet<TSource>(equalityComparer) : new Set<TSource>()
+    for await (const element of this) {
+      set.add(element)
+    }
+    return set
   }
 
   /**
      * Counts the number of elements in the sequence.
      * @returns {number} The number of elements in the sequence.
      */
-  count(): number {
+  async count(): Promise<number> {
     let current = 0
-    const iterator = this[Symbol.iterator]()
+    const iterator = this[Symbol.asyncIterator]() as AsyncIterableIterator<TSource>
 
-    while (iterator.next()) {
+    while (!(await iterator.next()).done) {
       current++
     }
 
@@ -616,61 +590,61 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
     * Excludes all elements of the provided sequence from the current sequence.
     * @param {Iterable<TSource>} right - The sequence of elements that will be excluded.
     * @param {EqualityComparer<TSource>} equalityComparer - An object providing a hash and equals function.
-    * @returns {Linqable<TSource>} A sequence of the elements which are not present in the provided sequence.
+    * @returns {AsyncLinqable<TSource>} A sequence of the elements which are not present in the provided sequence.
     */
-  except(right: Iterable<TSource>, equalityComparer?: EqualityComparer<TSource>): Linqable<TSource> {
-    return new Linqable(new Except(this.elements, extractSync(right), equalityComparer))
+  except(right: AsyncIterable<TSource>, equalityComparer?: EqualityComparer<TSource>): AsyncLinqable<TSource> {
+    return new AsyncLinqable(new Except(this.elements, extractAsync(right), equalityComparer))
   }
 
   /**
     * Intersects the current sequence with the provided sequence.
     * @param {Iterable<TSource>} right - The sequence of elements that will be intersected with the current seqeunce.
     * @param {EqualityComparer<TSource>} equalityComparer - An object providing a hash and equals function.
-    * @returns {Linqable<TSource>} A sequence of the elements which are present in both the provided sequences.
+    * @returns {AsyncLinqable<TSource>} A sequence of the elements which are present in both the provided sequences.
     */
-  intersect(right: Iterable<TSource>, equalityComparer?: EqualityComparer<TSource>): Linqable<TSource> {
-    return new Linqable(new Intersect(this.elements, extractSync(right), equalityComparer))
+  intersect(right: AsyncIterable<TSource>, equalityComparer?: EqualityComparer<TSource>): AsyncLinqable<TSource> {
+    return new AsyncLinqable(new Intersect(this.elements, extractAsync(right), equalityComparer))
   }
 
   /**
     * Performs a union operation on the current sequence and the provided sequence.
     * @param {Iterable<TSource>} right - The other sequence with which a union will be performed.
     * @param {EqualityComparer<TSource>} equalityComparer - An object providing a hash and equals function.
-    * @returns {Linqable<TSource>} A sequence of the unique elements of both sequences.
+    * @returns {AsyncLinqable<TSource>} A sequence of the unique elements of both sequences.
     */
-  union(right: Iterable<TSource>, equalityComparer?: EqualityComparer<TSource>): Linqable<TSource> {
-    return new Linqable(new Union(this.elements, extractSync(right), equalityComparer))
+  union(right: AsyncIterable<TSource>, equalityComparer?: EqualityComparer<TSource>): AsyncLinqable<TSource> {
+    return new AsyncLinqable(new Union(this.elements, extractAsync(right), equalityComparer))
   }
 
   /**
     * Returns the symmetric difference of both sequences.
     * @param {Iterable<TSource>} right - The other sequence.
     * @param {EqualityComparer<TSource>} equalityComparer - An object providing a hash and equals function.
-    * @returns {Linqable<TSource>} The elements which are present in only sequences.
+    * @returns {AsyncLinqable<TSource>} The elements which are present in only sequences.
     */
-  xOr(right: Iterable<TSource>, equalityComparer?: EqualityComparer<TSource>): Linqable<TSource> {
-    return this.except(right, equalityComparer).union(new Linqable(right).except(this, equalityComparer), equalityComparer)
+  xOr(right: AsyncIterable<TSource>, equalityComparer?: EqualityComparer<TSource>): AsyncLinqable<TSource> {
+    return this.except(right, equalityComparer).union(new AsyncLinqable(right).except(this, equalityComparer), equalityComparer)
   }
 
   /**
      * Provides batches of elements from the sequence.
      * @param {number} size - The size of the batch.
      * @param {boolean} dropRemainder - Indicates whether to drop the last batch if it is not of full size.
-     * @returns {Linqable<TSource[]>} A sequence of batches.
+     * @returns {AsyncLinqable<TSource[]>} A sequence of batches.
      */
-  batch(size: number, dropRemainder = false): Linqable<TSource[]> {
+  batch(size: number, dropRemainder = false): AsyncLinqable<TSource[]> {
     const step = size
-    return new Linqable(new Windowed(this.elements, size, step, dropRemainder))
+    return new AsyncLinqable(new Windowed(this.elements, size, step, dropRemainder))
   }
 
   /**
      * Provides a sliding window of elements from the sequence.
      * @param {number} size - The size of the window.
      * @param {number} step - The number of elements to skip when sliding.
-     * @returns {Linqable<TSource[]>} A sequence of windows.
+     * @returns {AsyncLinqable<TSource[]>} A sequence of windows.
      */
-  windowed(size: number, step = 1): Linqable<TSource[]> {
-    return new Linqable(new Windowed(this.elements, size, step))
+  windowed(size: number, step = 1): AsyncLinqable<TSource[]> {
+    return new AsyncLinqable(new Windowed(this.elements, size, step))
   }
 
   /**
@@ -678,7 +652,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
      * @param {TSource} element - The element to look for.
      * @returns {number} The index of the element.
      */
-  indexOf(element: TSource): number {
+  async indexOf(element: TSource): Promise<number> {
     return this.findIndex(el => el === element)
   }
 
@@ -687,11 +661,11 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
      * @param {Function} predicate - A function which checks if the element is a match.
      * @returns {number} The index of the element.
      */
-  findIndex(predicate: (element: TSource) => boolean): number {
+  async findIndex(predicate: (element: TSource) => boolean | Promise<boolean>): Promise<number> {
     let index = 0
 
-    for (const el of this) {
-      if (predicate(el)) {
+    for await (const el of this) {
+      if (await predicate(el)) {
         return index
       }
       index++
@@ -705,7 +679,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
    * @param {TSource} element - The element to look for.
    * @returns {number} The index of the element.
    */
-  lastIndexOf(element: TSource): number {
+  async lastIndexOf(element: TSource): Promise<number> {
     return this.findLastIndex(el => el === element)
   }
 
@@ -714,11 +688,11 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
      * @param {Function} predicate - A function which checks if the element is a match.
      * @returns {number} The index of the element.
      */
-  findLastIndex(predicate: (element: TSource) => boolean): number {
+  async findLastIndex(predicate: (element: TSource) => boolean | Promise<boolean>): Promise<number> {
     let index = 0
     let lastIndex = -1
-    for (const el of this) {
-      if (predicate(el)) {
+    for await (const el of this) {
+      if (await predicate(el)) {
         lastIndex = index
       }
       index++
@@ -731,8 +705,8 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
    * Executes an action on each element of the sequence and yields the element.
    * @param action - The action to execute on each element.
    */
-  tap(action: (element: TSource) => void): Linqable<TSource> {
-    return new Linqable(new Tap(this.elements, action))
+  tap(action: (element: TSource) => void): AsyncLinqable<TSource> {
+    return new AsyncLinqable(new Tap(this.elements, action))
   }
 
   /**
@@ -740,8 +714,8 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
    * @param count - The number of times to repeat the sequence.
    * @returns The repeated sequence.
    */
-  repeat(count = Infinity): Linqable<TSource> {
-    return new Linqable(new Repeat(this.elements, count))
+  repeat(count = Infinity): AsyncLinqable<TSource> {
+    return new AsyncLinqable(new Repeat(this.elements, count))
   }
 
   toString(): string {
@@ -780,11 +754,13 @@ export class OrderedLinqable<TSource> extends Linqable<TSource> {
   }
 }
 
-export function extractSync<T>(iterable: Linqable<T> | SyncSource<T> | AsyncSource<T>): Iterable<T> {
-  if (iterable instanceof Linqable && isWrapper(iterable))
-    return iterable[elementsSymbol]().next().value
+export function extractAsync<T>(iterable: Linqable<T> | AsyncLinqable<T> | SyncSource<T> | AsyncSource<T>): AsyncIterable<T> {
+  if ((iterable instanceof Linqable || iterable instanceof AsyncLinqable) && isWrapper(iterable)) {
+    const res = iterable[elementsSymbol]().next().value
+    return res
+  }
   else if (typeof iterable === 'function')
     return new GeneratorFunc(iterable)
 
-  return iterable as Iterable<T>
+  return iterable as AsyncIterable<T>
 }
