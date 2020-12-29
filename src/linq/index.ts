@@ -1,14 +1,27 @@
-import { Linqable, unwrap } from './linqable'
+import { Linqable, extractSync } from './linqable'
 import { Sequence } from './iterables/sequence'
 import { elementsSymbol, ElementsWrapper, isWrapper } from './element-wrapper'
+import { AsyncLinqable, extractAsync } from './linqableAsync'
+
+export type SyncSource<T> = Iterable<T> | (() => Generator<T>)
+export type AsyncSource<T> = AsyncIterable<T> | (() => AsyncGenerator<T>)
 
 /**
- * Wraps an interable into an object which supports queries.
- * @param {Iterable<T>} iterable - The sequence which will be queried.
- * @returns {Linqable<number>} An object with support for queries.
+ * Wraps an iterable or a generator into an iterator object which supports queries.
+ * @param {Iterable<T>} iterable - An iterable or generator which will be queried.
+ * @returns {Linqable<T>} An object with support for queries.
  */
-export function linq<T>(iterable: Iterable<T>): Linqable<T> {
-  return new Linqable(unwrap(iterable))
+export function linq<T>(iterable: Linqable<T> | SyncSource<T>): Linqable<T> {
+  return new Linqable(extractSync(iterable))
+}
+
+/**
+ * Wraps an iterable into an async iterator object which supports queries.
+ * @param {Iterable<T>} iterable - An iterable or (async) generator which will be queried.
+ * @returns {AsyncLinqable<T>} An object with support for queries.
+ */
+export function alinq<T>(iterable: Linqable<T> | SyncSource<T> | AsyncSource<T>): AsyncLinqable<T> {
+  return new AsyncLinqable(extractAsync(iterable))
 }
 
 /**
@@ -50,7 +63,7 @@ export function print<T>(linqable: Linqable<T>): void {
   printTree<T>(linqable)
 }
 
-function printTree<T>(linqable: ElementsWrapper<T> | Iterable<T>, indent = '', isLast = true): void {
+function printTree<T>(linqable: ElementsWrapper<T> | Iterable<T> | AsyncIterable<T>, indent = '', isLast = true): void {
   if (!linqable) {
     return
   }
