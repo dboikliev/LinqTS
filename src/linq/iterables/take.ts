@@ -6,13 +6,18 @@ export class Take<TSource> implements ElementsWrapper<TSource> {
   }
 
   *[Symbol.iterator](): IterableIterator<TSource> {
-    let current = 0
+    if (this.count <= 0) {
+      return
+    }
+
+    let total = 0
     for (const element of this.elements) {
-      if (current >= this.count) {
+      yield element
+      
+      total++
+      if (total >= this.count) {
         return
       }
-      current++
-      yield element
     }
   }
 

@@ -42,4 +42,27 @@ describe('take', () => {
 
     assert.deepStrictEqual(sequence, [])
   })
+
+  it('should be called at most the provided number of times', () => {
+    const iterable = [1, 2, 3, 4, 5]
+    let count = 0
+    linq(iterable).tap(() => count++).take(-1).toArray()
+    assert.strictEqual(count, 0)
+
+    count = 0
+    linq(iterable).tap(() => count++).take(0).toArray()
+    assert.strictEqual(count, 0)
+
+    count = 0
+    linq(iterable).tap(() => count++).take(1).toArray()
+    assert.strictEqual(count, 1)
+
+    count = 0
+    linq(iterable).tap(() => count++).take(iterable.length).toArray()
+    assert.strictEqual(count, iterable.length)
+
+    count = 0
+    linq(iterable).tap(() => count++).take(iterable.length + 10).toArray()
+    assert.strictEqual(count, iterable.length)
+  })
 })
