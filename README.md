@@ -128,7 +128,7 @@ Linqable
 
 The API any objects which are iterable in JavaScript. In order to use the method it is required to call `linq` with the object that we want to iterate as a parameter. The result of `linq` is `Linqable` object which supports the api. The linq module exports `linq`, `alinq`, `seq`, `repeat` and `id`.
 
-`alinq` is a wrapper which exposes a set of asynchronous API is, allowing for various callbacks to return promises.\
+`alinq` is a wrapper which exposes a set of asynchronous APIs, allowing for various callbacks to return promises.\
 The functions which cause immediate execution in the synchronous API return Promise in the `alinq` API.
 Other than that, the method definitions are analogous to the `linq` API.
 
