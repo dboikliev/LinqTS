@@ -2,7 +2,7 @@ import { elementsSymbol, ElementsWrapper } from '../element-wrapper'
 
 export class Take<TSource> implements ElementsWrapper<TSource> {
   constructor(private elements: Iterable<TSource> | AsyncIterable<TSource>,
-    private count: number) {
+    private readonly count: number) {
   }
 
   *[Symbol.iterator](): IterableIterator<TSource> {
