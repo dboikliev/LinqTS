@@ -3,7 +3,7 @@ import { elementsSymbol, ElementsWrapper } from '../element-wrapper'
 export class Zip<TLeft, TRight, TResult> implements ElementsWrapper<TLeft | TRight> {
   constructor(private left: Iterable<TLeft> | AsyncIterable<TLeft>,
     private right: Iterable<TRight> | AsyncIterable<TRight>,
-    private selector: (left: TLeft, right: TRight) => TResult) {
+    private selector: (left: TLeft, right: TRight) => TResult | Promise<TResult>) {
   }
 
   *[Symbol.iterator](): IterableIterator<TResult> {
@@ -12,14 +12,14 @@ export class Zip<TLeft, TRight, TResult> implements ElementsWrapper<TLeft | TRig
       throw Error('Missing @@iterator')
     }
 
-    const iterLeft = this.left[Symbol.iterator]()
-    const iterRight = this.right[Symbol.iterator]()
+    const iterLeft = this.left[Symbol.iterator]() as IterableIterator<TLeft>
+    const iterRight = this.right[Symbol.iterator]() as IterableIterator<TRight>
 
     let iterationLeft = iterLeft.next()
     let iterationRight = iterRight.next()
 
     while (!iterationLeft.done && !iterationRight.done) {
-      yield this.selector(iterationLeft.value, iterationRight.value)
+      yield this.selector(iterationLeft.value, iterationRight.value) as TResult
       iterationLeft = iterLeft.next()
       iterationRight = iterRight.next()
     }
@@ -32,7 +32,7 @@ export class Zip<TLeft, TRight, TResult> implements ElementsWrapper<TLeft | TRig
     let [iterationLeft, iterationRight] = await Promise.all([iterLeft.next(), iterRight.next()])
 
     while (!iterationLeft.done && !iterationRight.done) {
-      yield this.selector(iterationLeft.value, iterationRight.value);
+      yield await this.selector(iterationLeft.value, iterationRight.value);
       [iterationLeft, iterationRight] = await Promise.all([iterLeft.next(), iterRight.next()])
     }
   }

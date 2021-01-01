@@ -27,11 +27,14 @@ import { AsyncSource, id, SyncSource } from '.'
 import { LinqMap, EqualityComparer, LinqSet } from './collections'
 import { GeneratorFunc } from './iterables/generatorFunc'
 
+
 export type ToMapArgs<TSource, TKey, TValue> = {
   keySelector: (element: TSource) => TKey,
   valueSelector?: (element: TSource) => TValue,
   equalityComparer?: EqualityComparer<TKey>
 }
+
+export type SelectManyResult<T> = T extends Iterable<infer U> ? U : T
 
 export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSource> {
   constructor(protected elements: Iterable<TSource>) {
@@ -177,7 +180,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
      * @param {function} selector - A function which transforms an element into another value.
      * @returns {Linqable<TResult>} An iterable of the transformed elements.
      */
-  selectMany<TResult>(selector: (element: TSource) => Iterable<TResult>): Linqable<TResult> {
+  selectMany<TResult>(selector: (element: TSource) => TResult): Linqable<SelectManyResult<TResult>> {
     return new Linqable(new SelectMany(this.elements, selector))
   }
 

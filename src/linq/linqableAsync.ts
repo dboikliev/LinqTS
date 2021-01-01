@@ -5,6 +5,12 @@ import { Concat, Distinct, DistinctBy, Except, GroupBy, Grouping, Intersect, Joi
 import { GeneratorFunc } from './iterables/generatorFunc'
 import { Linqable, ToMapArgs } from './linqable'
 
+export type SelectManyAsyncResult<TResult> = TResult extends Many<Promise<unknown>> ? ManyAwaited<TResult> : TResult extends Many<infer U> ? U : ManyAwaited<TResult>
+export type ManyAwaited<T> = T extends Many<Promise<infer Q>> ? Awaited<Q> : T extends Promise<Many<infer Q>> ? Awaited<Q> : T extends Promise<infer Q> ? ManyAwaited<Q> : T
+type Awaited<T> = T extends Promise<infer Q> ? Awaited<Q> : T
+type Many<T> = Iterable<T> | AsyncIterable<T>
+
+
 export class AsyncLinqable<TSource> implements AsyncIterable<TSource>, ElementsWrapper<TSource> {
   constructor(protected elements: AsyncIterable<TSource>) {
   }
@@ -149,7 +155,7 @@ export class AsyncLinqable<TSource> implements AsyncIterable<TSource>, ElementsW
      * @param {function} selector - A function which transforms an element into another value.
      * @returns {AsyncLinqable<TResult>} An iterable of the transformed elements.
      */
-  selectMany<TResult>(selector: (element: TSource) => Iterable<TResult> | AsyncIterable<TResult> | Promise<Iterable<TResult> | AsyncIterable<TResult>>): AsyncLinqable<TResult> {
+  selectMany<TResult>(selector: (element: TSource) => TResult | Promise<TResult>): AsyncLinqable<SelectManyAsyncResult<TResult>> {
     return new AsyncLinqable(new SelectMany(this.elements, selector))
   }
 
@@ -161,8 +167,8 @@ export class AsyncLinqable<TSource> implements AsyncIterable<TSource>, ElementsW
      * @param {function} selector - A function witch transforms a pair of elements into another value.
      * @returns {AsyncLinqable<TResult>} An iterable of the trasnformed values.
      */
-  zip<TRight, TResult = [TSource, TRight]>(right: Iterable<TRight> | AsyncIterable<TRight>, selector?: (left: TSource, right: TRight) => TResult): AsyncLinqable<TResult> {
-    return new AsyncLinqable(new Zip(this.elements, extractAsync(right), (selector || ((a: TSource, b: TRight) => [a, b] as never))))
+  zip<TRight, TResult = [TSource, TRight]>(right: Iterable<TRight> | AsyncIterable<TRight>, selector?: (left: TSource, right: TRight) => TResult | Promise<TResult>): AsyncLinqable<TResult> {
+    return new AsyncLinqable(new Zip(this.elements, extractAsync(right), selector || ((a: TSource, b: TRight) => [a, b] as never)))
   }
 
   /**

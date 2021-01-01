@@ -59,7 +59,7 @@ export function id<T>(element: T): T {
  * Prints a tree-like representation of the linqable structure to the console.
  * @param linqable - The linqable a object to print.
  */
-export function print<T>(linqable: Linqable<T>): void {
+export function print<T>(linqable: Linqable<T> | AsyncLinqable<T>): void {
   printTree<T>(linqable)
 }
 

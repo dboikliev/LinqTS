@@ -9,7 +9,16 @@ An api for lazy querying of iterables, implemented in TypeScript and inspired by
 
 To implement a lazy API similar by using iterators in order to simplify data-oriented workflows greatly and to provide an API for C# developers familiar with the LINQ extension methods.
 
-![Demo](./assets/demo.gif)
+## Demo
+
+### Sync API
+
+<img src="./assets/demo.gif" width="500">
+
+### Async API
+
+<img src="./assets/demo-alinq.gif" width="640">
+
 
 ## Equality Comparers
 
@@ -117,7 +126,11 @@ Linqable
 
 ### Building and executing a query
 
-The API any objects which are iterable in JavaScript. In order to use the method it is required to call `linq` with the object that we want to iterate as a parameter. The result of `linq` is `Linqable` object which supports the api. The linq module exports `linq`, `seq`, `repeat` and `id`.
+The API any objects which are iterable in JavaScript. In order to use the method it is required to call `linq` with the object that we want to iterate as a parameter. The result of `linq` is `Linqable` object which supports the api. The linq module exports `linq`, `alinq`, `seq`, `repeat` and `id`.
+
+`alinq` is a wrapper which exposes a set of asynchronous API is, allowing for various callbacks to return promises.\
+The functions which cause immediate execution in the synchronous API return Promise in the `alinq` API.
+Other than that, the method definitions are analogous to the `linq` API.
 
 ```typescript
 import { linq } from "./linq";
