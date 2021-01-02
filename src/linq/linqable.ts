@@ -26,6 +26,7 @@ import { elementsSymbol, ElementsWrapper, isWrapper } from './element-wrapper'
 import { AsyncSource, id, SyncSource } from '.'
 import { LinqMap, EqualityComparer, LinqSet } from './collections'
 import { GeneratorFunc } from './iterables/generatorFunc'
+import { Memoized } from './iterables/memoized'
 
 
 export type ToMapArgs<TSource, TKey, TValue> = {
@@ -37,6 +38,7 @@ export type ToMapArgs<TSource, TKey, TValue> = {
 export type SelectManyResult<T> = T extends Iterable<infer U> ? U : T
 
 export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSource> {
+  
   constructor(protected elements: Iterable<TSource>) {
   }
 
@@ -747,6 +749,10 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
     return new Linqable(new Repeat(this.elements, count))
   }
 
+  memoized(): Linqable<TSource> {
+    return new Linqable(new Memoized(this.elements))
+  }
+
   toString(): string {
     return Linqable.name
   }
@@ -788,6 +794,8 @@ export function extractSync<T>(iterable: Linqable<T> | SyncSource<T> | AsyncSour
     return iterable[elementsSymbol]().next().value
   else if (typeof iterable === 'function')
     return new GeneratorFunc(iterable)
-
-  return iterable as Iterable<T>
+  else if (typeof iterable[Symbol.iterator] === 'function')
+    return iterable as Iterable<T>
+  
+  throw Error('Undexpected input')
 }

@@ -16,13 +16,16 @@ export class GeneratorFunc<TSource> {
 
   async *[Symbol.asyncIterator](): AsyncIterableIterator<TSource> {
     const generator = this.generator()
+    if (typeof generator[Symbol.iterator] !== 'function' || typeof generator[Symbol.asyncIterator] !== 'function') {
+      throw Error('Expected @@iterator or @@asyncIterator')
+    }
+
     let res = await generator.next()
     while (!res.done) {
       yield res.value
       res = await generator.next()
     }
   }
-
 
   toString(): string {
     return `${GeneratorFunc.name} (generator: ${this.generator})`

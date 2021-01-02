@@ -2,6 +2,7 @@ import { Linqable, extractSync } from './linqable'
 import { Sequence } from './iterables/sequence'
 import { elementsSymbol, ElementsWrapper, isWrapper } from './element-wrapper'
 import { AsyncLinqable, extractAsync } from './linqableAsync'
+import { Unfold, UnfoldStep } from './iterables/unfold'
 
 export type SyncSource<T> = Iterable<T> | (() => Generator<T>)
 export type AsyncSource<T> = AsyncIterable<T> | (() => AsyncGenerator<T>)
@@ -20,7 +21,7 @@ export function linq<T>(iterable: Linqable<T> | SyncSource<T>): Linqable<T> {
  * @param {Iterable<T>} iterable - An iterable or (async) generator which will be queried.
  * @returns {AsyncLinqable<T>} An object with support for queries.
  */
-export function alinq<T>(iterable: Linqable<T> | SyncSource<T> | AsyncSource<T>): AsyncLinqable<T> {
+export function linqAsync<T>(iterable: Linqable<T> | SyncSource<T> | AsyncSource<T>): AsyncLinqable<T> {
   return new AsyncLinqable(extractAsync(iterable))
 }
 
@@ -45,6 +46,14 @@ export function repeat<T>(element: T, count = Infinity): Linqable<T> {
   return linq([element]).repeat(count)
 }
 
+
+export function unfold<TState, TResult>(initialState: TState, generator: (state: TState) => UnfoldStep<TState, TResult>, breakWhen: (state: TState) => boolean = () => false): Linqable<TResult> {
+  return new Linqable(new Unfold(initialState, generator, breakWhen))
+}
+
+export function unfoldAsync<TState, TResult>(initialState: TState, generator: (state: TState) => UnfoldStep<TState, TResult> | Promise<UnfoldStep<TState, TResult>>, breakWhen: (state: TState) => boolean | Promise<boolean> = () => false): AsyncLinqable<TResult> {
+  return new AsyncLinqable(new Unfold(initialState, generator, breakWhen))
+}
 
 /**
  * The identity function (x => x). It takes an element and returns it.

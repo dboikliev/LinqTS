@@ -18,10 +18,6 @@ export class Where<TSource> implements ElementsWrapper<TSource> {
   }
 
   async * [Symbol.asyncIterator](): AsyncIterableIterator<TSource> {
-    if (typeof this.elements[Symbol.iterator] !== 'function') {
-      throw Error('Missing @@iterator')
-    }
-
     for await (const element of this.elements) {
       if (await this.predicate(element)) {
         yield element

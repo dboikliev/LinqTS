@@ -15,11 +15,6 @@ To implement a lazy API similar by using iterators in order to simplify data-ori
 
 <img src="./assets/demo.gif" width="500">
 
-### Async API
-
-<img src="./assets/demo-alinq.gif" width="640">
-
-
 ## Equality Comparers
 
 Some of the methods (union, except, etc.) accept an optional equality comparer object in the form of `{ hash, equals }`.\
@@ -126,10 +121,10 @@ Linqable
 
 ### Building and executing a query
 
-The API any objects which are iterable in JavaScript. In order to use the method it is required to call `linq` with the object that we want to iterate as a parameter. The result of `linq` is `Linqable` object which supports the api. The linq module exports `linq`, `alinq`, `seq`, `repeat` and `id`.
+The API any objects which are iterable in JavaScript. In order to use the method it is required to call `linq` with the object that we want to iterate as a parameter. The result of `linq` is `Linqable` object which supports the api. The linq module exports `linq`, `linqAsync`, `seq`, `repeat` and `id`.
 
-`alinq` is a wrapper which exposes a set of asynchronous APIs, allowing for various callbacks to return promises.\
-The functions which cause immediate execution in the synchronous API return Promise in the `alinq` API.
+`linqAsync` is a wrapper which exposes a set of asynchronous API is, allowing for various callbacks to return promises.\
+The functions which cause immediate execution in the synchronous API return Promise in the `linqAsync` API.
 Other than that, the method definitions are analogous to the `linq` API.
 
 ```typescript

@@ -3,6 +3,7 @@ import { EqualityComparer, LinqMap, LinqSet } from './collections'
 import { elementsSymbol, ElementsWrapper, isWrapper } from './element-wrapper'
 import { Concat, Distinct, DistinctBy, Except, GroupBy, Grouping, Intersect, Join, Ordered, Repeat, Reverse, Select, SelectMany, Skip, SkipWhile, Take, TakeWhile, Tap, Union, Where, Windowed, Zip } from './iterables'
 import { GeneratorFunc } from './iterables/generatorFunc'
+import { Memoized } from './iterables/memoized'
 import { Linqable, ToMapArgs } from './linqable'
 
 export type SelectManyAsyncResult<TResult> = TResult extends Many<Promise<unknown>> ? ManyAwaited<TResult> : TResult extends Many<infer U> ? U : ManyAwaited<TResult>
@@ -12,14 +13,14 @@ type Many<T> = Iterable<T> | AsyncIterable<T>
 
 
 export class AsyncLinqable<TSource> implements AsyncIterable<TSource>, ElementsWrapper<TSource> {
-  constructor(protected elements: AsyncIterable<TSource>) {
+  constructor(protected elements: Iterable<TSource> | AsyncIterable<TSource>) {
   }
 
   async *[Symbol.asyncIterator](): AsyncIterableIterator<TSource> {
     yield* this.elements
   }
 
-  *[elementsSymbol](): IterableIterator<AsyncIterable<TSource>> {
+  *[elementsSymbol](): IterableIterator<Iterable<TSource> | AsyncIterable<TSource>> {
     yield this.elements
   }
 
@@ -724,12 +725,16 @@ export class AsyncLinqable<TSource> implements AsyncIterable<TSource>, ElementsW
     return new AsyncLinqable(new Repeat(this.elements, count))
   }
 
+  memoized(): AsyncLinqable<TSource> {
+    return new AsyncLinqable(new Memoized(this.elements))
+  }
+
   toString(): string {
-    return Linqable.name
+    return AsyncLinqable.name
   }
 }
 
-export class OrderedLinqable<TSource> extends Linqable<TSource> {
+export class OrderedLinqable<TSource> extends AsyncLinqable<TSource> {
   constructor(elements: Ordered<TSource>) {
     super(elements)
   }
@@ -760,13 +765,13 @@ export class OrderedLinqable<TSource> extends Linqable<TSource> {
   }
 }
 
-export function extractAsync<T>(iterable: Linqable<T> | AsyncLinqable<T> | SyncSource<T> | AsyncSource<T>): AsyncIterable<T> {
-  if ((iterable instanceof Linqable || iterable instanceof AsyncLinqable) && isWrapper(iterable)) {
-    const res = iterable[elementsSymbol]().next().value
-    return res
-  }
+export function extractAsync<T>(iterable: Linqable<T> | AsyncLinqable<T> | SyncSource<T> | AsyncSource<T>): Iterable<T> | AsyncIterable<T> {
+  if ((iterable instanceof Linqable || iterable instanceof AsyncLinqable) && isWrapper(iterable))
+    return iterable[elementsSymbol]().next().value
   else if (typeof iterable === 'function')
     return new GeneratorFunc(iterable)
+  else if (typeof iterable[Symbol.iterator] === 'function' || typeof iterable[Symbol.asyncIterator] === 'function')
+    return iterable
 
-  return iterable as AsyncIterable<T>
+  throw Error('Undexpected input')
 }

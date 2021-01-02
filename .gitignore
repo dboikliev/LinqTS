@@ -5,3 +5,4 @@ src/app.ts
 coverage
 .history
 report*
+main.ts
