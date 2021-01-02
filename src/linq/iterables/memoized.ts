@@ -32,29 +32,28 @@ export class Memoized<TSource> implements ElementsWrapper<TSource> {
     }
 
     let index = 0
-    return yield* (function* (this: Memoized<TSource>) {
-      while (true) {
-        if (index >= this.cache.length) {
-          const result = this.it.next() as IteratorYieldResult<TSource>
-          this.done = result.done
-          this.cache.push(result)
-        }
-
-        const res = this.cache[index] as IteratorYieldResult<TSource>
-        if (res.done) {
-          break
-        }
-
-        index++
-        yield res.value
+    while (true) {
+      if (index >= this.cache.length) {
+        const result = this.it.next() as IteratorYieldResult<TSource>
+        this.done = result.done
+        this.cache.push(result)
       }
-    }).apply(this)
+
+      const res = this.cache[index] as IteratorYieldResult<TSource>
+      if (res.done) {
+        break
+      }
+
+      index++
+      yield res.value
+    }
   }
 
   async *[Symbol.asyncIterator](): AsyncIterableIterator<TSource> {
     if (typeof this.iterable[Symbol.iterator] !== 'function' && typeof this.iterable[Symbol.asyncIterator] !== 'function') {
-      throw Error('Exptected @@iterator or @@asyncIterator')
+      throw Error('Expected @@iterator or @@asyncIterator')
     }
+
     if (this.done) {
       for (const el of this.cache) {
         const result = await (el as Promise<IteratorResult<TSource>>)
@@ -66,7 +65,7 @@ export class Memoized<TSource> implements ElementsWrapper<TSource> {
     }
 
     if (!this.it) {
-      this.it = (this.iterable[Symbol.asyncIterator] || this.iterable[Symbol.iterator])()
+      this.it = (this.iterable[Symbol.asyncIterator]() || this.iterable[Symbol.iterator]())
     }
 
     let index = 0
