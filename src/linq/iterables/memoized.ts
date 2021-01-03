@@ -65,13 +65,12 @@ export class Memoized<TSource> implements ElementsWrapper<TSource> {
     }
 
     if (!this.it) {
-      this.it = (this.iterable[Symbol.asyncIterator]() || this.iterable[Symbol.iterator]())
+      this.it = (typeof this.iterable[Symbol.asyncIterator] === 'function' && this.iterable[Symbol.asyncIterator]() || typeof this.iterable[Symbol.iterator] === 'function' && this.iterable[Symbol.iterator]())
     }
 
     let index = 0
     while (true) {
       if (index >= this.cache.length) {
-        console.log('get next')
         const result = this.it.next() as Promise<IteratorResult<TSource, any>>
         this.cache.push(result)
       }
