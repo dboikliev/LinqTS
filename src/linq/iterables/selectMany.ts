@@ -2,7 +2,7 @@ import { elementsSymbol, ElementsWrapper } from '../element-wrapper'
 import { SelectManyResult } from '../linqable'
 import { SelectManyAsyncResult } from '../linqableAsync'
 
-export class SelectMany<TSource, TResult> implements ElementsWrapper<TSource> {
+export class SelectMany<TSource, TResult> implements ElementsWrapper<TSource>, Iterable<SelectManyResult<TResult>>, AsyncIterable<SelectManyAsyncResult<TResult>> {
   constructor(private elements: Iterable<TSource> | AsyncIterable<TSource>,
     private selector: (element: TSource) => TResult | Promise<TResult>) {
   }
