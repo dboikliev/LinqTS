@@ -27,7 +27,7 @@ import { AsyncSource, id, SyncSource } from '.'
 import { LinqMap, EqualityComparer, LinqSet } from './collections'
 import { GeneratorFunc } from './iterables/generatorFunc'
 import { Memoized } from './iterables/memoized'
-
+import { Scan } from './iterables/scan'
 
 export type ToMapArgs<TSource, TKey, TValue> = {
   keySelector: (element: TSource) => TKey,
@@ -38,7 +38,7 @@ export type ToMapArgs<TSource, TKey, TValue> = {
 export type SelectManyResult<T> = T extends Iterable<infer U> ? U : T
 
 export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSource> {
-  
+
   constructor(protected elements: Iterable<TSource>) {
   }
 
@@ -287,14 +287,13 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
     return new Linqable(new Concat(extractSync(values), this.elements))
   }
 
-
   /**
      * Reduces the sequence into a value.
      * @param {TResult} seed - A starting value.
      * @param {function} accumulator - An accumulator function.
      * @returns {TResult} An aggregate of the elements.
      */
-  aggregate<TResult>(seed: TResult, accumulator: (accumulated: TResult, element: TSource, index: number) => TResult): TResult {
+  aggregate<TResult>(accumulator: (accumulated: TResult, element: TSource, index: number) => TResult, seed: TResult): TResult {
     let accumulated = seed
     let index = 0
 
@@ -303,6 +302,10 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
     }
 
     return accumulated
+  }
+
+  scan<TResult = TSource>(accumulator: (accumulated: TResult, element: TSource, index: number) => TResult, seed?: TResult): Linqable<TResult> {
+    return new Linqable(new Scan(this.elements, seed, accumulator))
   }
 
   /**
@@ -463,7 +466,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
      * @returns {number} The sum of the values returned by the selector function.
      */
   sumBy(selector: (element: TSource) => number): number {
-    return this.aggregate(0, (acc, current) => acc + selector(current))
+    return this.aggregate((acc, current) => acc + selector(current), 0)
   }
 
 
@@ -546,10 +549,10 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
      * @returns {TSource[]} An array of the sequence elements.
      */
   toArray(): TSource[] {
-    const array = this.aggregate([], (acc, el) => {
+    const array = this.aggregate((acc, el) => {
       acc.push(el)
       return acc
-    })
+    }, [])
 
     return array
   }
@@ -566,14 +569,14 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
    */
   toMap<TKey, TValue = TSource>({ keySelector, valueSelector, equalityComparer }: ToMapArgs<TSource, TKey, TValue>): Map<TKey, TValue> {
     const seed = equalityComparer ? new LinqMap(equalityComparer) : new Map()
-    return this.aggregate(seed, (map, current) => {
+    return this.aggregate((map, current) => {
       const key = keySelector(current)
       if (map.has(key)) {
         throw Error(`An element with key "${key}" has already been added.`)
       }
 
       return map.set(key, typeof valueSelector === 'function' ? valueSelector(current) : current as never)
-    })
+    }, seed)
   }
 
   /**
@@ -585,12 +588,12 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
    */
   toMapMany<TKey, TValue = TSource>({ keySelector, valueSelector, equalityComparer }: ToMapArgs<TSource, TKey, TValue>): Map<TKey, TValue[]> {
     const seed = equalityComparer ? new LinqMap(equalityComparer) : new Map()
-    return this.aggregate(seed, (map, current) => {
+    return this.aggregate((map, current) => {
       const key = keySelector(current)
       const value = map.get(key) || []
       value.push(typeof valueSelector === 'function' ? valueSelector(current) : current as never)
       return map.set(key, value)
-    })
+    }, seed)
   }
 
   /**
@@ -796,6 +799,6 @@ export function extractSync<T>(iterable: Linqable<T> | SyncSource<T> | AsyncSour
     return new GeneratorFunc(iterable)
   else if (typeof iterable[Symbol.iterator] === 'function')
     return iterable as Iterable<T>
-  
+
   throw Error('Undexpected input')
 }
