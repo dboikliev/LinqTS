@@ -3,7 +3,7 @@ import { elementsSymbol, ElementsWrapper } from '../element-wrapper'
 export class Scan<TSource, TResult> implements ElementsWrapper<TSource> {
   constructor(private readonly elements: Iterable<TSource> | AsyncIterable<TSource>,
     private readonly seed: TResult,
-    private readonly accumulator: (accumulated: TResult, element: TSource, index: number) => TResult) {
+    private readonly accumulator: (accumulated: TResult, element: TSource, index: number) => TResult | Promise<TResult>) {
   }
 
   *[Symbol.iterator](): IterableIterator<TResult> {
@@ -18,14 +18,14 @@ export class Scan<TSource, TResult> implements ElementsWrapper<TSource> {
         yield result.value
         let second = iterator.next()
         if (!second.done) {
-          accumulated = this.accumulator(result.value, second.value, index++)
+          accumulated = this.accumulator(result.value, second.value, index++) as TResult
           yield accumulated
         }
       }
     }
     let result = iterator.next()
     while (!result.done) {
-      accumulated = this.accumulator(accumulated, result.value, index++)
+      accumulated = this.accumulator(accumulated, result.value, index++) as TResult
       yield accumulated
       result = iterator.next()
     }
@@ -40,18 +40,18 @@ export class Scan<TSource, TResult> implements ElementsWrapper<TSource> {
     let accumulated = this.seed
     if (typeof this.seed === 'undefined') {
       let result = await iterator.next()
-      console.log(result)
       if (!result.done) {
+        yield result.value
         let second = await iterator.next()
         if (!second.done) {
-          accumulated = await this.accumulator(result.value, second.value, index++)
+          accumulated = await this.accumulator(result.value, second.value, index++) as TResult
           yield accumulated
         }
       }
     }
     let result = await iterator.next()
     while (!result.done) {
-      accumulated = await this.accumulator(accumulated, result.value, index++)
+      accumulated = await this.accumulator(accumulated, result.value, index++) as TResult
       yield accumulated
       result = await iterator.next()
     }

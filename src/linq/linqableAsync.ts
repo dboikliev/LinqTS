@@ -4,6 +4,7 @@ import { elementsSymbol, ElementsWrapper, isWrapper } from './element-wrapper'
 import { Concat, Distinct, DistinctBy, Except, GroupBy, Grouping, Intersect, Join, Ordered, Repeat, Reverse, Select, SelectMany, Skip, SkipWhile, Take, TakeWhile, Tap, Union, Where, Windowed, Zip } from './iterables'
 import { GeneratorFunc } from './iterables/generatorFunc'
 import { Memoized } from './iterables/memoized'
+import { Scan } from './iterables/scan'
 import { Linqable, ToMapArgs } from './linqable'
 
 export type SelectManyAsyncResult<TResult> = TResult extends Many<Promise<unknown>> ? ManyAwaited<TResult> : TResult extends Many<infer U> ? U : ManyAwaited<TResult>
@@ -277,6 +278,10 @@ export class AsyncLinqable<TSource> implements AsyncIterable<TSource>, ElementsW
     }
 
     return accumulated
+  }
+
+  scan<TResult = TSource>(accumulator: (accumulated: TResult, element: TSource, index: number) => TResult | Promise<TResult>, seed?: TResult): AsyncLinqable<TResult> {
+    return new AsyncLinqable(new Scan(this.elements, seed, accumulator))
   }
 
   /**
