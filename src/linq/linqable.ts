@@ -752,7 +752,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
 
   /**
    * Executes an action on each element of the sequence and yields the element.
-   * @param action - The action to execute on each element.
+   * @param action {FunctionF} - The action to execute on each element.
    */
   tap(action: (element: TSource) => void): Linqable<TSource> {
     return new Linqable(new Tap(this.elements, action))
@@ -771,8 +771,15 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
     return new Linqable(new Memoized(this.elements))
   }
 
-  cartesian<TOther>(other: Iterable<TOther>): Linqable<[TSource, TOther]> {
-    return new Linqable(new Cartesian(this.elements, extractSync(other)))
+  /**
+   * Cartesion product of the linable with another sequence. 
+   * For infinite sequences false should be passed for preserverOrder.
+   * @param {ITerable<TOther>} other - The other sequence.
+   * @param  {boolean} preserveOrder - A flag indigating whether to traverse the sequences in order.
+   * @returns {Linqable<[TSource, TOther]>} A linqable of tuples representing elements of the cartesian product of the two sequences.
+   */
+  cartesian<TOther>(other: Iterable<TOther>, preserveOrder = true): Linqable<[TSource, TOther]> {
+    return new Linqable(new Cartesian(this.elements, extractSync(other), preserveOrder))
   }
 
   toString(): string {

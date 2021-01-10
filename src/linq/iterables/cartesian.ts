@@ -1,4 +1,3 @@
-import { TcpSocketConnectOpts } from 'net'
 import { elementsSymbol, ElementsWrapper } from '../element-wrapper'
 
 export class Cartesian<TFirst, TSecond> implements ElementsWrapper<TFirst | TSecond> {
@@ -6,7 +5,8 @@ export class Cartesian<TFirst, TSecond> implements ElementsWrapper<TFirst | TSec
   private cacheSecond = new Map<number, Promise<IteratorResult<TSecond>> | IteratorResult<TSecond>>()
 
   constructor(private readonly first: Iterable<TFirst> | AsyncIterable<TFirst>,
-    private readonly second: Iterable<TSecond> | AsyncIterable<TSecond>) {
+    private readonly second: Iterable<TSecond> | AsyncIterable<TSecond>,
+    private readonly preserveOrder: boolean = true) {
   }
 
   *[elementsSymbol](): IterableIterator<Iterable<TFirst | TSecond> | AsyncIterable<TFirst | TSecond>> {
@@ -19,10 +19,21 @@ export class Cartesian<TFirst, TSecond> implements ElementsWrapper<TFirst | TSec
       throw Error('Expected @@iterator')
     }
 
-    let firstIndex = 0
-    let secondIndex = 0
+    if (this.preserveOrder) {
+      for (const outer of this.first as Iterable<TFirst>) {
+        for (const inner of this.second as Iterable<TSecond>) {
+          yield [outer, inner]
+        }
+      }
+
+      return
+    }
+
     const itFirst = this.first[Symbol.iterator]() as Iterator<TFirst>
     const itSecond = this.second[Symbol.iterator]() as Iterator<TSecond>
+
+    let firstIndex = 0
+    let secondIndex = 0
     let row = 0
     let currentRow = 0
     let currentCol = 0
@@ -86,11 +97,21 @@ export class Cartesian<TFirst, TSecond> implements ElementsWrapper<TFirst | TSec
       throw Error('Expected @@iterator or @@asyncIterator')
     }
 
-    let firstIndex = 0
-    let secondIndex = 0
+    if (this.preserveOrder) {
+      for await (const outer of this.first) {
+        for await (const inner of this.second) {
+          yield [outer, inner]
+        }
+      }
+
+      return
+    }
+
     const itFirst = (typeof this.first[Symbol.asyncIterator] === 'function' && this.first[Symbol.asyncIterator]() || typeof this.first[Symbol.iterator] === 'function' && this.first[Symbol.iterator]()) as AsyncIterator<TFirst>
     const itSecond = (typeof this.second[Symbol.asyncIterator] === 'function' && this.second[Symbol.asyncIterator]() || typeof this.second[Symbol.iterator] === 'function' && this.second[Symbol.iterator]()) as AsyncIterator<TSecond>
-
+    
+    let firstIndex = 0
+    let secondIndex = 0
     let row = 0
     let currentRow = 0
     let currentCol = 0
