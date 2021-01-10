@@ -293,15 +293,38 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
      * @param {function} accumulator - An accumulator function.
      * @returns {TResult} An aggregate of the elements.
      */
-  aggregate<TResult>(accumulator: (accumulated: TResult, element: TSource, index: number) => TResult, seed: TResult): TResult {
-    let accumulated = seed
+  aggregate<TResult = TSource>(accumulator: (accumulated: TResult, element: TSource, index: number) => TResult, seed?: TResult): TResult {
+    const iterator = typeof this.elements[Symbol.iterator] === 'function' && this.elements[Symbol.iterator]()
+
     let index = 0
 
-    for (const element of this) {
-      accumulated = accumulator(accumulated, element, index++)
+    let accumulated = seed
+    if (typeof seed === 'undefined') {
+      let result = iterator.next()
+      if (!result.done) {
+        accumulated = result.value
+        let second = iterator.next()
+        index++
+        if (!second.done) {
+          accumulated = accumulator(result.value, second.value, index++) as TResult
+        }
+      }
     }
-
+    let result = iterator.next()
+    while (!result.done) {
+      accumulated = accumulator(accumulated, result.value, index++) as TResult
+      result = iterator.next()
+    }
     return accumulated
+
+    // let accumulated = seed
+    // let index = 0
+
+    // for (const element of this) {
+    //   accumulated = accumulator(accumulated, element, index++)
+    // }
+
+    // return accumulated
   }
 
   scan<TResult = TSource>(accumulator: (accumulated: TResult, element: TSource, index: number) => TResult, seed?: TResult): Linqable<TResult> {
