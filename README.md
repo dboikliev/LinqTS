@@ -23,7 +23,7 @@ Some of the methods (union, except, etc.) accept an optional equality comparer o
 
 This is useful for cases where the iterables contain objects and not just primitives. These operations are backed by a custom map implementation which allows for any object to be used as a key.
 
-For ease of use default compareres for `number`, `string`, `boolean`, `object` and `Iterable` are provided OOTB.
+For ease of use default comparers for `number`, `string`, `boolean`, `object` and `Iterable` are provided OOTB.
 It is advisable that a custom comparer is implemented tailored for the specific use case when a complex object is used a key.
 
 ## Supported operations

@@ -5,6 +5,7 @@ import { Concat, Distinct, DistinctBy, Except, GroupBy, Grouping, Intersect, Joi
 import { Cartesian } from './iterables/cartesian'
 import { GeneratorFunc } from './iterables/generatorFunc'
 import { Memoized } from './iterables/memoized'
+import { Scan } from './iterables/scan'
 import { Linqable, ToMapArgs } from './linqable'
 
 export type SelectManyAsyncResult<TResult> = TResult extends Many<Promise<unknown>> ? ManyAwaited<TResult> : TResult extends Many<infer U> ? U : ManyAwaited<TResult>
@@ -265,19 +266,38 @@ export class AsyncLinqable<TSource> implements AsyncIterable<TSource>, ElementsW
 
   /**
      * Reduces the sequence into a value.
-     * @param {TResult} seed - A starting value.
      * @param {function} accumulator - An accumulator function.
+     * @param {TResult} seed - A starting value.
      * @returns {TResult} An aggregate of the elements.
      */
-  async aggregate<TResult>(seed: TResult, accumulator: (accumulated: TResult, element: TSource, index: number) => TResult | Promise<TResult>): Promise<TResult> {
-    let accumulated = seed
+  async aggregate<TResult = TSource>(accumulator: (accumulated: TResult, element: TSource, index: number) => TResult | Promise<TResult>, seed?: TResult): Promise<TResult> {
+    const iterator = (typeof this.elements[Symbol.asyncIterator] === 'function' && this.elements[Symbol.asyncIterator]() ||
+      typeof this.elements[Symbol.iterator] === 'function' && this.elements[Symbol.iterator]()) as IterableIterator<TSource> | AsyncIterableIterator<TSource>
+
     let index = 0
 
-    for await (const element of this) {
-      accumulated = await accumulator(accumulated, element, index++)
+    let accumulated = seed
+    if (typeof seed === 'undefined') {
+      let result = await iterator.next()
+      if (!result.done) {
+        accumulated = result.value
+        let second = await iterator.next()
+        index++
+        if (!second.done) {
+          accumulated = await accumulator(result.value, second.value, index++) as TResult
+        }
+      }
     }
-
+    let result = await iterator.next()
+    while (!result.done) {
+      accumulated = await accumulator(accumulated, result.value, index++) as TResult
+      result = await iterator.next()
+    }
     return accumulated
+  }
+
+  scan<TResult = TSource>(accumulator: (accumulated: TResult, element: TSource, index: number) => TResult | Promise<TResult>, seed?: TResult): AsyncLinqable<TResult> {
+    return new AsyncLinqable(new Scan(this.elements, seed, accumulator))
   }
 
   /**
@@ -438,7 +458,7 @@ export class AsyncLinqable<TSource> implements AsyncIterable<TSource>, ElementsW
      * @returns {number} The sum of the values returned by the selector function.
      */
   async sumBy(selector: (element: TSource) => number | Promise<number>): Promise<number> {
-    return await this.aggregate(0, async (acc, current) => acc + await selector(current))
+    return await this.aggregate(async (acc, current) => acc + await selector(current), 0)
   }
 
 
@@ -521,10 +541,10 @@ export class AsyncLinqable<TSource> implements AsyncIterable<TSource>, ElementsW
      * @returns {TSource[]} An array of the sequence elements.
      */
   async toArray(): Promise<TSource[]> {
-    const array = await this.aggregate([] as TSource[], (acc, el) => {
+    const array = await this.aggregate((acc, el) => {
       acc.push(el)
       return acc
-    })
+    }, [])
 
     return array
   }
@@ -539,14 +559,14 @@ export class AsyncLinqable<TSource> implements AsyncIterable<TSource>, ElementsW
    */
   async toMap<TKey, TValue = TSource>({ keySelector, valueSelector, equalityComparer }: ToMapArgs<TSource, TKey, TValue>): Promise<Map<TKey, TValue>> {
     const seed = equalityComparer ? new LinqMap(equalityComparer) : new Map()
-    return this.aggregate(seed, (map, current) => {
+    return this.aggregate((map, current) => {
       const key = keySelector(current)
       if (map.has(key)) {
         throw Error(`An element with key "${key}" has already been added.`)
       }
 
       return map.set(key, typeof valueSelector === 'function' ? valueSelector(current) : current as never)
-    })
+    }, seed)
   }
 
   /**
@@ -558,12 +578,12 @@ export class AsyncLinqable<TSource> implements AsyncIterable<TSource>, ElementsW
    */
   async toMapMany<TKey, TValue = TSource>({ keySelector, valueSelector, equalityComparer }: ToMapArgs<TSource, TKey, TValue>): Promise<Map<TKey, TValue[]>> {
     const seed = equalityComparer ? new LinqMap(equalityComparer) : new Map()
-    return this.aggregate(seed, (map, current) => {
+    return this.aggregate((map, current) => {
       const key = keySelector(current)
       const value = map.get(key) || []
       value.push(typeof valueSelector === 'function' ? valueSelector(current) : current as never)
       return map.set(key, value)
-    })
+    }, seed)
   }
 
   /**

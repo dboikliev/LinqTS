@@ -6,3 +6,4 @@ coverage
 .history
 report*
 main.ts
+.nyc_output

@@ -10,5 +10,9 @@
         "node_modules": true,
         "coverage": false
     },
-    "editor.tabSize": 2
+    "editor.tabSize": 2,
+    "mochaExplorer.files": "build/test/**/*.js",
+    "mochaExplorer.require": "source-map-support/register",
+    "coverage-gutters.showLineCoverage": true,
+    "coverage-gutters.coverageReportFileName": "./coverage/index.html",
 }
