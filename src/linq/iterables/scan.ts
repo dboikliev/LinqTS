@@ -7,9 +7,9 @@ export class Scan<TSource, TResult> implements ElementsWrapper<TSource> {
   }
 
   *[Symbol.iterator](): IterableIterator<TResult> {
-    let index = 0
-
     const iterator = typeof this.elements[Symbol.iterator] === 'function' && this.elements[Symbol.iterator]()
+
+    let index = 0
 
     let accumulated = this.seed
     if (typeof this.seed === 'undefined') {
@@ -17,6 +17,7 @@ export class Scan<TSource, TResult> implements ElementsWrapper<TSource> {
       if (!result.done) {
         yield result.value
         let second = iterator.next()
+        index++
         if (!second.done) {
           accumulated = this.accumulator(result.value, second.value, index++) as TResult
           yield accumulated
@@ -32,10 +33,10 @@ export class Scan<TSource, TResult> implements ElementsWrapper<TSource> {
   }
 
   async *[Symbol.asyncIterator](): AsyncIterableIterator<TResult> {
-    let index = 0
-
     const iterator = (typeof this.elements[Symbol.asyncIterator] === 'function' && this.elements[Symbol.asyncIterator]() ||
       typeof this.elements[Symbol.iterator] === 'function' && this.elements[Symbol.iterator]()) as IterableIterator<TSource> | AsyncIterableIterator<TSource>
+
+    let index = 0
 
     let accumulated = this.seed
     if (typeof this.seed === 'undefined') {
@@ -43,6 +44,7 @@ export class Scan<TSource, TResult> implements ElementsWrapper<TSource> {
       if (!result.done) {
         yield result.value
         let second = await iterator.next()
+        index++
         if (!second.done) {
           accumulated = await this.accumulator(result.value, second.value, index++) as TResult
           yield accumulated
