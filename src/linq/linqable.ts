@@ -315,16 +315,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
       accumulated = accumulator(accumulated, result.value, index++) as TResult
       result = iterator.next()
     }
-    return accumulated
-
-    // let accumulated = seed
-    // let index = 0
-
-    // for (const element of this) {
-    //   accumulated = accumulator(accumulated, element, index++)
-    // }
-
-    // return accumulated
+  return accumulated
   }
 
   scan<TResult = TSource>(accumulator: (accumulated: TResult, element: TSource, index: number) => TResult, seed?: TResult): Linqable<TResult> {
