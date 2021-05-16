@@ -300,10 +300,10 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
 
     let accumulated = seed
     if (typeof seed === 'undefined') {
-      let result = iterator.next()
+      const result = iterator.next()
       if (!result.done) {
         accumulated = result.value
-        let second = iterator.next()
+        const second = iterator.next()
         index++
         if (!second.done) {
           accumulated = accumulator(result.value, second.value, index++) as TResult
@@ -315,7 +315,7 @@ export class Linqable<TSource> implements Iterable<TSource>, ElementsWrapper<TSo
       accumulated = accumulator(accumulated, result.value, index++) as TResult
       result = iterator.next()
     }
-  return accumulated
+    return accumulated
   }
 
   scan<TResult = TSource>(accumulator: (accumulated: TResult, element: TSource, index: number) => TResult, seed?: TResult): Linqable<TResult> {

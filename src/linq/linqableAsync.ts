@@ -206,19 +206,19 @@ export class AsyncLinqable<TSource> implements AsyncIterable<TSource>, ElementsW
   /**
      * Orders elements based on a selector function.
      * @param {function} selector - A function or a selector used for comparing the elements.
-     * @returns {OrderedLinqable<TSource>} An iterable of the ordered elements.
+     * @returns {OrderedLinqableAsync<TSource>} An iterable of the ordered elements.
      */
-  orderBy(selector: (element: TSource) => number | string): OrderedLinqable<TSource> {
-    return new OrderedLinqable(Ordered.from(this.elements, selector, true))
+  orderBy(selector: (element: TSource) => number | string): OrderedLinqableAsync<TSource> {
+    return new OrderedLinqableAsync(Ordered.from(this.elements, selector, true))
   }
 
   /**
      * Orders elements based on a selector function in desceding order.
      * @param {function} selector - A function or a selector used for comparing the elements.
-     * @returns {OrderedLinqable<TSource>} An iterable of the ordered elements.
+     * @returns {OrderedLinqableAsync<TSource>} An iterable of the ordered elements.
      */
-  orderByDescending(selector: (element: TSource) => number | string): OrderedLinqable<TSource> {
-    return new OrderedLinqable(Ordered.from(this.elements, selector, false))
+  orderByDescending(selector: (element: TSource) => number | string): OrderedLinqableAsync<TSource> {
+    return new OrderedLinqableAsync(Ordered.from(this.elements, selector, false))
   }
 
   /**
@@ -277,10 +277,10 @@ export class AsyncLinqable<TSource> implements AsyncIterable<TSource>, ElementsW
 
     let accumulated = seed
     if (typeof seed === 'undefined') {
-      let result = await iterator.next()
+      const result = await iterator.next()
       if (!result.done) {
         accumulated = result.value
-        let second = await iterator.next()
+        const second = await iterator.next()
         index++
         if (!second.done) {
           accumulated = await accumulator(result.value, second.value, index++) as TResult
@@ -754,7 +754,7 @@ export class AsyncLinqable<TSource> implements AsyncIterable<TSource>, ElementsW
   }
 }
 
-export class OrderedLinqable<TSource> extends AsyncLinqable<TSource> {
+export class OrderedLinqableAsync<TSource> extends AsyncLinqable<TSource> {
   constructor(elements: Ordered<TSource>) {
     super(elements)
   }
@@ -763,7 +763,7 @@ export class OrderedLinqable<TSource> extends AsyncLinqable<TSource> {
    * Chains an additional ascending ordering based on the key returned by the selector function.
    * @param selector - A function which returns a key which will be used for comparisons.
    */
-  thenBy(this: OrderedLinqable<TSource>, selector: (element: TSource) => string | number): OrderedLinqable<TSource> {
+  thenBy(this: OrderedLinqableAsync<TSource>, selector: (element: TSource) => string | number): OrderedLinqableAsync<TSource> {
     return this.from(selector, true)
   }
 
@@ -771,17 +771,17 @@ export class OrderedLinqable<TSource> extends AsyncLinqable<TSource> {
     * Chains an additional descending ordering based on the key returned by the selector function.
     * @param selector - A function which returns a key which will be used for comparisons.
     */
-  thenByDescending(this: OrderedLinqable<TSource>, selector: (element: TSource) => string | number): OrderedLinqable<TSource> {
+  thenByDescending(this: OrderedLinqableAsync<TSource>, selector: (element: TSource) => string | number): OrderedLinqableAsync<TSource> {
     return this.from(selector, false)
   }
 
   toString(): string {
-    return OrderedLinqable.name
+    return OrderedLinqableAsync.name
   }
 
-  private from(selector: (element: TSource) => string | number, isAscending: boolean): OrderedLinqable<TSource> {
+  private from(selector: (element: TSource) => string | number, isAscending: boolean): OrderedLinqableAsync<TSource> {
     const ordered = this.elements as Ordered<TSource>
-    return new OrderedLinqable(ordered.from(selector, isAscending))
+    return new OrderedLinqableAsync(ordered.from(selector, isAscending))
   }
 }
 

@@ -1,9 +1,11 @@
-import { Linqable, extractSync } from './linqable'
+import { Linqable, extractSync, OrderedLinqable, ToMapArgs } from './linqable'
 import { Sequence } from './iterables/sequence'
 import { elementsSymbol, ElementsWrapper, isWrapper } from './element-wrapper'
-import { AsyncLinqable, extractAsync } from './linqableAsync'
+import { AsyncLinqable, extractAsync, OrderedLinqableAsync } from './linqableAsync'
 import { Unfold, UnfoldStep } from './iterables/unfold'
+import { LinqMap, LinqSet } from './collections'
 
+export type { Linqable, AsyncLinqable, OrderedLinqable, OrderedLinqableAsync, ToMapArgs, LinqMap, LinqSet }
 export type SyncSource<T> = Iterable<T> | (() => Generator<T>)
 export type AsyncSource<T> = AsyncIterable<T> | (() => AsyncGenerator<T>)
 
