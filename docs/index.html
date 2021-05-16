@@ -1,0 +1,1106 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>linqts</title>
+	<meta name="description" content="Documentation for linqts">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+	<script async src="assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">linqts</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<h1>linqts</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<a href="#linqts" id="linqts" style="color: inherit; text-decoration: none;">
+					<h1>LinqTS</h1>
+				</a>
+				<p><a href="https://travis-ci.org/dboikliev/LinqTS"><img src="https://travis-ci.org/dboikliev/LinqTS.svg?branch=master" alt="Build Status"></a>
+				<a href="https://coveralls.io/github/dboikliev/LinqTS?branch=master"><img src="https://coveralls.io/repos/github/dboikliev/LinqTS/badge.svg?branch=master" alt="Coverage Status"></a></p>
+				<p>An api for lazy querying of iterables, implemented in TypeScript and inspired by .NET&#39;s LINQ methods.</p>
+				<a href="#motivation" id="motivation" style="color: inherit; text-decoration: none;">
+					<h2>Motivation</h2>
+				</a>
+				<p>To implement a lazy API similar by using iterators in order to simplify data-oriented workflows greatly and to provide an API for C# developers familiar with the LINQ extension methods.</p>
+				<a href="#demo" id="demo" style="color: inherit; text-decoration: none;">
+					<h2>Demo</h2>
+				</a>
+				<a href="#sync-api" id="sync-api" style="color: inherit; text-decoration: none;">
+					<h3>Sync API</h3>
+				</a>
+				<img src="./assets/demo.gif" width="500">
+				<a href="#equality-comparers" id="equality-comparers" style="color: inherit; text-decoration: none;">
+					<h2>Equality Comparers</h2>
+				</a>
+				<p>Some of the methods (union, except, etc.) accept an optional equality comparer object in the form of <code>{ hash, equals }</code>.<br><code>hash</code> - a function that returns hashcode for a key.<br><code>equals</code> - a function that compares two keys for equality.</p>
+				<p>This is useful for cases where the iterables contain objects and not just primitives. These operations are backed by a custom map implementation which allows for any object to be used as a key.</p>
+				<p>For ease of use default comparers for <code>number</code>, <code>string</code>, <code>boolean</code>, <code>object</code> and <code>Iterable</code> are provided OOTB.
+				It is advisable that a custom comparer is implemented tailored for the specific use case when a complex object is used a key.</p>
+				<a href="#supported-operations" id="supported-operations" style="color: inherit; text-decoration: none;">
+					<h2>Supported operations</h2>
+				</a>
+				<ol>
+					<li><a href="#where">where</a></li>
+					<li><a href="#select">select</a></li>
+					<li><a href="#selectMany">selectMany</a></li>
+					<li><a href="#distinct">distinct</a></li>
+					<li><a href="#distinctBy">distinctBy</a></li>
+					<li><a href="#zip">zip</a></li>
+					<li><a href="#groupBy">groupBy</a></li>
+					<li><a href="#join">join</a></li>
+					<li><a href="#orderBy">orderBy</a></li>
+					<li><a href="#orderByDescending">orderByDescending</a></li>
+					<li><a href="#reverse">reverse</a></li>
+					<li><a href="#skip">skip</a></li>
+					<li><a href="#skipWhile">skipWhile</a></li>
+					<li><a href="#take">take</a></li>
+					<li><a href="#takeWhile">takeWhile</a></li>
+					<li><a href="#except">except</a></li>
+					<li><a href="#intersect">intersect</a></li>
+					<li><a href="#concat">concat</a></li>
+					<li><a href="#union">union</a></li>
+					<li><a href="#xOr">xOr</a></li>
+					<li><a href="#aggregate">aggregate</a></li>
+					<li><a href="#windowed">windowed</a></li>
+					<li><a href="#batch">batch</a></li>
+					<li><a href="#any">any</a></li>
+					<li><a href="#all">all</a></li>
+					<li><a href="#min">min</a></li>
+					<li><a href="#minBy">minBy</a></li>
+					<li><a href="#max">max</a></li>
+					<li><a href="#maxBy">maxBy</a></li>
+					<li><a href="#average">average</a></li>
+					<li><a href="#averageBy">averageBy</a></li>
+					<li><a href="#sequenceEquals">sequenceEquals</a></li>
+					<li><a href="#indexOf">indexOf</a></li>
+					<li><a href="#lastIndexOf">lastIndexOf</a></li>
+					<li><a href="#findIndex">findIndex</a></li>
+					<li><a href="#findLastIndex">findLastIndex</a></li>
+					<li><a href="#elementAt">elementAt</a></li>
+					<li><a href="#first">first</a></li>
+					<li><a href="#firstOrDefault">firstOrDefault</a></li>
+					<li><a href="#last">last</a></li>
+					<li><a href="#lastOrDefault">lastOrDefault</a></li>
+					<li><a href="#forEach">forEach</a></li>
+					<li><a href="#toArray">toArray</a></li>
+					<li><a href="#count">count</a></li>
+					<li><a href="#seq">seq</a></li>
+					<li><a href="#id">id</a></li>
+					<li><a href="#toMap">toMap</a></li>
+					<li><a href="#toMapMany">toMapMany</a></li>
+					<li><a href="#toSet">toSet</a></li>
+					<li><a href="#append">append</a></li>
+					<li><a href="#prepend">prepend</a></li>
+					<li><a href="#tap">tap</a></li>
+					<li><a href="#repeat">repeat</a></li>
+				</ol>
+				<p>The function <code>print</code> can be used to display а tree-like representation of the operators in the console.</p>
+				<pre><code class="language-typescript"><span style="color: #AF00DB">import</span><span style="color: #000000"> {  </span><span style="color: #001080">linq</span><span style="color: #000000">, </span><span style="color: #001080">print</span><span style="color: #000000">, </span><span style="color: #001080">seq</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;./src/linq&#039;</span><span style="color: #000000">;</span>
+
+<span style="color: #0000FF">var</span><span style="color: #000000"> </span><span style="color: #001080">elements</span><span style="color: #000000"> = </span><span style="color: #795E26">seq</span><span style="color: #000000">(</span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #098658">10</span><span style="color: #000000">)</span>
+<span style="color: #000000">                .</span><span style="color: #795E26">union</span><span style="color: #000000">(</span><span style="color: #795E26">seq</span><span style="color: #000000">(</span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #098658">15</span><span style="color: #000000">))</span>
+<span style="color: #000000">                .</span><span style="color: #795E26">except</span><span style="color: #000000">([</span><span style="color: #098658">1</span><span style="color: #000000">,</span><span style="color: #098658">2</span><span style="color: #000000">])</span>
+<span style="color: #000000">                .</span><span style="color: #795E26">union</span><span style="color: #000000">(</span><span style="color: #795E26">linq</span><span style="color: #000000">([</span><span style="color: #098658">1</span><span style="color: #000000">,</span><span style="color: #098658">2</span><span style="color: #000000">,</span><span style="color: #098658">3</span><span style="color: #000000">]).</span><span style="color: #795E26">intersect</span><span style="color: #000000">([</span><span style="color: #098658">2</span><span style="color: #000000">,</span><span style="color: #098658">3</span><span style="color: #000000">]))</span>
+<span style="color: #000000">                .</span><span style="color: #795E26">skip</span><span style="color: #000000">(</span><span style="color: #098658">5</span><span style="color: #000000">)</span>
+<span style="color: #000000">                .</span><span style="color: #795E26">skipWhile</span><span style="color: #000000">(</span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000"> &lt; </span><span style="color: #098658">3</span><span style="color: #000000">)</span>
+<span style="color: #000000">                .</span><span style="color: #795E26">groupBy</span><span style="color: #000000">(</span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000"> % </span><span style="color: #098658">2</span><span style="color: #000000">)</span>
+<span style="color: #000000">                .</span><span style="color: #795E26">zip</span><span style="color: #000000">(</span><span style="color: #795E26">seq</span><span style="color: #000000">(</span><span style="color: #098658">1</span><span style="color: #000000">,</span><span style="color: #098658">5</span><span style="color: #000000">))</span>
+
+<span style="color: #795E26">print</span><span style="color: #000000">(</span><span style="color: #001080">elements</span><span style="color: #000000">);</span>
+</code></pre>
+				<pre><code class="language-text">Linqable
+    └──Zip (selector: (a, b) =&gt; [a, b])
+        ├──Group (selector: x =&gt; x % 2)
+        |   └──SkipWhile (predicate: x =&gt; x &lt; 3)
+        |       └──Skip (count: 5)
+        |           └──Union
+        |               ├──Except
+        |               |   ├──Union
+        |               |   |   ├──Sequence (start: 1, step: 1, end: 10)
+        |               |   |   └──Sequence (start: 1, step: 1, end: 15)
+        |               |   └──1,2
+        |               └──Intersect
+        |                   ├──1,2,3
+        |                   └──2,3
+        └──Sequence (start: 1, step: 5, end: Infinity)
+</code></pre>
+				<a href="#examples" id="examples" style="color: inherit; text-decoration: none;">
+					<h2>Examples</h2>
+				</a>
+				<a href="#building-and-executing-a-query" id="building-and-executing-a-query" style="color: inherit; text-decoration: none;">
+					<h3>Building and executing a query</h3>
+				</a>
+				<p>The API any objects which are iterable in JavaScript. In order to use the method it is required to call <code>linq</code> with the object that we want to iterate as a parameter. The result of <code>linq</code> is <code>Linqable</code> object which supports the api. The linq module exports <code>linq</code>, <code>linqAsync</code>, <code>seq</code>, <code>repeat</code> and <code>id</code>.</p>
+				<p><code>linqAsync</code> is a wrapper which exposes a set of asynchronous API is, allowing for various callbacks to return promises.<br>The functions which cause immediate execution in the synchronous API return Promise in the <code>linqAsync</code> API.
+				Other than that, the method definitions are analogous to the <code>linq</code> API.</p>
+				<pre><code class="language-typescript"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">linq</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;./linq&quot;</span><span style="color: #000000">;</span>
+
+<span style="color: #0000FF">interface</span><span style="color: #000000"> </span><span style="color: #267F99">IPerson</span><span style="color: #000000"> {</span>
+<span style="color: #000000">    </span><span style="color: #001080">name</span><span style="color: #000000">: </span><span style="color: #267F99">string</span><span style="color: #000000">;</span>
+<span style="color: #000000">    </span><span style="color: #001080">age</span><span style="color: #000000">: </span><span style="color: #267F99">number</span><span style="color: #000000">;</span>
+<span style="color: #000000">}</span>
+
+<span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">people</span><span style="color: #000000">: </span><span style="color: #267F99">IPerson</span><span style="color: #000000">[] = [</span>
+<span style="color: #000000">    { </span><span style="color: #001080">name:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;Ivan&quot;</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">24</span><span style="color: #000000"> }, </span>
+<span style="color: #000000">    { </span><span style="color: #001080">name:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;Deyan&quot;</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">25</span><span style="color: #000000"> }</span>
+<span style="color: #000000">];</span>
+
+<span style="color: #795E26">linq</span><span style="color: #000000">(</span><span style="color: #001080">people</span><span style="color: #000000">)</span>
+<span style="color: #000000">    .</span><span style="color: #795E26">where</span><span style="color: #000000">(</span><span style="color: #001080">p</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">p</span><span style="color: #000000">.</span><span style="color: #001080">age</span><span style="color: #000000"> &gt; </span><span style="color: #098658">22</span><span style="color: #000000">)</span>
+<span style="color: #000000">    .</span><span style="color: #795E26">select</span><span style="color: #000000">(</span><span style="color: #001080">p</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">p</span><span style="color: #000000">.</span><span style="color: #001080">name</span><span style="color: #000000">)</span>
+<span style="color: #000000">    .</span><span style="color: #795E26">forEach</span><span style="color: #000000">(</span><span style="color: #001080">name</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">name</span><span style="color: #000000">))</span>
+</code></pre>
+				<pre><code class="language-text">Ivan
+Deyan
+</code></pre>
+				<a href="#operations" id="operations" style="color: inherit; text-decoration: none;">
+					<h2>Operations</h2>
+				</a>
+				<a href="#where" id="where" style="color: inherit; text-decoration: none;">
+					<h3>Where</h3>
+				</a>
+				<p>Where filters the iterable based on a predicate function.
+				A sequence of the elements for which the predicate returns <code>true</code> will be returned.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">numbers</span><span style="color: #000000"> = [</span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">3</span><span style="color: #000000">, </span><span style="color: #098658">4</span><span style="color: #000000">, </span><span style="color: #098658">5</span><span style="color: #000000">, </span><span style="color: #098658">6</span><span style="color: #000000">, </span><span style="color: #098658">7</span><span style="color: #000000">, </span><span style="color: #098658">8</span><span style="color: #000000">, </span><span style="color: #098658">9</span><span style="color: #000000">, </span><span style="color: #098658">10</span><span style="color: #000000">];</span>
+<span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">evenNumbers</span><span style="color: #000000"> = </span><span style="color: #795E26">linq</span><span style="color: #000000">(</span><span style="color: #001080">numbers</span><span style="color: #000000">).</span><span style="color: #795E26">where</span><span style="color: #000000">(</span><span style="color: #001080">i</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">i</span><span style="color: #000000"> % </span><span style="color: #098658">2</span><span style="color: #000000"> == </span><span style="color: #098658">0</span><span style="color: #000000">);</span>
+
+<span style="color: #AF00DB">for</span><span style="color: #000000"> (</span><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">number</span><span style="color: #000000"> </span><span style="color: #0000FF">of</span><span style="color: #000000"> </span><span style="color: #001080">evenNumbers</span><span style="color: #000000">) {</span>
+<span style="color: #000000">    </span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">number</span><span style="color: #000000">)</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<pre><code class="language-text">2
+4
+6
+8
+10
+</code></pre>
+				<hr>
+				<a href="#select" id="select" style="color: inherit; text-decoration: none;">
+					<h3>Select</h3>
+				</a>
+				<p>Each element of an iterable is trasnformed into another value - the return value of the function passed to <code>select</code>.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">numbers</span><span style="color: #000000"> = [</span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">3</span><span style="color: #000000">, </span><span style="color: #098658">4</span><span style="color: #000000">, </span><span style="color: #098658">5</span><span style="color: #000000">];</span>
+<span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">numbersTimes10</span><span style="color: #000000"> = </span><span style="color: #795E26">linq</span><span style="color: #000000">(</span><span style="color: #001080">numbers</span><span style="color: #000000">).</span><span style="color: #795E26">select</span><span style="color: #000000">(</span><span style="color: #001080">i</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">i</span><span style="color: #000000"> * </span><span style="color: #098658">10</span><span style="color: #000000">);</span>
+
+<span style="color: #AF00DB">for</span><span style="color: #000000"> (</span><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">number</span><span style="color: #000000"> </span><span style="color: #0000FF">of</span><span style="color: #000000"> </span><span style="color: #001080">numbersTimes10</span><span style="color: #000000">) {</span>
+<span style="color: #000000">    </span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">number</span><span style="color: #000000">)</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<pre><code class="language-text">10
+20
+30
+40
+50
+</code></pre>
+				<hr>
+				<a href="#selectmany" id="selectmany" style="color: inherit; text-decoration: none;">
+					<h3>SelectMany</h3>
+				</a>
+				<p>Flattens iterable elements into a single iterable sequence.
+				<code>selectMany</code> expects a function which takes an element from the sequence returns an iterable. All of the results are flattent into a single sequence.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">numbers</span><span style="color: #000000"> = [{</span>
+<span style="color: #000000">    </span><span style="color: #001080">inner:</span><span style="color: #000000"> [</span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">3</span><span style="color: #000000">] </span>
+<span style="color: #000000">}, {</span>
+<span style="color: #000000">    </span><span style="color: #001080">inner:</span><span style="color: #000000"> [</span><span style="color: #098658">4</span><span style="color: #000000">, </span><span style="color: #098658">5</span><span style="color: #000000">, </span><span style="color: #098658">6</span><span style="color: #000000">]</span>
+<span style="color: #000000">}];</span>
+
+<span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">flattened</span><span style="color: #000000"> = </span><span style="color: #795E26">linq</span><span style="color: #000000">(</span><span style="color: #001080">numbers</span><span style="color: #000000">).</span><span style="color: #795E26">selectMany</span><span style="color: #000000">(</span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000">.</span><span style="color: #001080">inner</span><span style="color: #000000">);</span>
+
+<span style="color: #AF00DB">for</span><span style="color: #000000"> (</span><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">number</span><span style="color: #000000"> </span><span style="color: #0000FF">of</span><span style="color: #000000"> </span><span style="color: #001080">flattened</span><span style="color: #000000">) {</span>
+<span style="color: #000000">    </span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">number</span><span style="color: #000000">)</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<pre><code class="language-text">1
+2
+3
+4
+5
+6
+</code></pre>
+				<hr>
+				<a href="#distinct" id="distinct" style="color: inherit; text-decoration: none;">
+					<h3>Distinct</h3>
+				</a>
+				<p>Gets the distinct elements of a sequence based on an equality comparer function.
+				The function comapres the objects in the sequence and should return &#39;true&#39; when they are considered equal.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">numbers</span><span style="color: #000000"> = [{ </span><span style="color: #001080">value:</span><span style="color: #000000"> </span><span style="color: #098658">1</span><span style="color: #000000"> }, { </span><span style="color: #001080">value:</span><span style="color: #000000"> </span><span style="color: #098658">1</span><span style="color: #000000"> }, { </span><span style="color: #001080">value:</span><span style="color: #000000"> </span><span style="color: #098658">2</span><span style="color: #000000"> }, { </span><span style="color: #001080">value:</span><span style="color: #000000"> </span><span style="color: #098658">2</span><span style="color: #000000"> }, { </span><span style="color: #001080">value:</span><span style="color: #000000"> </span><span style="color: #098658">3</span><span style="color: #000000"> }, { </span><span style="color: #001080">value:</span><span style="color: #000000"> </span><span style="color: #098658">3</span><span style="color: #000000"> }];</span>
+
+<span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">distinct</span><span style="color: #000000"> = </span><span style="color: #795E26">linq</span><span style="color: #000000">(</span><span style="color: #001080">numbers</span><span style="color: #000000">).</span><span style="color: #795E26">distinct</span><span style="color: #000000">((</span><span style="color: #001080">first</span><span style="color: #000000">, </span><span style="color: #001080">second</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">first</span><span style="color: #000000">.</span><span style="color: #001080">value</span><span style="color: #000000"> === </span><span style="color: #001080">second</span><span style="color: #000000">.</span><span style="color: #001080">value</span><span style="color: #000000">);</span>
+
+<span style="color: #AF00DB">for</span><span style="color: #000000"> (</span><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">number</span><span style="color: #000000"> </span><span style="color: #0000FF">of</span><span style="color: #000000"> </span><span style="color: #001080">distinct</span><span style="color: #000000">) {</span>
+<span style="color: #000000">    </span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">number</span><span style="color: #000000">)</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<pre><code class="language-text">{ value: 1 }
+{ value: 2 }
+{ value: 3 }
+</code></pre>
+				<hr>
+				<a href="#distinctby" id="distinctby" style="color: inherit; text-decoration: none;">
+					<h3>DistinctBy</h3>
+				</a>
+				<p>Gets the distinct elements of a sequence based on a selector function. If a selector function is not passed, it will get the distinct elements by reference.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">numbers</span><span style="color: #000000"> = [{ </span><span style="color: #001080">value:</span><span style="color: #000000"> </span><span style="color: #098658">1</span><span style="color: #000000"> }, { </span><span style="color: #001080">value:</span><span style="color: #000000"> </span><span style="color: #098658">1</span><span style="color: #000000"> }, { </span><span style="color: #001080">value:</span><span style="color: #000000"> </span><span style="color: #098658">2</span><span style="color: #000000"> }, { </span><span style="color: #001080">value:</span><span style="color: #000000"> </span><span style="color: #098658">2</span><span style="color: #000000"> }, { </span><span style="color: #001080">value:</span><span style="color: #000000"> </span><span style="color: #098658">3</span><span style="color: #000000"> }, { </span><span style="color: #001080">value:</span><span style="color: #000000"> </span><span style="color: #098658">3</span><span style="color: #000000"> }];</span>
+
+<span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">distinct</span><span style="color: #000000"> = </span><span style="color: #795E26">linq</span><span style="color: #000000">(</span><span style="color: #001080">numbers</span><span style="color: #000000">).</span><span style="color: #795E26">distinctBy</span><span style="color: #000000">(</span><span style="color: #001080">el</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">el</span><span style="color: #000000">.</span><span style="color: #001080">value</span><span style="color: #000000">);</span>
+
+<span style="color: #AF00DB">for</span><span style="color: #000000"> (</span><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">number</span><span style="color: #000000"> </span><span style="color: #0000FF">of</span><span style="color: #000000"> </span><span style="color: #001080">distinct</span><span style="color: #000000">) {</span>
+<span style="color: #000000">    </span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">number</span><span style="color: #000000">)</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<pre><code class="language-text">{ value: 1 }
+{ value: 2 }
+{ value: 3 }
+</code></pre>
+				<hr>
+				<a href="#zip" id="zip" style="color: inherit; text-decoration: none;">
+					<h3>Zip</h3>
+				</a>
+				<p>Applies a transformation function to each corresponding pair of elements from the iterables. The paring ends when the shorter sequence ends, the remaining elements of the other sequence are ignored.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">odds</span><span style="color: #000000"> = [</span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #098658">3</span><span style="color: #000000">, </span><span style="color: #098658">5</span><span style="color: #000000">, </span><span style="color: #098658">7</span><span style="color: #000000">];</span>
+<span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">evens</span><span style="color: #000000"> = [</span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">4</span><span style="color: #000000">, </span><span style="color: #098658">6</span><span style="color: #000000">, </span><span style="color: #098658">8</span><span style="color: #000000">];</span>
+
+<span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">oddEvenPairs</span><span style="color: #000000"> = </span><span style="color: #795E26">linq</span><span style="color: #000000">(</span><span style="color: #001080">odds</span><span style="color: #000000">)</span>
+<span style="color: #000000">    .</span><span style="color: #795E26">zip</span><span style="color: #000000">(</span><span style="color: #001080">evens</span><span style="color: #000000">, (</span><span style="color: #001080">odd</span><span style="color: #000000">, </span><span style="color: #001080">even</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> ({ </span><span style="color: #001080">odd</span><span style="color: #000000">, </span><span style="color: #001080">even</span><span style="color: #000000"> }));</span>
+
+<span style="color: #AF00DB">for</span><span style="color: #000000"> (</span><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">element</span><span style="color: #000000"> </span><span style="color: #0000FF">of</span><span style="color: #000000"> </span><span style="color: #001080">oddEvenPairs</span><span style="color: #000000">) {</span>
+<span style="color: #000000">    </span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">element</span><span style="color: #000000">);</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<pre><code class="language-text">{ odd: 1, even: 2 }
+{ odd: 3, even: 4 }
+{ odd: 5, even: 6 }
+{ odd: 7, even: 8 }
+</code></pre>
+				<hr>
+				<a href="#groupby" id="groupby" style="color: inherit; text-decoration: none;">
+					<h3>GroupBy</h3>
+				</a>
+				<p>Groups elements based on a selector function. The function returns a sequence of arrays with the group key as the first element and an array of the group elements as the second element.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">groups</span><span style="color: #000000"> = </span><span style="color: #795E26">linq</span><span style="color: #000000">([</span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">3</span><span style="color: #000000">, </span><span style="color: #098658">4</span><span style="color: #000000">, </span><span style="color: #098658">5</span><span style="color: #000000">, </span><span style="color: #098658">6</span><span style="color: #000000">, </span><span style="color: #098658">7</span><span style="color: #000000">, </span><span style="color: #098658">8</span><span style="color: #000000">, </span><span style="color: #098658">9</span><span style="color: #000000">, </span><span style="color: #098658">10</span><span style="color: #000000">]).</span><span style="color: #795E26">groupBy</span><span style="color: #000000">(</span><span style="color: #001080">i</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">i</span><span style="color: #000000"> % </span><span style="color: #098658">2</span><span style="color: #000000">);</span>
+
+<span style="color: #AF00DB">for</span><span style="color: #000000"> (</span><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">group</span><span style="color: #000000"> </span><span style="color: #0000FF">of</span><span style="color: #000000"> </span><span style="color: #001080">groups</span><span style="color: #000000">) {</span>
+<span style="color: #000000">    </span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">group</span><span style="color: #000000">);</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<pre><code class="language-text">[ 1, [ 1, 3, 5, 7, 9 ] ]
+[ 0, [ 2, 4, 6, 8, 10 ] ]
+</code></pre>
+				<hr>
+				<a href="#join" id="join" style="color: inherit; text-decoration: none;">
+					<h3>Join</h3>
+				</a>
+				<p>Performs a join on objects matching property values according to the provided leftSelector and rightSelector. The matching objects are merged into another value by resultSelector.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">first</span><span style="color: #000000"> = [{ </span><span style="color: #001080">name:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;Ivan&quot;</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">21</span><span style="color: #000000"> }];</span>
+<span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">second</span><span style="color: #000000"> = [{ </span><span style="color: #001080">name:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;Ivan&quot;</span><span style="color: #000000">, </span><span style="color: #001080">phone:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;0123456789&quot;</span><span style="color: #000000"> }];</span>
+
+<span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">joined</span><span style="color: #000000"> = </span><span style="color: #795E26">linq</span><span style="color: #000000">(</span><span style="color: #001080">first</span><span style="color: #000000">).</span><span style="color: #795E26">join</span><span style="color: #000000">(</span><span style="color: #001080">second</span><span style="color: #000000">, </span><span style="color: #001080">f</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">f</span><span style="color: #000000">.</span><span style="color: #001080">name</span><span style="color: #000000">, </span><span style="color: #001080">s</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">s</span><span style="color: #000000">.</span><span style="color: #001080">name</span><span style="color: #000000">, (</span><span style="color: #001080">f</span><span style="color: #000000">, </span><span style="color: #001080">s</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> ({ </span><span style="color: #001080">name:</span><span style="color: #000000"> </span><span style="color: #001080">f</span><span style="color: #000000">.</span><span style="color: #001080">name</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #001080">f</span><span style="color: #000000">.</span><span style="color: #001080">age</span><span style="color: #000000">, </span><span style="color: #001080">phone:</span><span style="color: #000000"> </span><span style="color: #001080">s</span><span style="color: #000000">.</span><span style="color: #001080">phone</span><span style="color: #000000"> }));</span>
+
+<span style="color: #AF00DB">for</span><span style="color: #000000"> (</span><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">group</span><span style="color: #000000"> </span><span style="color: #0000FF">of</span><span style="color: #000000"> </span><span style="color: #001080">joined</span><span style="color: #000000">) {</span>
+<span style="color: #000000">    </span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">group</span><span style="color: #000000">);</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<pre><code class="language-text">{ name: &#039;Ivan&#039;, age: 21, phone: &#039;0123456789&#039; }
+</code></pre>
+				<hr>
+				<a href="#orderby" id="orderby" style="color: inherit; text-decoration: none;">
+					<h3>OrderBy</h3>
+				</a>
+				<p>Orders elements in asceding order based on a selector function.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">people</span><span style="color: #000000"> = [</span>
+<span style="color: #000000">    { </span><span style="color: #001080">id:</span><span style="color: #000000"> </span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">18</span><span style="color: #000000"> },</span>
+<span style="color: #000000">    { </span><span style="color: #001080">id:</span><span style="color: #000000"> </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">29</span><span style="color: #000000"> },</span>
+<span style="color: #000000">    { </span><span style="color: #001080">id:</span><span style="color: #000000"> </span><span style="color: #098658">3</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">8</span><span style="color: #000000"> },</span>
+<span style="color: #000000">    { </span><span style="color: #001080">id:</span><span style="color: #000000"> </span><span style="color: #098658">4</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">20</span><span style="color: #000000"> },</span>
+<span style="color: #000000">    { </span><span style="color: #001080">id:</span><span style="color: #000000"> </span><span style="color: #098658">5</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">18</span><span style="color: #000000"> },</span>
+<span style="color: #000000">    { </span><span style="color: #001080">id:</span><span style="color: #000000"> </span><span style="color: #098658">6</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">32</span><span style="color: #000000"> },</span>
+<span style="color: #000000">    { </span><span style="color: #001080">id:</span><span style="color: #000000"> </span><span style="color: #098658">7</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">5</span><span style="color: #000000"> },</span>
+<span style="color: #000000">];</span>
+
+<span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">ordered</span><span style="color: #000000"> = </span><span style="color: #795E26">linq</span><span style="color: #000000">(</span><span style="color: #001080">people</span><span style="color: #000000">).</span><span style="color: #795E26">orderBy</span><span style="color: #000000">(</span><span style="color: #001080">p</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">p</span><span style="color: #000000">.</span><span style="color: #001080">age</span><span style="color: #000000">)</span>
+
+<span style="color: #AF00DB">for</span><span style="color: #000000"> (</span><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">element</span><span style="color: #000000"> </span><span style="color: #0000FF">of</span><span style="color: #000000"> </span><span style="color: #001080">ordered</span><span style="color: #000000">) {</span>
+<span style="color: #000000">    </span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">element</span><span style="color: #000000">);</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<pre><code class="language-text">{ id: 7, age: 5 }
+{ id: 3, age: 8 }
+{ id: 1, age: 18 }
+{ id: 5, age: 18 }
+{ id: 4, age: 20 }
+{ id: 2, age: 29 }
+{ id: 6, age: 32 }
+</code></pre>
+				<hr>
+				<a href="#orderbydescending" id="orderbydescending" style="color: inherit; text-decoration: none;">
+					<h3>OrderByDescending</h3>
+				</a>
+				<p>Equivalent of <code>orderBy</code>.
+				Orders elements in descending order based on a selector function.</p>
+				<hr>
+				<a href="#reverse" id="reverse" style="color: inherit; text-decoration: none;">
+					<h3>Reverse</h3>
+				</a>
+				<p>Reverses the order of the sequence, e.g. reverse (1, 2, 3) -&gt; (3, 2, 1)</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">reversed</span><span style="color: #000000"> = </span><span style="color: #795E26">linq</span><span style="color: #000000">([</span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">3</span><span style="color: #000000">, </span><span style="color: #098658">4</span><span style="color: #000000">, </span><span style="color: #098658">5</span><span style="color: #000000">, </span><span style="color: #098658">6</span><span style="color: #000000">, </span><span style="color: #098658">7</span><span style="color: #000000">, </span><span style="color: #098658">8</span><span style="color: #000000">])</span>
+<span style="color: #000000">    .</span><span style="color: #795E26">reverse</span><span style="color: #000000">()</span>
+
+<span style="color: #AF00DB">for</span><span style="color: #000000"> (</span><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">element</span><span style="color: #000000"> </span><span style="color: #0000FF">of</span><span style="color: #000000"> </span><span style="color: #001080">reversed</span><span style="color: #000000">) {</span>
+<span style="color: #000000">    </span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">element</span><span style="color: #000000">);</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<pre><code class="language-text">8
+7
+6
+5
+4
+3
+2
+1
+</code></pre>
+				<hr>
+				<a href="#skip" id="skip" style="color: inherit; text-decoration: none;">
+					<h3>Skip</h3>
+				</a>
+				<p>Skips a specific number of elements.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">people</span><span style="color: #000000"> = [</span>
+<span style="color: #000000">    { </span><span style="color: #001080">id:</span><span style="color: #000000"> </span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">18</span><span style="color: #000000"> },</span>
+<span style="color: #000000">    { </span><span style="color: #001080">id:</span><span style="color: #000000"> </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">29</span><span style="color: #000000"> },</span>
+<span style="color: #000000">    { </span><span style="color: #001080">id:</span><span style="color: #000000"> </span><span style="color: #098658">3</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">8</span><span style="color: #000000"> },</span>
+<span style="color: #000000">    { </span><span style="color: #001080">id:</span><span style="color: #000000"> </span><span style="color: #098658">4</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">20</span><span style="color: #000000"> },</span>
+<span style="color: #000000">    { </span><span style="color: #001080">id:</span><span style="color: #000000"> </span><span style="color: #098658">5</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">18</span><span style="color: #000000"> },</span>
+<span style="color: #000000">    { </span><span style="color: #001080">id:</span><span style="color: #000000"> </span><span style="color: #098658">6</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">32</span><span style="color: #000000"> },</span>
+<span style="color: #000000">    { </span><span style="color: #001080">id:</span><span style="color: #000000"> </span><span style="color: #098658">7</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">5</span><span style="color: #000000"> },</span>
+<span style="color: #000000">];</span>
+
+<span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">elements</span><span style="color: #000000"> = </span><span style="color: #795E26">linq</span><span style="color: #000000">(</span><span style="color: #001080">people</span><span style="color: #000000">).</span><span style="color: #795E26">skip</span><span style="color: #000000">(</span><span style="color: #098658">3</span><span style="color: #000000">);</span>
+
+<span style="color: #AF00DB">for</span><span style="color: #000000"> (</span><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">element</span><span style="color: #000000"> </span><span style="color: #0000FF">of</span><span style="color: #000000"> </span><span style="color: #001080">elements</span><span style="color: #000000">) {</span>
+<span style="color: #000000">    </span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">element</span><span style="color: #000000">);</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<pre><code class="language-text">{ id: 4, age: 20 }
+{ id: 5, age: 18 }
+{ id: 6, age: 32 }
+{ id: 7, age: 5 }
+</code></pre>
+				<hr>
+				<a href="#skipwhile" id="skipwhile" style="color: inherit; text-decoration: none;">
+					<h3>SkipWhile</h3>
+				</a>
+				<p>Skips the elements in the sequence while the predicate returns <code>true</code>.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">people</span><span style="color: #000000"> = [</span>
+<span style="color: #000000">    { </span><span style="color: #001080">id:</span><span style="color: #000000"> </span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">18</span><span style="color: #000000"> },</span>
+<span style="color: #000000">    { </span><span style="color: #001080">id:</span><span style="color: #000000"> </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">20</span><span style="color: #000000"> },</span>
+<span style="color: #000000">    { </span><span style="color: #001080">id:</span><span style="color: #000000"> </span><span style="color: #098658">3</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">30</span><span style="color: #000000"> },</span>
+<span style="color: #000000">    { </span><span style="color: #001080">id:</span><span style="color: #000000"> </span><span style="color: #098658">4</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">25</span><span style="color: #000000"> },</span>
+<span style="color: #000000">    { </span><span style="color: #001080">id:</span><span style="color: #000000"> </span><span style="color: #098658">5</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">18</span><span style="color: #000000"> },</span>
+<span style="color: #000000">    { </span><span style="color: #001080">id:</span><span style="color: #000000"> </span><span style="color: #098658">6</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">32</span><span style="color: #000000"> },</span>
+<span style="color: #000000">    { </span><span style="color: #001080">id:</span><span style="color: #000000"> </span><span style="color: #098658">7</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">5</span><span style="color: #000000"> },</span>
+<span style="color: #000000">];</span>
+
+<span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">elements</span><span style="color: #000000"> = </span><span style="color: #795E26">linq</span><span style="color: #000000">(</span><span style="color: #001080">people</span><span style="color: #000000">).</span><span style="color: #795E26">skipWhile</span><span style="color: #000000">(</span><span style="color: #001080">p</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">p</span><span style="color: #000000">.</span><span style="color: #001080">age</span><span style="color: #000000"> % </span><span style="color: #098658">2</span><span style="color: #000000"> === </span><span style="color: #098658">0</span><span style="color: #000000">);</span>
+
+<span style="color: #AF00DB">for</span><span style="color: #000000"> (</span><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">element</span><span style="color: #000000"> </span><span style="color: #0000FF">of</span><span style="color: #000000"> </span><span style="color: #001080">elements</span><span style="color: #000000">) {</span>
+<span style="color: #000000">    </span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">element</span><span style="color: #000000">);</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<pre><code class="language-text">{ id: 4, age: 25 }
+{ id: 5, age: 18 }
+{ id: 6, age: 32 }
+{ id: 7, age: 5 }
+</code></pre>
+				<hr>
+				<a href="#take" id="take" style="color: inherit; text-decoration: none;">
+					<h3>Take</h3>
+				</a>
+				<p>Takes a specific number of elements.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">people</span><span style="color: #000000"> = [</span>
+<span style="color: #000000">    { </span><span style="color: #001080">id:</span><span style="color: #000000"> </span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">18</span><span style="color: #000000"> },</span>
+<span style="color: #000000">    { </span><span style="color: #001080">id:</span><span style="color: #000000"> </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">20</span><span style="color: #000000"> },</span>
+<span style="color: #000000">    { </span><span style="color: #001080">id:</span><span style="color: #000000"> </span><span style="color: #098658">3</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">30</span><span style="color: #000000"> },</span>
+<span style="color: #000000">    { </span><span style="color: #001080">id:</span><span style="color: #000000"> </span><span style="color: #098658">4</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">25</span><span style="color: #000000"> },</span>
+<span style="color: #000000">    { </span><span style="color: #001080">id:</span><span style="color: #000000"> </span><span style="color: #098658">5</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">18</span><span style="color: #000000"> },</span>
+<span style="color: #000000">    { </span><span style="color: #001080">id:</span><span style="color: #000000"> </span><span style="color: #098658">6</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">32</span><span style="color: #000000"> },</span>
+<span style="color: #000000">    { </span><span style="color: #001080">id:</span><span style="color: #000000"> </span><span style="color: #098658">7</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">5</span><span style="color: #000000"> },</span>
+<span style="color: #000000">];</span>
+
+<span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">elements</span><span style="color: #000000"> = </span><span style="color: #795E26">linq</span><span style="color: #000000">(</span><span style="color: #001080">people</span><span style="color: #000000">).</span><span style="color: #795E26">take</span><span style="color: #000000">(</span><span style="color: #098658">4</span><span style="color: #000000">);</span>
+
+<span style="color: #AF00DB">for</span><span style="color: #000000"> (</span><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">element</span><span style="color: #000000"> </span><span style="color: #0000FF">of</span><span style="color: #000000"> </span><span style="color: #001080">elements</span><span style="color: #000000">) {</span>
+<span style="color: #000000">    </span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">element</span><span style="color: #000000">);</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<pre><code class="language-text">{ id: 1, age: 18 },
+{ id: 2, age: 20 },
+{ id: 3, age: 30 },
+{ id: 4, age: 25 }
+</code></pre>
+				<hr>
+				<a href="#takewhile" id="takewhile" style="color: inherit; text-decoration: none;">
+					<h3>TakeWhile</h3>
+				</a>
+				<p>Takes elements from the sequence while the predicate returns <code>true</code>.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">people</span><span style="color: #000000"> = [</span>
+<span style="color: #000000">    { </span><span style="color: #001080">id:</span><span style="color: #000000"> </span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">18</span><span style="color: #000000"> },</span>
+<span style="color: #000000">    { </span><span style="color: #001080">id:</span><span style="color: #000000"> </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">20</span><span style="color: #000000"> },</span>
+<span style="color: #000000">    { </span><span style="color: #001080">id:</span><span style="color: #000000"> </span><span style="color: #098658">3</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">30</span><span style="color: #000000"> },</span>
+<span style="color: #000000">    { </span><span style="color: #001080">id:</span><span style="color: #000000"> </span><span style="color: #098658">4</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">25</span><span style="color: #000000"> },</span>
+<span style="color: #000000">    { </span><span style="color: #001080">id:</span><span style="color: #000000"> </span><span style="color: #098658">5</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">18</span><span style="color: #000000"> },</span>
+<span style="color: #000000">    { </span><span style="color: #001080">id:</span><span style="color: #000000"> </span><span style="color: #098658">6</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">32</span><span style="color: #000000"> },</span>
+<span style="color: #000000">    { </span><span style="color: #001080">id:</span><span style="color: #000000"> </span><span style="color: #098658">7</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">5</span><span style="color: #000000"> },</span>
+<span style="color: #000000">];</span>
+
+<span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">elements</span><span style="color: #000000"> = </span><span style="color: #795E26">linq</span><span style="color: #000000">(</span><span style="color: #001080">people</span><span style="color: #000000">).</span><span style="color: #795E26">takeWhile</span><span style="color: #000000">(</span><span style="color: #001080">p</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">p</span><span style="color: #000000">.</span><span style="color: #001080">age</span><span style="color: #000000"> % </span><span style="color: #098658">2</span><span style="color: #000000"> === </span><span style="color: #098658">0</span><span style="color: #000000">);</span>
+
+<span style="color: #AF00DB">for</span><span style="color: #000000"> (</span><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">element</span><span style="color: #000000"> </span><span style="color: #0000FF">of</span><span style="color: #000000"> </span><span style="color: #001080">elements</span><span style="color: #000000">) {</span>
+<span style="color: #000000">    </span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">element</span><span style="color: #000000">);</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<pre><code class="language-text">{ id: 1, age: 18 },
+{ id: 2, age: 20 },
+{ id: 3, age: 30 }
+</code></pre>
+				<hr>
+				<a href="#except" id="except" style="color: inherit; text-decoration: none;">
+					<h3>Except</h3>
+				</a>
+				<p>Returns a sequence of elements which are not present in the sequence passed to <code>except</code>.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">elements</span><span style="color: #000000"> = </span><span style="color: #795E26">linq</span><span style="color: #000000">([</span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">3</span><span style="color: #000000">, </span><span style="color: #098658">4</span><span style="color: #000000">, </span><span style="color: #098658">5</span><span style="color: #000000">, </span><span style="color: #098658">6</span><span style="color: #000000">]).</span><span style="color: #795E26">except</span><span style="color: #000000">([</span><span style="color: #098658">3</span><span style="color: #000000">, </span><span style="color: #098658">5</span><span style="color: #000000">, </span><span style="color: #098658">6</span><span style="color: #000000">]);</span>
+
+<span style="color: #AF00DB">for</span><span style="color: #000000"> (</span><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">element</span><span style="color: #000000"> </span><span style="color: #0000FF">of</span><span style="color: #000000"> </span><span style="color: #001080">elements</span><span style="color: #000000">) {</span>
+<span style="color: #000000">    </span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">element</span><span style="color: #000000">);</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<pre><code class="language-text">1
+2
+4
+</code></pre>
+				<hr>
+				<a href="#intersect" id="intersect" style="color: inherit; text-decoration: none;">
+					<h3>Intersect</h3>
+				</a>
+				<p>Returns a sequence representing the intersection of the sequences - elements present in both sequences.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">elements</span><span style="color: #000000"> = </span><span style="color: #795E26">linq</span><span style="color: #000000">([</span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">3</span><span style="color: #000000">, </span><span style="color: #098658">4</span><span style="color: #000000">, </span><span style="color: #098658">5</span><span style="color: #000000">, </span><span style="color: #098658">6</span><span style="color: #000000">]).</span><span style="color: #795E26">intersect</span><span style="color: #000000">([</span><span style="color: #098658">3</span><span style="color: #000000">, </span><span style="color: #098658">5</span><span style="color: #000000">, </span><span style="color: #098658">6</span><span style="color: #000000">, </span><span style="color: #098658">7</span><span style="color: #000000">, </span><span style="color: #098658">8</span><span style="color: #000000">]);</span>
+
+<span style="color: #AF00DB">for</span><span style="color: #000000"> (</span><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">element</span><span style="color: #000000"> </span><span style="color: #0000FF">of</span><span style="color: #000000"> </span><span style="color: #001080">elements</span><span style="color: #000000">) {</span>
+<span style="color: #000000">    </span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">element</span><span style="color: #000000">);</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<pre><code class="language-text">3
+5
+6
+</code></pre>
+				<hr>
+				<a href="#concat" id="concat" style="color: inherit; text-decoration: none;">
+					<h3>Concat</h3>
+				</a>
+				<p>Concatenates the sequences together.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">elements</span><span style="color: #000000"> = </span><span style="color: #795E26">linq</span><span style="color: #000000">([</span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">3</span><span style="color: #000000">]).</span><span style="color: #795E26">concat</span><span style="color: #000000">([</span><span style="color: #098658">4</span><span style="color: #000000">, </span><span style="color: #098658">5</span><span style="color: #000000">, </span><span style="color: #098658">6</span><span style="color: #000000">]);</span>
+
+<span style="color: #AF00DB">for</span><span style="color: #000000"> (</span><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">element</span><span style="color: #000000"> </span><span style="color: #0000FF">of</span><span style="color: #000000"> </span><span style="color: #001080">elements</span><span style="color: #000000">) {</span>
+<span style="color: #000000">    </span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">element</span><span style="color: #000000">);</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<pre><code class="language-text">1
+2
+3
+4
+5
+6
+</code></pre>
+				<hr>
+				<a href="#union" id="union" style="color: inherit; text-decoration: none;">
+					<h3>Union</h3>
+				</a>
+				<p>Performs a union operation on the current sequence and the provided sequence and returns a sequence of unique elements present in the both sequences.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">elements</span><span style="color: #000000"> = </span><span style="color: #795E26">linq</span><span style="color: #000000">([</span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">3</span><span style="color: #000000">, </span><span style="color: #098658">3</span><span style="color: #000000">, </span><span style="color: #098658">4</span><span style="color: #000000">, </span><span style="color: #098658">5</span><span style="color: #000000">]).</span><span style="color: #795E26">union</span><span style="color: #000000">([</span><span style="color: #098658">4</span><span style="color: #000000">, </span><span style="color: #098658">5</span><span style="color: #000000">, </span><span style="color: #098658">5</span><span style="color: #000000">, </span><span style="color: #098658">6</span><span style="color: #000000">]);</span>
+
+<span style="color: #AF00DB">for</span><span style="color: #000000"> (</span><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">element</span><span style="color: #000000"> </span><span style="color: #0000FF">of</span><span style="color: #000000"> </span><span style="color: #001080">elements</span><span style="color: #000000">) {</span>
+<span style="color: #000000">    </span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">element</span><span style="color: #000000">);</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<pre><code class="language-text">1
+2
+3
+4
+5
+6
+</code></pre>
+				<hr>
+				<a href="#xor" id="xor" style="color: inherit; text-decoration: none;">
+					<h3>xOr</h3>
+				</a>
+				<p>Returns a sequence of the elements which are present in only one of the iterables.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">elements</span><span style="color: #000000"> = </span><span style="color: #795E26">linq</span><span style="color: #000000">([</span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">3</span><span style="color: #000000">, </span><span style="color: #098658">4</span><span style="color: #000000">]).</span><span style="color: #795E26">xOr</span><span style="color: #000000">([</span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">4</span><span style="color: #000000">, </span><span style="color: #098658">5</span><span style="color: #000000">]);</span>
+
+<span style="color: #AF00DB">for</span><span style="color: #000000"> (</span><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">element</span><span style="color: #000000"> </span><span style="color: #0000FF">of</span><span style="color: #000000"> </span><span style="color: #001080">elements</span><span style="color: #000000">) {</span>
+<span style="color: #000000">    </span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">element</span><span style="color: #000000">);</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<pre><code class="language-text">1
+3
+5
+</code></pre>
+				<hr>
+				<a href="#aggregate" id="aggregate" style="color: inherit; text-decoration: none;">
+					<h3>Aggregate</h3>
+				</a>
+				<p>Reduces the sequence into a value using an accumulator function.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">people</span><span style="color: #000000"> = [</span>
+<span style="color: #000000">    { </span><span style="color: #001080">name:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;Ivan&quot;</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">20</span><span style="color: #000000"> },</span>
+<span style="color: #000000">    { </span><span style="color: #001080">name:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;Deyan&quot;</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">22</span><span style="color: #000000"> }</span>
+<span style="color: #000000">];</span>
+
+<span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">sumOfAges</span><span style="color: #000000"> = </span><span style="color: #795E26">linq</span><span style="color: #000000">(</span><span style="color: #001080">people</span><span style="color: #000000">).</span><span style="color: #795E26">aggregate</span><span style="color: #000000">(</span><span style="color: #098658">0</span><span style="color: #000000">, (</span><span style="color: #001080">total</span><span style="color: #000000">, </span><span style="color: #001080">person</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">total</span><span style="color: #000000"> += </span><span style="color: #001080">person</span><span style="color: #000000">.</span><span style="color: #001080">age</span><span style="color: #000000">);</span>
+
+<span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">sumOfAges</span><span style="color: #000000">);</span>
+</code></pre>
+				<pre><code class="language-text">42
+</code></pre>
+				<hr>
+				<a href="#windowed" id="windowed" style="color: inherit; text-decoration: none;">
+					<h3>Windowed</h3>
+				</a>
+				<p>Provides a sliding window of elements from the sequence. By default the windows slides 1 element over.
+				A second parameter may be provided to change the number of elements being skipped.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">windows</span><span style="color: #000000"> = </span><span style="color: #795E26">linq</span><span style="color: #000000">([</span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">3</span><span style="color: #000000">, </span><span style="color: #098658">4</span><span style="color: #000000">, </span><span style="color: #098658">5</span><span style="color: #000000">, </span><span style="color: #098658">6</span><span style="color: #000000">]).</span><span style="color: #795E26">windowed</span><span style="color: #000000">(</span><span style="color: #098658">3</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">);</span>
+
+<span style="color: #AF00DB">for</span><span style="color: #000000"> (</span><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">window</span><span style="color: #000000"> </span><span style="color: #0000FF">of</span><span style="color: #000000"> </span><span style="color: #001080">windows</span><span style="color: #000000">) {</span>
+<span style="color: #000000">    </span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">window</span><span style="color: #000000">);</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<pre><code class="language-text">[ 1, 2, 3 ]
+[ 3, 4, 5 ]
+[ 5, 6 ]
+</code></pre>
+				<hr>
+				<a href="#batch" id="batch" style="color: inherit; text-decoration: none;">
+					<h3>Batch</h3>
+				</a>
+				<p>Splits the sequence into batches/cunks of the specified size.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">batches</span><span style="color: #000000"> = </span><span style="color: #795E26">linq</span><span style="color: #000000">([</span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">3</span><span style="color: #000000">, </span><span style="color: #098658">4</span><span style="color: #000000">, </span><span style="color: #098658">5</span><span style="color: #000000">, </span><span style="color: #098658">6</span><span style="color: #000000">, </span><span style="color: #098658">7</span><span style="color: #000000">, </span><span style="color: #098658">8</span><span style="color: #000000">]).</span><span style="color: #795E26">batch</span><span style="color: #000000">(</span><span style="color: #098658">3</span><span style="color: #000000">);</span>
+
+<span style="color: #AF00DB">for</span><span style="color: #000000"> (</span><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">batch</span><span style="color: #000000"> </span><span style="color: #0000FF">of</span><span style="color: #000000"> </span><span style="color: #001080">batches</span><span style="color: #000000">) {</span>
+<span style="color: #000000">    </span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">batch</span><span style="color: #000000">);</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<pre><code class="language-text">[ 1, 2, 3 ]
+[ 4, 5, 6 ]
+[ 7, 8 ]
+</code></pre>
+				<hr>
+				<a href="#any" id="any" style="color: inherit; text-decoration: none;">
+					<h3>Any</h3>
+				</a>
+				<p>Checks if any of the elements match the provided predicate.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">containsEven</span><span style="color: #000000"> = </span><span style="color: #795E26">linq</span><span style="color: #000000">([</span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">4</span><span style="color: #000000">, </span><span style="color: #098658">6</span><span style="color: #000000">]).</span><span style="color: #795E26">any</span><span style="color: #000000">(</span><span style="color: #001080">n</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">n</span><span style="color: #000000"> % </span><span style="color: #098658">2</span><span style="color: #000000"> === </span><span style="color: #098658">0</span><span style="color: #000000">);</span>
+
+<span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">containsEven</span><span style="color: #000000">);</span>
+</code></pre>
+				<pre><code class="language-text">true
+</code></pre>
+				<a href="#all" id="all" style="color: inherit; text-decoration: none;">
+					<h3>All</h3>
+				</a>
+				<p>Checks if all of the elements match the provided predicate.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">areAllEvent</span><span style="color: #000000"> = </span><span style="color: #795E26">linq</span><span style="color: #000000">([</span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">4</span><span style="color: #000000">, </span><span style="color: #098658">6</span><span style="color: #000000">]).</span><span style="color: #795E26">all</span><span style="color: #000000">(</span><span style="color: #001080">n</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">n</span><span style="color: #000000"> % </span><span style="color: #098658">2</span><span style="color: #000000"> === </span><span style="color: #098658">0</span><span style="color: #000000">);</span>
+
+<span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">areAllEvent</span><span style="color: #000000">);</span>
+</code></pre>
+				<pre><code class="language-text">false
+</code></pre>
+				<hr>
+				<a href="#min" id="min" style="color: inherit; text-decoration: none;">
+					<h3>Min</h3>
+				</a>
+				<p>Gets the min element in a sequence. Applicable when the elements are of type <code>string</code> or <code>number</code>.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">people</span><span style="color: #000000"> = [</span><span style="color: #098658">1</span><span style="color: #000000">,</span><span style="color: #098658">5</span><span style="color: #000000">,-</span><span style="color: #098658">10</span><span style="color: #000000">,</span><span style="color: #098658">8</span><span style="color: #000000">];</span>
+
+<span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #795E26">linq</span><span style="color: #000000">(</span><span style="color: #001080">people</span><span style="color: #000000">).</span><span style="color: #795E26">min</span><span style="color: #000000">());</span>
+</code></pre>
+				<pre><code class="language-text">-10
+</code></pre>
+				<hr>
+				<a href="#minby" id="minby" style="color: inherit; text-decoration: none;">
+					<h3>MinBy</h3>
+				</a>
+				<p>Gets the min element in a sequence according to a transform function.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">people</span><span style="color: #000000"> = [</span>
+<span style="color: #000000">    { </span><span style="color: #001080">name:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;Ivan&quot;</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">25</span><span style="color: #000000"> },</span>
+<span style="color: #000000">    { </span><span style="color: #001080">name:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;Deyan&quot;</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">22</span><span style="color: #000000"> }</span>
+<span style="color: #000000">];</span>
+
+<span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">youngest</span><span style="color: #000000"> = </span><span style="color: #795E26">linq</span><span style="color: #000000">(</span><span style="color: #001080">people</span><span style="color: #000000">).</span><span style="color: #795E26">min</span><span style="color: #000000">(</span><span style="color: #001080">p</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">p</span><span style="color: #000000">.</span><span style="color: #001080">age</span><span style="color: #000000">);</span>
+
+<span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">youngest</span><span style="color: #000000">);</span>
+</code></pre>
+				<pre><code class="language-text">{ name: &#039;Deyan&#039;, age: 22 }
+</code></pre>
+				<hr>
+				<a href="#max" id="max" style="color: inherit; text-decoration: none;">
+					<h3>Max</h3>
+				</a>
+				<p>Gets the max element in a sequence. Applicable when the elements are of type <code>string</code> or <code>number</code>.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">people</span><span style="color: #000000"> = [</span><span style="color: #098658">1</span><span style="color: #000000">,</span><span style="color: #098658">5</span><span style="color: #000000">,-</span><span style="color: #098658">10</span><span style="color: #000000">,</span><span style="color: #098658">8</span><span style="color: #000000">];</span>
+
+<span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #795E26">linq</span><span style="color: #000000">(</span><span style="color: #001080">people</span><span style="color: #000000">).</span><span style="color: #795E26">max</span><span style="color: #000000">());</span>
+</code></pre>
+				<pre><code class="language-text">8
+</code></pre>
+				<hr>
+				<a href="#maxby" id="maxby" style="color: inherit; text-decoration: none;">
+					<h3>MaxBy</h3>
+				</a>
+				<p>Gets the max element in a sequence according to a transform function.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">people</span><span style="color: #000000"> = [</span>
+<span style="color: #000000">    { </span><span style="color: #001080">name:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;Ivan&quot;</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">25</span><span style="color: #000000"> },</span>
+<span style="color: #000000">    { </span><span style="color: #001080">name:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;Deyan&quot;</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">22</span><span style="color: #000000"> }</span>
+<span style="color: #000000">];</span>
+
+<span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">oldest</span><span style="color: #000000"> = </span><span style="color: #795E26">linq</span><span style="color: #000000">(</span><span style="color: #001080">people</span><span style="color: #000000">).</span><span style="color: #795E26">max</span><span style="color: #000000">(</span><span style="color: #001080">p</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">p</span><span style="color: #000000">.</span><span style="color: #001080">age</span><span style="color: #000000">);</span>
+
+<span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">oldest</span><span style="color: #000000">);</span>
+</code></pre>
+				<pre><code class="language-text">{ name: &quot;Ivan&quot;, age: 25 }
+</code></pre>
+				<hr>
+				<a href="#average" id="average" style="color: inherit; text-decoration: none;">
+					<h3>Average</h3>
+				</a>
+				<p>Gets the averege value for a sequence. Applicable when the elements are of type <code>number</code>.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">people</span><span style="color: #000000"> = [</span><span style="color: #098658">25</span><span style="color: #000000">, </span><span style="color: #098658">22</span><span style="color: #000000">];</span>
+
+<span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #795E26">linq</span><span style="color: #000000">(</span><span style="color: #001080">people</span><span style="color: #000000">).</span><span style="color: #795E26">average</span><span style="color: #000000">(</span><span style="color: #001080">p</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">p</span><span style="color: #000000">.</span><span style="color: #001080">age</span><span style="color: #000000">));</span>
+</code></pre>
+				<pre><code class="language-text">23.5
+</code></pre>
+				<hr>
+				<a href="#averageby" id="averageby" style="color: inherit; text-decoration: none;">
+					<h3>AverageBy</h3>
+				</a>
+				<p>Gets the averege of the values provided by a selector function.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">people</span><span style="color: #000000"> = [</span>
+<span style="color: #000000">    { </span><span style="color: #001080">name:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;Ivan&quot;</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">25</span><span style="color: #000000"> },</span>
+<span style="color: #000000">    { </span><span style="color: #001080">name:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;Deyan&quot;</span><span style="color: #000000">, </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">22</span><span style="color: #000000"> }</span>
+<span style="color: #000000">];</span>
+
+<span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">averageAge</span><span style="color: #000000"> = </span><span style="color: #795E26">linq</span><span style="color: #000000">(</span><span style="color: #001080">people</span><span style="color: #000000">).</span><span style="color: #795E26">average</span><span style="color: #000000">(</span><span style="color: #001080">p</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">p</span><span style="color: #000000">.</span><span style="color: #001080">age</span><span style="color: #000000">);</span>
+
+<span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">averageAge</span><span style="color: #000000">);</span>
+</code></pre>
+				<pre><code class="language-text">23.5
+</code></pre>
+				<hr>
+				<a href="#sequenceequals" id="sequenceequals" style="color: inherit; text-decoration: none;">
+					<h3>SequenceEquals</h3>
+				</a>
+				<p>Tests the equality of two seuqneces by checking each corresponding pair of elements against the provided predicate.
+				If a predicate is not provided the elements will be compared using the strict equality (===) operator.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">first</span><span style="color: #000000"> = [</span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">3</span><span style="color: #000000">];</span>
+<span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">second</span><span style="color: #000000"> = [</span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">3</span><span style="color: #000000">];</span>
+
+<span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">areEqual</span><span style="color: #000000"> = </span><span style="color: #795E26">linq</span><span style="color: #000000">(</span><span style="color: #001080">first</span><span style="color: #000000">).</span><span style="color: #795E26">sequenceEquals</span><span style="color: #000000">(</span><span style="color: #001080">second</span><span style="color: #000000">);</span>
+
+<span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">areEqual</span><span style="color: #000000">);</span>
+</code></pre>
+				<pre><code class="language-text">true
+</code></pre>
+				<hr>
+				<a href="#indexof" id="indexof" style="color: inherit; text-decoration: none;">
+					<h3>IndexOf</h3>
+				</a>
+				<p>Gets the index of the first matching element in the sequence.</p>
+				<pre><code class="language-typescript"><span style="color: #795E26">linq</span><span style="color: #000000">([</span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">3</span><span style="color: #000000">]).</span><span style="color: #795E26">indexOf</span><span style="color: #000000">(</span><span style="color: #098658">2</span><span style="color: #000000">);</span>
+</code></pre>
+				<pre><code class="language-text">1
+</code></pre>
+				<hr>
+				<a href="#lastindexof" id="lastindexof" style="color: inherit; text-decoration: none;">
+					<h3>LastIndexOf</h3>
+				</a>
+				<p>Gets the index of the last matching element in the sequence.</p>
+				<pre><code class="language-typescript"><span style="color: #795E26">linq</span><span style="color: #000000">([</span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">3</span><span style="color: #000000">]).</span><span style="color: #795E26">indexOf</span><span style="color: #000000">(</span><span style="color: #098658">2</span><span style="color: #000000">);</span>
+</code></pre>
+				<pre><code class="language-text">1
+</code></pre>
+				<hr>
+				<a href="#findindex" id="findindex" style="color: inherit; text-decoration: none;">
+					<h3>FindIndex</h3>
+				</a>
+				<p>Gets the index of the first matching element in the sequence according to the predicate.</p>
+				<pre><code class="language-typescript"><span style="color: #795E26">linq</span><span style="color: #000000">([-</span><span style="color: #098658">1</span><span style="color: #000000">, -</span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">3</span><span style="color: #000000">]).</span><span style="color: #795E26">findIndex</span><span style="color: #000000">(</span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000"> &gt; </span><span style="color: #098658">0</span><span style="color: #000000">);</span>
+</code></pre>
+				<pre><code class="language-text">2
+</code></pre>
+				<hr>
+				<a href="#findlastindex" id="findlastindex" style="color: inherit; text-decoration: none;">
+					<h3>FindLastIndex</h3>
+				</a>
+				<p>Gets the index of the last matching element in the sequence according to the predicate.</p>
+				<pre><code class="language-typescript"><span style="color: #795E26">linq</span><span style="color: #000000">([-</span><span style="color: #098658">1</span><span style="color: #000000">, -</span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">3</span><span style="color: #000000">]).</span><span style="color: #795E26">findIndex</span><span style="color: #000000">(</span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000"> &gt; </span><span style="color: #098658">0</span><span style="color: #000000">);</span>
+</code></pre>
+				<pre><code class="language-text">4
+</code></pre>
+				<hr>
+				<a href="#elementat" id="elementat" style="color: inherit; text-decoration: none;">
+					<h3>ElementAt</h3>
+				</a>
+				<p>Gets the element at an index.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">numbers</span><span style="color: #000000"> = [</span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">3</span><span style="color: #000000">];</span>
+
+<span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">elementAtIndexOne</span><span style="color: #000000"> = </span><span style="color: #795E26">linq</span><span style="color: #000000">(</span><span style="color: #001080">numbers</span><span style="color: #000000">).</span><span style="color: #795E26">elementAt</span><span style="color: #000000">(</span><span style="color: #098658">1</span><span style="color: #000000">);</span>
+
+<span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">elementAtIndexOne</span><span style="color: #000000">);</span>
+</code></pre>
+				<pre><code class="language-text">2
+</code></pre>
+				<hr>
+				<a href="#first" id="first" style="color: inherit; text-decoration: none;">
+					<h3>First</h3>
+				</a>
+				<p>Gets the first element of the iterable.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">numbers</span><span style="color: #000000"> = [</span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">3</span><span style="color: #000000">];</span>
+
+<span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">firstElement</span><span style="color: #000000"> = </span><span style="color: #795E26">linq</span><span style="color: #000000">(</span><span style="color: #001080">numbers</span><span style="color: #000000">).</span><span style="color: #795E26">first</span><span style="color: #000000">();</span>
+
+<span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">firstElement</span><span style="color: #000000">);</span>
+</code></pre>
+				<pre><code class="language-text">1
+</code></pre>
+				<a href="#firstordefault" id="firstordefault" style="color: inherit; text-decoration: none;">
+					<h3>FirstOrDefault</h3>
+				</a>
+				<p>Gets the first element of the sequence. If a predicate is provided the first element matching the predicated will be returned.
+				If there aren&#39;t any matching elements or if the sequence is empty a default value provided by the defaultInitializer will be returned.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">numbers</span><span style="color: #000000"> = [</span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">3</span><span style="color: #000000">];</span>
+
+<span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">firstEvenElement</span><span style="color: #000000"> = </span><span style="color: #795E26">linq</span><span style="color: #000000">(</span><span style="color: #001080">numbers</span><span style="color: #000000">).</span><span style="color: #795E26">firstOrDefault</span><span style="color: #000000">(</span><span style="color: #001080">n</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">n</span><span style="color: #000000"> % </span><span style="color: #098658">2</span><span style="color: #000000"> === </span><span style="color: #098658">0</span><span style="color: #000000">);</span>
+<span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">firstElementLargerThanFive</span><span style="color: #000000"> = </span><span style="color: #795E26">linq</span><span style="color: #000000">(</span><span style="color: #001080">numbers</span><span style="color: #000000">).</span><span style="color: #795E26">firstOrDefault</span><span style="color: #000000">(</span><span style="color: #001080">n</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">n</span><span style="color: #000000"> &gt; </span><span style="color: #098658">5</span><span style="color: #000000">, () </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> -</span><span style="color: #098658">1</span><span style="color: #000000">);</span>
+
+<span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">firstEvenElement</span><span style="color: #000000">);</span>
+<span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">firstElementLargerThanFive</span><span style="color: #000000">);</span>
+</code></pre>
+				<pre><code class="language-text">2
+-1
+</code></pre>
+				<hr>
+				<a href="#last" id="last" style="color: inherit; text-decoration: none;">
+					<h3>Last</h3>
+				</a>
+				<p>Gets the last element of the iterable.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">numbers</span><span style="color: #000000"> = [</span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">3</span><span style="color: #000000">];</span>
+
+<span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">lastElement</span><span style="color: #000000"> = </span><span style="color: #795E26">linq</span><span style="color: #000000">(</span><span style="color: #001080">numbers</span><span style="color: #000000">).</span><span style="color: #795E26">last</span><span style="color: #000000">();</span>
+
+<span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">lastElement</span><span style="color: #000000">);</span>
+</code></pre>
+				<pre><code class="language-text">3
+</code></pre>
+				<hr>
+				<a href="#lastordefault" id="lastordefault" style="color: inherit; text-decoration: none;">
+					<h3>LastOrDefault</h3>
+				</a>
+				<p>Gets the last element of the sequence. If a predicate is provided the last element matching the predicated will be returned.
+				If there aren&#39;t any matching elements or if the sequence is empty a default value provided by the defaultInitializer will be returned.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">numbers</span><span style="color: #000000"> = [</span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">3</span><span style="color: #000000">, </span><span style="color: #098658">4</span><span style="color: #000000">];</span>
+
+<span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">lastEvenElement</span><span style="color: #000000"> = </span><span style="color: #795E26">linq</span><span style="color: #000000">(</span><span style="color: #001080">numbers</span><span style="color: #000000">).</span><span style="color: #795E26">lastOrDefault</span><span style="color: #000000">(</span><span style="color: #001080">n</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">n</span><span style="color: #000000"> % </span><span style="color: #098658">2</span><span style="color: #000000"> === </span><span style="color: #098658">0</span><span style="color: #000000">);</span>
+<span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">lastElementLargerThanFive</span><span style="color: #000000"> = </span><span style="color: #795E26">linq</span><span style="color: #000000">(</span><span style="color: #001080">numbers</span><span style="color: #000000">).</span><span style="color: #795E26">lastOrDefault</span><span style="color: #000000">(</span><span style="color: #001080">n</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">n</span><span style="color: #000000"> &gt; </span><span style="color: #098658">5</span><span style="color: #000000">, () </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> -</span><span style="color: #098658">1</span><span style="color: #000000">);</span>
+
+<span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">lastEvenElement</span><span style="color: #000000">);</span>
+<span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">lastElementLargerThanFive</span><span style="color: #000000">);</span>
+</code></pre>
+				<pre><code class="language-text">4
+-1
+</code></pre>
+				<hr>
+				<a href="#foreach" id="foreach" style="color: inherit; text-decoration: none;">
+					<h3>ForEach</h3>
+				</a>
+				<p>Calls a function for each element of the sequence.
+				The function receives the element and its index in the seqeunce as parameters.</p>
+				<pre><code class="language-typescript"><span style="color: #795E26">linq</span><span style="color: #000000">([</span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">3</span><span style="color: #000000">, </span><span style="color: #098658">4</span><span style="color: #000000">]).</span><span style="color: #795E26">forEach</span><span style="color: #000000">(</span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #001080">log</span><span style="color: #000000">);</span>
+</code></pre>
+				<pre><code class="language-text">1 0
+2 1
+3 2
+4 3
+</code></pre>
+				<hr>
+				<a href="#toarray" id="toarray" style="color: inherit; text-decoration: none;">
+					<h3>ToArray</h3>
+				</a>
+				<p>Turns the sequence to an array.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">array</span><span style="color: #000000"> = </span><span style="color: #795E26">linq</span><span style="color: #000000">([</span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">3</span><span style="color: #000000">, </span><span style="color: #098658">4</span><span style="color: #000000">])</span>
+<span style="color: #000000">    .</span><span style="color: #795E26">concat</span><span style="color: #000000">([</span><span style="color: #098658">5</span><span style="color: #000000">, </span><span style="color: #098658">6</span><span style="color: #000000">, </span><span style="color: #098658">7</span><span style="color: #000000">])</span>
+<span style="color: #000000">    .</span><span style="color: #795E26">toArray</span><span style="color: #000000">();</span>
+
+<span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">array</span><span style="color: #000000">);</span>
+</code></pre>
+				<pre><code class="language-text">[ 1, 2, 3, 4, 5, 6, 7 ]
+</code></pre>
+				<hr>
+				<a href="#count" id="count" style="color: inherit; text-decoration: none;">
+					<h3>Count</h3>
+				</a>
+				<p>Counts the number of elements in the sequence.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">count</span><span style="color: #000000"> = </span><span style="color: #795E26">linq</span><span style="color: #000000">([</span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">3</span><span style="color: #000000">, </span><span style="color: #098658">4</span><span style="color: #000000">]).</span><span style="color: #795E26">count</span><span style="color: #000000">();</span>
+
+<span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">count</span><span style="color: #000000">);</span>
+</code></pre>
+				<pre><code class="language-text">4
+</code></pre>
+				<hr>
+				<a href="#seq" id="seq" style="color: inherit; text-decoration: none;">
+					<h3>Seq</h3>
+				</a>
+				<p>Generates a sequence of numbers from start to end (if specified), increasing by the speficied step.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">limited</span><span style="color: #000000"> = </span><span style="color: #795E26">seq</span><span style="color: #000000">(</span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">10</span><span style="color: #000000">).</span><span style="color: #795E26">toArray</span><span style="color: #000000">();</span>
+<span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">limited</span><span style="color: #000000">);</span>
+
+<span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">unlimited</span><span style="color: #000000"> = </span><span style="color: #795E26">seq</span><span style="color: #000000">(</span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">).</span><span style="color: #795E26">take</span><span style="color: #000000">(</span><span style="color: #098658">15</span><span style="color: #000000">).</span><span style="color: #795E26">toArray</span><span style="color: #000000">();</span>
+<span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">unlimited</span><span style="color: #000000">);</span>
+</code></pre>
+				<pre><code class="language-text">[ 1, 3, 5, 7, 9 ]
+[ 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29 ]
+</code></pre>
+				<hr>
+				<a href="#id" id="id" style="color: inherit; text-decoration: none;">
+					<h3>Id</h3>
+				</a>
+				<p>The identity function (x =&gt; x). It takes an element and returns it.
+				It can be useful for operaions like min, max, average, and in general in cases where we want the transform function to return the same element.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">average</span><span style="color: #000000"> = </span><span style="color: #795E26">linq</span><span style="color: #000000">([</span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">3</span><span style="color: #000000">, </span><span style="color: #098658">4</span><span style="color: #000000">, </span><span style="color: #098658">5</span><span style="color: #000000">, </span><span style="color: #098658">6</span><span style="color: #000000">]).</span><span style="color: #795E26">average</span><span style="color: #000000">(</span><span style="color: #001080">id</span><span style="color: #000000">);</span>
+
+<span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">average</span><span style="color: #000000">);</span>
+</code></pre>
+				<pre><code class="language-text">3.5
+</code></pre>
+				<hr>
+				<a href="#tomap" id="tomap" style="color: inherit; text-decoration: none;">
+					<h3>ToMap</h3>
+				</a>
+				<p>Turns the sequence into a map.</p>
+				<p>The key is provided by a function which takes an element as a parameter and returns the value to be used as a key.<br>An optional vlaue selector can be provided to select the value that will be put in the map.<br>An optional equality comparer can be provided for special cases or complex keys. In that case a LinqMap instance will be returned.</p>
+				<p>An error will be thrown if multiple elements have the same key.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">elements</span><span style="color: #000000"> = </span><span style="color: #795E26">linq</span><span style="color: #000000">([</span><span style="color: #098658">1</span><span style="color: #000000">,</span><span style="color: #098658">2</span><span style="color: #000000">,</span><span style="color: #098658">3</span><span style="color: #000000">,</span><span style="color: #098658">4</span><span style="color: #000000">,</span><span style="color: #098658">5</span><span style="color: #000000">]).</span><span style="color: #795E26">toMap</span><span style="color: #000000">({ </span><span style="color: #001080">keySelector:</span><span style="color: #000000"> </span><span style="color: #001080">id</span><span style="color: #000000">, </span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000"> * </span><span style="color: #098658">10</span><span style="color: #000000"> });</span>
+<span style="color: #000000">    </span>
+<span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">elements</span><span style="color: #000000">);</span>
+</code></pre>
+				<pre><code class="language-text">Map { 1 =&gt; 10, 2 =&gt; 20, 3 =&gt; 30, 4 =&gt; 40, 5 =&gt; 50 }
+</code></pre>
+				<hr>
+				<a href="#tomapmany" id="tomapmany" style="color: inherit; text-decoration: none;">
+					<h3>ToMapMany</h3>
+				</a>
+				<p>Turns the sequence into a map.</p>
+				<p>The key is provided by a function which takes an element as a parameter and returns the value to be used as a key.<br>An optional vlaue selector can be provided to select the value that will be put in the map.<br>An optional equality comparer can be provided for special cases or complex keys. In that case a LinqMap instance will be returned.</p>
+				<p>The values for each key will be aggregated into arrays.</p>
+				<pre><code class="language-typescript"><span style="color: #795E26">linq</span><span style="color: #000000">([</span><span style="color: #098658">1</span><span style="color: #000000">,</span><span style="color: #098658">1</span><span style="color: #000000">,</span><span style="color: #098658">2</span><span style="color: #000000">,</span><span style="color: #098658">3</span><span style="color: #000000">,</span><span style="color: #098658">3</span><span style="color: #000000">,</span><span style="color: #098658">4</span><span style="color: #000000">,</span><span style="color: #098658">5</span><span style="color: #000000">]).</span><span style="color: #795E26">toMapMany</span><span style="color: #000000">({ </span><span style="color: #001080">keySelector:</span><span style="color: #000000"> </span><span style="color: #001080">id</span><span style="color: #000000">, </span><span style="color: #795E26">valueSelector</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000"> * </span><span style="color: #098658">10</span><span style="color: #000000"> });</span>
+</code></pre>
+				<pre><code class="language-text">Map {
+  1 =&gt; [ 10, 10 ],
+  2 =&gt; [ 20 ],
+  3 =&gt; [ 30, 30 ],
+  4 =&gt; [ 40 ],
+  5 =&gt; [ 50 ]
+}
+</code></pre>
+				<hr>
+				<a href="#toset" id="toset" style="color: inherit; text-decoration: none;">
+					<h3>ToSet</h3>
+				</a>
+				<p>Turns the sequence into a set.</p>
+				<p>The values of the sequence will be aggregated into a Set.<br>An optional equality comparer can be provided for special cases or complex keys. In that case a LinqSet instance will be returned.</p>
+				<p>An error will be thrown if multiple elements have the same key.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">elements</span><span style="color: #000000"> = </span><span style="color: #795E26">linq</span><span style="color: #000000">([</span><span style="color: #098658">1</span><span style="color: #000000">,</span><span style="color: #098658">2</span><span style="color: #000000">,</span><span style="color: #098658">3</span><span style="color: #000000">,</span><span style="color: #098658">4</span><span style="color: #000000">,</span><span style="color: #098658">5</span><span style="color: #000000">]).</span><span style="color: #795E26">toMap</span><span style="color: #000000">({ </span><span style="color: #001080">keySelector:</span><span style="color: #000000"> </span><span style="color: #001080">id</span><span style="color: #000000">, </span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000"> * </span><span style="color: #098658">10</span><span style="color: #000000"> });</span>
+<span style="color: #000000">    </span>
+<span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">elements</span><span style="color: #000000">);</span>
+</code></pre>
+				<pre><code class="language-text">Map { 1 =&gt; 10, 2 =&gt; 20, 3 =&gt; 30, 4 =&gt; 40, 5 =&gt; 50 }
+</code></pre>
+				<hr>
+				<a href="#append" id="append" style="color: inherit; text-decoration: none;">
+					<h3>Append</h3>
+				</a>
+				<p>Append the provided elements at the end of the sequence.</p>
+				<pre><code class="language-typescript"><span style="color: #795E26">linq</span><span style="color: #000000">([</span><span style="color: #098658">1</span><span style="color: #000000">,</span><span style="color: #098658">2</span><span style="color: #000000">,</span><span style="color: #098658">3</span><span style="color: #000000">,</span><span style="color: #098658">4</span><span style="color: #000000">,</span><span style="color: #098658">5</span><span style="color: #000000">]).</span><span style="color: #795E26">append</span><span style="color: #000000">(</span><span style="color: #098658">6</span><span style="color: #000000">,</span><span style="color: #098658">7</span><span style="color: #000000">,</span><span style="color: #098658">8</span><span style="color: #000000">,</span><span style="color: #098658">9</span><span style="color: #000000">).</span><span style="color: #795E26">toArray</span><span style="color: #000000">();</span>
+</code></pre>
+				<pre><code class="language-text">[ 1, 2, 3, 4, 5, 6, 7, 8, 9 ]
+</code></pre>
+				<hr>
+				<a href="#prepend" id="prepend" style="color: inherit; text-decoration: none;">
+					<h3>Prepend</h3>
+				</a>
+				<p>Prepends the provided elements at the beginning of the sequence.</p>
+				<pre><code class="language-typescript"><span style="color: #795E26">linq</span><span style="color: #000000">([</span><span style="color: #098658">6</span><span style="color: #000000">,</span><span style="color: #098658">7</span><span style="color: #000000">,</span><span style="color: #098658">8</span><span style="color: #000000">,</span><span style="color: #098658">9</span><span style="color: #000000">]).</span><span style="color: #795E26">prepend</span><span style="color: #000000">(</span><span style="color: #098658">1</span><span style="color: #000000">,</span><span style="color: #098658">2</span><span style="color: #000000">,</span><span style="color: #098658">3</span><span style="color: #000000">,</span><span style="color: #098658">4</span><span style="color: #000000">,</span><span style="color: #098658">5</span><span style="color: #000000">).</span><span style="color: #795E26">toArray</span><span style="color: #000000">();</span>
+</code></pre>
+				<pre><code class="language-text">[ 1, 2, 3, 4, 5, 6, 7, 8, 9 ]
+</code></pre>
+				<hr>
+				<a href="#tap" id="tap" style="color: inherit; text-decoration: none;">
+					<h3>Tap</h3>
+				</a>
+				<p>Executes an action on each element of the sequence and yields the element.</p>
+				<pre><code class="language-typescript"><span style="color: #795E26">linq</span><span style="color: #000000">([</span><span style="color: #098658">6</span><span style="color: #000000">,</span><span style="color: #098658">7</span><span style="color: #000000">,</span><span style="color: #098658">8</span><span style="color: #000000">,</span><span style="color: #098658">9</span><span style="color: #000000">]).</span><span style="color: #795E26">tap</span><span style="color: #000000">(</span><span style="color: #001080">el</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">el</span><span style="color: #000000"> - </span><span style="color: #098658">5</span><span style="color: #000000">)).</span><span style="color: #795E26">toArray</span><span style="color: #000000">();</span>
+</code></pre>
+				<pre><code class="language-text">1
+2
+3
+4
+[ 6, 7, 8, 9 ]
+</code></pre>
+				<hr>
+				<a href="#repeat" id="repeat" style="color: inherit; text-decoration: none;">
+					<h3>Repeat</h3>
+				</a>
+				<p>Repeats the sequence when provided with a positive value, infinitely when provided with a negative value or without a count parameter.</p>
+				<p>Available also as a top-level function which repeats the provided element.</p>
+				<pre><code class="language-typescript"><span style="color: #795E26">linq</span><span style="color: #000000">([</span><span style="color: #098658">1</span><span style="color: #000000">,</span><span style="color: #098658">2</span><span style="color: #000000">,</span><span style="color: #098658">3</span><span style="color: #000000">]).</span><span style="color: #795E26">repeat</span><span style="color: #000000">(</span><span style="color: #098658">3</span><span style="color: #000000">).</span><span style="color: #795E26">toArray</span><span style="color: #000000">();</span>
+<span style="color: #795E26">repeat</span><span style="color: #000000">(</span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #098658">3</span><span style="color: #000000">).</span><span style="color: #795E26">toArray</span><span style="color: #000000">();</span>
+</code></pre>
+				<pre><code class="language-text">[1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3]
+[1, 1, 1]
+</code></pre>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="modules.html">Exports</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="classes/asynclinqable.html" class="tsd-kind-icon">Async<wbr>Linqable</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="classes/linqmap.html" class="tsd-kind-icon">Linq<wbr>Map</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="classes/linqset.html" class="tsd-kind-icon">Linq<wbr>Set</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="classes/linqable.html" class="tsd-kind-icon">Linqable</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="classes/orderedlinqable.html" class="tsd-kind-icon">Ordered<wbr>Linqable</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="classes/orderedlinqableasync.html" class="tsd-kind-icon">Ordered<wbr>Linqable<wbr>Async</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="modules.html#asyncsource" class="tsd-kind-icon">Async<wbr>Source</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="modules.html#syncsource" class="tsd-kind-icon">Sync<wbr>Source</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="modules.html#tomapargs" class="tsd-kind-icon">To<wbr>Map<wbr>Args</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="modules.html#id" class="tsd-kind-icon">id</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="modules.html#linq" class="tsd-kind-icon">linq</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="modules.html#linqasync" class="tsd-kind-icon">linq<wbr>Async</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="modules.html#print" class="tsd-kind-icon">print</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="modules.html#repeat" class="tsd-kind-icon">repeat</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#seq" class="tsd-kind-icon">seq</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="modules.html#unfold" class="tsd-kind-icon">unfold</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="modules.html#unfoldasync" class="tsd-kind-icon">unfold<wbr>Async</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
