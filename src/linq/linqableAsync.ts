@@ -2,6 +2,7 @@ import { AsyncSource, id, SyncSource } from '.'
 import { EqualityComparer, LinqMap, LinqSet } from './collections'
 import { elementsSymbol, ElementsWrapper, isWrapper } from './element-wrapper'
 import { Concat, Distinct, DistinctBy, Except, GroupBy, Grouping, Intersect, Join, Ordered, Repeat, Reverse, Select, SelectMany, Skip, SkipWhile, Take, TakeWhile, Tap, Union, Where, Windowed, Zip } from './iterables'
+import { Cartesian } from './iterables/cartesian'
 import { GeneratorFunc } from './iterables/generatorFunc'
 import { Memoized } from './iterables/memoized'
 import { Scan } from './iterables/scan'
@@ -748,6 +749,11 @@ export class AsyncLinqable<TSource> implements AsyncIterable<TSource>, ElementsW
   memoized(): AsyncLinqable<TSource> {
     return new AsyncLinqable(new Memoized(this.elements))
   }
+
+  cartesian<TOther>(other: Iterable<TOther> | AsyncIterable<TOther>): AsyncLinqable<[TSource, TOther]> {
+    return new AsyncLinqable(new Cartesian(this.elements, extractAsync(other)))
+  }
+
 
   toString(): string {
     return AsyncLinqable.name
